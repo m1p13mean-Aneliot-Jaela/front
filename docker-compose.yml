@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: m1p13mean-frontend
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
