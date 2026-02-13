@@ -1,0 +1,51 @@
+<div class="admin-layout" [class.collapsed]="sidebarCollapsed">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="icon">🛡️</span>
+        <span class="text">Admin</span>
+      </div>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span>{{ sidebarCollapsed ? '→' : '←' }}</span>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a 
+        *ngFor="let item of menuItems" 
+        [routerLink]="item.route"
+        class="nav-item"
+        [class.active]="item.active"
+      >
+        <span class="icon">{{ item.icon }}</span>
+        <span class="label">{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <span class="icon">🚪</span>
+        <span class="label">Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <h1>Tableau de bord Admin</h1>
+      <div class="user-info" *ngIf="user$ | async as user">
+        <span class="badge admin">Admin</span>
+        <span class="name">{{ user.name }}</span>
+        <div class="avatar">{{ user.name.charAt(0) }}</div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

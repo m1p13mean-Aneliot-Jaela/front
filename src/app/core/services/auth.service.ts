@@ -4,25 +4,41 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
+export type UserType = 'admin' | 'shop' | 'client';
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  userType: UserType;
+  token: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject: BehaviorSubject<any>;
-  public currentUser: Observable<any>;
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser: Observable<User | null>;
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {
-    this.currentUserSubject = new BehaviorSubject<any>(
+    this.currentUserSubject = new BehaviorSubject<User | null>(
       JSON.parse(localStorage.getItem('currentUser') || 'null')
     );
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  public get currentUserValue(): any {
+  public get currentUserValue(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  // Simulation locale de connexion
+  simulateLogin(user: User): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
   }
 
   login(credentials: any): Observable<any> {
@@ -46,8 +62,29 @@ export class AuthService {
     return !!this.currentUserValue;
   }
 
+  getUserType(): UserType | null {
+    return this.currentUserValue?.userType || null;
+  }
+
   getToken(): string | null {
     const user = this.currentUserValue;
     return user ? user.token : null;
+  }
+
+  // Redirection selon le rôle
+  redirectByRole(): void {
+    const user = this.currentUserValue;
+    if (!user) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const routes: Record<UserType, string> = {
+      admin: '/admin/dashboard',
+      shop: '/shop/dashboard',
+      client: '/app/dashboard'
+    };
+
+    this.router.navigate([routes[user.userType]]);
   }
 }
