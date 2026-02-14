@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
-export type UserType = 'admin' | 'shop' | 'client';
+import { ApiService } from './api.service';
+
+export type UserType = 'admin' | 'brand' | 'shop' | 'buyer';
 
 export interface User {
   id: string;
   email: string;
-  name: string;
-  userType: UserType;
-  token: string;
+  first_name?: string;
+  last_name?: string;
+  user_type: UserType;
+  phone?: string;
+  profile_photo?: string;
 }
 
 @Injectable({
@@ -22,11 +25,12 @@ export class AuthService {
   public currentUser: Observable<User | null>;
 
   constructor(
-    private http: HttpClient,
+    private api: ApiService,
     private router: Router
   ) {
+    // Load user from localStorage (tokens are in HttpOnly cookies)
     this.currentUserSubject = new BehaviorSubject<User | null>(
-      JSON.parse(localStorage.getItem('currentUser') || 'null')
+      JSON.parse(localStorage.getItem('user') || 'null')
     );
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -35,17 +39,24 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  // Simulation locale de connexion
-  simulateLogin(user: User): void {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    this.currentUserSubject.next(user);
+  signup(payload: { email: string; password: string; first_name: string; last_name: string; phone?: string }): Observable<any> {
+    return this.api.post<any>('/auth/signup', payload, { withCredentials: true }).pipe(
+      tap((res) => {
+        const user: User | null = res?.data?.user || null;
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        }
+      })
+    );
   }
 
   login(credentials: any): Observable<any> {
-    return this.http.post<any>('/api/auth/login', credentials).pipe(
-      tap(user => {
-        if (user && user.token) {
-          localStorage.setItem('currentUser', JSON.stringify(user));
+    return this.api.post<any>('/auth/login', credentials, { withCredentials: true }).pipe(
+      tap((res) => {
+        const user: User | null = res?.data?.user || null;
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSubject.next(user);
         }
       })
@@ -53,38 +64,46 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    // Call backend to clear cookies
+    this.api.post('/auth/logout', {}, { withCredentials: true }).subscribe({
+      next: () => {
+        localStorage.removeItem('user');
+        this.currentUserSubject.next(null);
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        // Even if API fails, clear local state
+        localStorage.removeItem('user');
+        this.currentUserSubject.next(null);
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   isAuthenticated(): boolean {
+    // Check if we have user data (actual auth check is done via cookies on backend)
     return !!this.currentUserValue;
   }
 
   getUserType(): UserType | null {
-    return this.currentUserValue?.userType || null;
-  }
-
-  getToken(): string | null {
-    const user = this.currentUserValue;
-    return user ? user.token : null;
+    return this.currentUserValue?.user_type || null;
   }
 
   // Redirection selon le rôle
   redirectByRole(): void {
-    const user = this.currentUserValue;
-    if (!user) {
+    const userType = this.getUserType();
+    if (!userType) {
       this.router.navigate(['/login']);
       return;
     }
 
     const routes: Record<UserType, string> = {
       admin: '/admin/dashboard',
+      brand: '/shop/dashboard',
       shop: '/shop/dashboard',
-      client: '/app/dashboard'
+      buyer: '/app/home'
     };
 
-    this.router.navigate([routes[user.userType]]);
+    this.router.navigate([routes[userType]]);
   }
 }

@@ -1,8 +1,22 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Observable } from 'rxjs';
 
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService, User } from '../../../core/services/auth.service';
+
+interface SubMenuItem {
+  label: string;
+  route: string;
+}
+
+interface MenuItem {
+  icon: string;
+  label: string;
+  route?: string;
+  expanded?: boolean;
+  children?: SubMenuItem[];
+}
 
 @Component({
   selector: 'app-admin-layout',
@@ -12,22 +26,48 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrls: ['./admin-layout.component.css']
 })
 export class AdminLayoutComponent {
-  get user$() { return this.authService.currentUser; }
+  user$: Observable<User | null>;
   sidebarCollapsed = false;
 
-  menuItems = [
-    { icon: '📊', label: 'Dashboard', route: '/admin/dashboard', active: true },
-    { icon: '👥', label: 'Utilisateurs', route: '/admin/users', active: false },
-    { icon: '🏪', label: 'Boutiques', route: '/admin/shops', active: false },
-    { icon: '📦', label: 'Produits', route: '/admin/products', active: false },
-    { icon: '📋', label: 'Rapports', route: '/admin/reports', active: false },
-    { icon: '⚙️', label: 'Paramètres', route: '/admin/settings', active: false }
+  menuItems: MenuItem[] = [
+    { icon: '📊', label: 'Dashboard', route: '/admin/dashboard' },
+    { 
+      icon: '👥', 
+      label: 'Utilisateurs', 
+      route: '/admin/users/list'
+    },
+    { 
+      icon: '🏪', 
+      label: 'Boutiques', 
+      expanded: false,
+      children: [
+        { label: '📋 Liste', route: '/admin/shops/list' },
+        { label: '➕ Ajouter', route: '/admin/shops/add' }
+      ]
+    },
+    { 
+      icon: '📦', 
+      label: 'Produits', 
+      expanded: false,
+      children: [
+        { label: '📋 Liste', route: '/admin/products/list' },
+        { label: '➕ Ajouter', route: '/admin/products/add' }
+      ]
+    }
   ];
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    this.user$ = this.authService.currentUser;
+  }
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  toggleMenu(item: MenuItem): void {
+    if (item.children) {
+      item.expanded = !item.expanded;
+    }
   }
 
   logout(): void {

@@ -28,20 +28,9 @@
   <div class="login-right">
     <div class="login-box">
       <h2>Connexion</h2>
-      <p class="subtitle">Choisissez votre profil pour continuer</p>
+      <p class="subtitle">Connectez-vous pour continuer</p>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <!-- Sélection du type d'utilisateur -->
-        <div class="user-type-selection">
-          <label *ngFor="let type of userTypes" class="user-type-card" [class.selected]="loginForm.get('userType')?.value === type.value">
-            <input type="radio" formControlName="userType" [value]="type.value">
-            <div class="card-content" [style.--color]="type.color">
-              <span class="icon">{{ type.icon === 'shield' ? '🛡️' : type.icon === 'store' ? '🏪' : '👤' }}</span>
-              <span class="label">{{ type.label }}</span>
-            </div>
-          </label>
-        </div>
-
         <div class="form-group">
           <label for="email">Email</label>
           <input 
@@ -81,7 +70,10 @@
       </form>
 
       <div class="demo-info">
-        <p>💡 <strong>Démo :</strong> Sélectionnez un rôle et utilisez n'importe quel email/mot de passe</p>
+        <p>
+          <span>Pas encore de compte ?</span>
+          <a routerLink="/login/signup">Créer un compte</a>
+        </p>
       </div>
     </div>
   </div>

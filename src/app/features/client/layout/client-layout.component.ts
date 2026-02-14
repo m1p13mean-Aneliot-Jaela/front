@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
+import { Observable } from 'rxjs';
+
+import { AuthService, User } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-client-layout',
@@ -11,7 +13,7 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrls: ['./client-layout.component.css']
 })
 export class ClientLayoutComponent {
-  get user$() { return this.authService.currentUser; }
+  user$: Observable<User | null>;
   mobileMenuOpen = false;
   cartCount = 3;
 
@@ -23,7 +25,9 @@ export class ClientLayoutComponent {
     { icon: '📋', label: 'Commandes', route: '/app/orders' }
   ];
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    this.user$ = this.authService.currentUser;
+  }
 
   logout(): void {
     this.authService.logout();

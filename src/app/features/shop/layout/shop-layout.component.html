@@ -12,15 +12,39 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a 
-        *ngFor="let item of menuItems" 
-        [routerLink]="item.route"
-        class="nav-item"
-        [class.active]="item.active"
-      >
-        <span class="icon">{{ item.icon }}</span>
-        <span class="label">{{ item.label }}</span>
-      </a>
+      <div *ngFor="let item of menuItems" class="menu-item">
+        <!-- Menu with children (expandable) -->
+        <div *ngIf="item.children; else simpleLink" class="expandable">
+          <div class="nav-item" (click)="toggleMenu(item)">
+            <span class="icon">{{ item.icon }}</span>
+            <span class="label">{{ item.label }}</span>
+            <span class="arrow" [class.expanded]="item.expanded">▼</span>
+          </div>
+          <!-- Submenu -->
+          <div class="submenu" [class.expanded]="item.expanded">
+            <a 
+              *ngFor="let child of item.children" 
+              [routerLink]="child.route"
+              class="submenu-item"
+              routerLinkActive="active"
+            >
+              {{ child.label }}
+            </a>
+          </div>
+        </div>
+        
+        <!-- Simple menu item (no children) -->
+        <ng-template #simpleLink>
+          <a 
+            [routerLink]="item.route"
+            class="nav-item"
+            routerLinkActive="active"
+          >
+            <span class="icon">{{ item.icon }}</span>
+            <span class="label">{{ item.label }}</span>
+          </a>
+        </ng-template>
+      </div>
     </nav>
 
     <div class="sidebar-footer">
@@ -38,8 +62,8 @@
       <h1>Tableau de bord Boutique</h1>
       <div class="user-info" *ngIf="user$ | async as user">
         <span class="badge shop">Shop</span>
-        <span class="name">{{ user.name }}</span>
-        <div class="avatar">{{ user.name.charAt(0) }}</div>
+        <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
+        <div class="avatar">{{ user.first_name?.charAt(0) || '?' }}</div>
       </div>
     </header>
 

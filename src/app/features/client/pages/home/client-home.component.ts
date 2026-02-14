@@ -2,29 +2,23 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-client-dashboard',
+  selector: 'app-client-home',
   standalone: true,
   imports: [CommonModule],
   template: `
-  <!-- Features / Quick Actions -->
-  <section class="features">
-    <div class="feature-card">
-      <span class="icon">🏪</span>
-      <span>Boutiques</span>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>SHOPPING</h1>
+      <h2>Online Shop</h2>
+      <p>Découvrez nos meilleures boutiques et offres exclusives. Profitez de promotions exceptionnelles sur vos produits préférés !</p>
+      <button class="btn-primary">Parcourir les boutiques</button>
     </div>
-    <div class="feature-card">
-      <span class="icon">📋</span>
-      <span>Mes commandes</span>
-    </div>
-    <div class="feature-card">
-      <span class="icon">❤️</span>
-      <span>Favoris</span>
-    </div>
-    <div class="feature-card">
-      <span class="icon">🎟️</span>
-      <span>Promotions</span>
+    <div class="hero-image">
+      <img src="assets/images/acceuil.jpg" alt="Shopping" />
     </div>
   </section>
+
   `,
   styles: [`
 
@@ -107,4 +101,4 @@ import { CommonModule } from '@angular/common';
 }
   `]
 })
-export class ClientDashboardComponent {}
+export class ClientHomeComponent {}
