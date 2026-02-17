@@ -15,6 +15,8 @@ export interface User {
   user_type: UserType;
   phone?: string;
   profile_photo?: string;
+  shop_id?: string;  // ← AJOUTÉ pour les employés de shop
+  role?: 'MANAGER_SHOP' | 'STAFF';  // ← AJOUTÉ pour les permissions
 }
 
 @Injectable({
