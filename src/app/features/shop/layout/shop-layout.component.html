@@ -12,7 +12,7 @@
     </div>
 
     <nav class="sidebar-nav">
-      <div *ngFor="let item of menuItems" class="menu-item">
+      <div *ngFor="let item of menuItems$ | async" class="menu-item">
         <!-- Menu with children (expandable) -->
         <div *ngIf="item.children; else simpleLink" class="expandable">
           <div class="nav-item" (click)="toggleMenu(item)">
