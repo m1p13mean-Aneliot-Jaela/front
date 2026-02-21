@@ -79,7 +79,8 @@ export class ShopLayoutComponent {
         { label: '📋 Liste', route: '/shop/employees/list' },
         { label: '➕ Ajouter', route: '/shop/employees/add' }
       ]
-    }
+    },
+    { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
   ];
 
   // Limited menu for STAFF (Dashboard, Produits, Commandes, Clients, Livraisons)
@@ -126,7 +127,8 @@ export class ShopLayoutComponent {
         { label: '📋 Liste', route: '/shop/clients/list' },
         { label: '➕ Ajouter', route: '/shop/clients/add' }
       ]
-    }
+    },
+    { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
   ];
 
   // Observable for filtered menu items
