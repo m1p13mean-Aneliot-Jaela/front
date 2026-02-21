@@ -8,8 +8,6 @@ import { UserListComponent } from './pages/users/user-list/user-list.component';
 import { UserAddComponent } from './pages/users/user-add/user-add.component';
 import { ShopListComponent } from './pages/shops/shop-list/shop-list.component';
 import { ShopAddComponent } from './pages/shops/shop-add/shop-add.component';
-import { ProductListComponent } from './pages/products/product-list/product-list.component';
-import { ProductAddComponent } from './pages/products/product-add/product-add.component';
 
 const routes: Routes = [
   {
@@ -21,8 +19,18 @@ const routes: Routes = [
       { path: 'users/add', component: UserAddComponent },
       { path: 'shops/list', component: ShopListComponent },
       { path: 'shops/add', component: ShopAddComponent },
-      { path: 'products/list', component: ProductListComponent },
-      { path: 'products/add', component: ProductAddComponent },
+      { 
+        path: 'products/list', 
+        loadComponent: () => import('./pages/products/product-list/product-list.component').then(m => m.ProductListComponent)
+      },
+      { 
+        path: 'products/add', 
+        loadComponent: () => import('./pages/products/product-add/product-add.component').then(m => m.ProductAddComponent)
+      },
+      { 
+        path: 'products/edit/:id', 
+        loadComponent: () => import('./pages/products/product-add/product-add.component').then(m => m.ProductAddComponent)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
@@ -32,14 +40,6 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
-    AdminLayoutComponent,
-    AdminDashboardComponent,
-    UserListComponent,
-    UserAddComponent,
-    ShopListComponent,
-    ShopAddComponent,
-    ProductListComponent,
-    ProductAddComponent,
     RouterModule.forChild(routes)
   ]
 })

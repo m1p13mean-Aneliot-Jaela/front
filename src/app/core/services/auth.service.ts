@@ -45,9 +45,13 @@ export class AuthService {
     return this.api.post<any>('/auth/signup', payload, { withCredentials: true }).pipe(
       tap((res) => {
         const user: User | null = res?.data?.user || null;
+        const accessToken: string | null = res?.data?.accessToken || null;
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSubject.next(user);
+        }
+        if (accessToken) {
+          localStorage.setItem('accessToken', accessToken);
         }
       })
     );
@@ -57,9 +61,13 @@ export class AuthService {
     return this.api.post<any>('/auth/login', credentials, { withCredentials: true }).pipe(
       tap((res) => {
         const user: User | null = res?.data?.user || null;
+        const accessToken: string | null = res?.data?.accessToken || null;
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSubject.next(user);
+        }
+        if (accessToken) {
+          localStorage.setItem('accessToken', accessToken);
         }
       })
     );
@@ -70,12 +78,14 @@ export class AuthService {
     this.api.post('/auth/logout', {}, { withCredentials: true }).subscribe({
       next: () => {
         localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
         this.currentUserSubject.next(null);
         this.router.navigate(['/login']);
       },
       error: () => {
         // Even if API fails, clear local state
         localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
         this.currentUserSubject.next(null);
         this.router.navigate(['/login']);
       }

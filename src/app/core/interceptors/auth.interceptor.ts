@@ -10,10 +10,10 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // With HttpOnly cookies, the browser automatically sends cookies.
-    // We just need to ensure withCredentials is true for cross-origin requests.
+    const token = localStorage.getItem('accessToken');
     const authReq = req.clone({
-      withCredentials: true
+      withCredentials: true,
+      setHeaders: token ? { Authorization: `Bearer ${token}` } : {}
     });
 
     return next.handle(authReq);
