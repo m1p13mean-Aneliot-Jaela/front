@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { CreateDeliveryModalComponent } from '../../../components/create-delivery-modal/create-delivery-modal.component';
 
 interface OrderItem {
   productId: string;
@@ -27,7 +28,7 @@ interface Order {
 @Component({
   selector: 'app-shop-order-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, CreateDeliveryModalComponent],
   template: `
     <div class="page-container">
       <div class="header">
@@ -110,11 +111,21 @@ interface Order {
         <!-- Actions -->
         <div class="form-actions">
           <button type="button" class="btn-secondary" (click)="goBack()">Annuler</button>
-          <button type="submit" class="btn-primary">
-            {{ isEdit ? 'Enregistrer les modifications' : 'Créer la commande' }}
+          <button type="submit" class="btn-primary">{{ isEdit ? 'Mettre à jour' : 'Créer' }}</button>
+          <button *ngIf="isEdit" type="button" class="btn-delivery" (click)="openDeliveryModal()">
+            🚚 Créer livraison
           </button>
         </div>
       </form>
+
+      <!-- Modal création livraison -->
+      <app-create-delivery-modal 
+        *ngIf="showDeliveryModal"
+        [shopId]="shopId"
+        [order]="orderForDelivery"
+        (created)="onDeliveryCreated()"
+        (closed)="showDeliveryModal = false">
+      </app-create-delivery-modal>
     </div>
   `,
   styles: [`
@@ -247,12 +258,21 @@ interface Order {
       border-radius: 8px;
       cursor: pointer;
     }
+    .btn-delivery {
+      padding: 0.75rem 1.5rem;
+      background: #34c759;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   `]
 })
 export class ShopOrderFormComponent implements OnInit {
   isEdit = false;
   orderId: string | null = null;
-  private shopId: string | null = null;
+  shopId: string = '';
+  showDeliveryModal = false;
 
   clients = [
     { id: '1', name: 'John Doe' },
@@ -279,6 +299,20 @@ export class ShopOrderFormComponent implements OnInit {
     notes: ''
   };
 
+  get orderForDelivery(): any {
+    return {
+      _id: this.order.id,
+      customer_name: this.order.customerName,
+      customer_phone: '', // TODO: ajouter téléphone client
+      shipping_address: {
+        address_line1: '',
+        city: '',
+        postal_code: ''
+      },
+      total_amount: this.order.total
+    };
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -286,11 +320,6 @@ export class ShopOrderFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const user = this.authService.currentUserValue;
-    if (user?.shop_id) {
-      this.shopId = user.shop_id;
-    }
-
     this.orderId = this.route.snapshot.paramMap.get('id');
     this.isEdit = !!this.orderId;
 
@@ -300,6 +329,12 @@ export class ShopOrderFormComponent implements OnInit {
     } else {
       // Load order data for edit
       this.loadOrderData();
+    }
+    
+    // Récupérer shopId
+    const user = this.authService.currentUserValue;
+    if (user?.shop_id) {
+      this.shopId = user.shop_id;
     }
   }
 
@@ -358,5 +393,14 @@ export class ShopOrderFormComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/shop/orders/list']);
+  }
+
+  openDeliveryModal(): void {
+    this.showDeliveryModal = true;
+  }
+
+  onDeliveryCreated(): void {
+    // Optionnel: mettre à jour le statut de la commande ou afficher message
+    alert('Livraison créée avec succès!');
   }
 }
