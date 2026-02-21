@@ -60,6 +60,15 @@ export class ShopLayoutComponent {
         { label: '📋 Liste', route: '/shop/orders/list' }
       ]
     },
+    {
+      icon: '🚚',
+      label: 'Livraisons',
+      expanded: false,
+      children: [
+        { label: '📋 Suivi', route: '/shop/deliveries/list' },
+        { label: '🗺️ Zones', route: '/shop/deliveries/zones' }
+      ]
+    },
     { icon: '💰', label: 'Ventes', route: '/shop/sales' },
     { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
     { 

@@ -17,6 +17,8 @@ import { ShopDeliveriesListComponent } from './pages/deliveries/delivery-list/sh
 import { ShopStockListComponent } from './pages/stock/stock-list/shop-stock-list.component';
 import { PromotionListComponent } from './pages/promotions/promotion-list/promotion-list.component';
 import { PromotionFormComponent } from './pages/promotions/promotion-form/promotion-form.component';
+import { DeliveryListComponent } from './pages/delivery/list/delivery-list.component';
+import { DeliveryZonesComponent } from './pages/delivery/zones/delivery-zones.component';
 
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { PermissionGuard, EmployeeRoleGuard } from '../../core/guards/permission.guard';
@@ -48,6 +50,8 @@ const routes: Routes = [
       
       // Deliveries
       { path: 'deliveries/list', component: ShopDeliveriesListComponent },
+      { path: 'deliveries/list2', component: DeliveryListComponent },
+      { path: 'deliveries/zones', component: DeliveryZonesComponent },
       
       // Stock Management
       { path: 'stock/list', component: ShopStockListComponent },
@@ -98,6 +102,8 @@ const routes: Routes = [
     ShopStockListComponent,
     PromotionListComponent,
     PromotionFormComponent,
+    DeliveryListComponent,
+    DeliveryZonesComponent,
     RouterModule.forChild(routes)
   ]
 })
