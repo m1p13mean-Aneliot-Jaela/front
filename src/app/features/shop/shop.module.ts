@@ -19,6 +19,7 @@ import { PromotionListComponent } from './pages/promotions/promotion-list/promot
 import { PromotionFormComponent } from './pages/promotions/promotion-form/promotion-form.component';
 import { DeliveryListComponent } from './pages/delivery/list/delivery-list.component';
 import { DeliveryZonesComponent } from './pages/delivery/zones/delivery-zones.component';
+import { ShopProfileComponent } from './pages/profile/shop-profile.component';
 
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { PermissionGuard, EmployeeRoleGuard } from '../../core/guards/permission.guard';
@@ -78,6 +79,9 @@ const routes: Routes = [
         data: { permission: 'employees.edit' }
       },
       
+      // Profile
+      { path: 'profile', component: ShopProfileComponent },
+      
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
@@ -104,6 +108,7 @@ const routes: Routes = [
     PromotionFormComponent,
     DeliveryListComponent,
     DeliveryZonesComponent,
+    ShopProfileComponent,
     RouterModule.forChild(routes)
   ]
 })
