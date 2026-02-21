@@ -7,7 +7,9 @@ import { ShopDashboardComponent } from './pages/dashboard/shop-dashboard.compone
 import { ShopProductListComponent } from './pages/products/product-list/shop-product-list.component';
 import { ShopProductAddComponent } from './pages/products/product-add/shop-product-add.component';
 import { ShopOrderListComponent } from './pages/orders/order-list/shop-order-list.component';
+import { ShopOrdersListComponent } from './pages/orders/orders-list/shop-orders-list.component';
 import { ShopOrderFormComponent } from './pages/orders/order-add-edit/shop-order-form.component';
+import { ShopOrderDetailComponent } from './pages/orders/order-detail/shop-order-detail.component';
 import { ShopSalesComponent } from './pages/sales/shop-sales.component';
 import { ShopEmployeesListComponent } from './pages/employees/employees-list/shop-employees-list.component';
 import { ShopEmployeeFormComponent } from './pages/employees/employee-form/shop-employee-form.component';
@@ -38,9 +40,11 @@ const routes: Routes = [
       { path: 'products/edit/:id', component: ShopProductAddComponent },
       
       // Orders with CRUD
-      { path: 'orders/list', component: ShopOrderListComponent },
+      { path: 'orders', redirectTo: 'orders/list', pathMatch: 'full' },
+      { path: 'orders/list', component: ShopOrdersListComponent },
       { path: 'orders/add', component: ShopOrderFormComponent },
       { path: 'orders/edit/:id', component: ShopOrderFormComponent },
+      { path: 'orders/:id', component: ShopOrderDetailComponent },
       
       { path: 'sales', component: ShopSalesComponent },
       
@@ -96,7 +100,9 @@ const routes: Routes = [
     ShopProductListComponent,
     ShopProductAddComponent,
     ShopOrderListComponent,
+    ShopOrdersListComponent,
     ShopOrderFormComponent,
+    ShopOrderDetailComponent,
     ShopSalesComponent,
     ShopEmployeesListComponent,
     ShopEmployeeFormComponent,
