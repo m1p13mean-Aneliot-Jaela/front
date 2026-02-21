@@ -45,6 +45,14 @@ export class ShopLayoutComponent {
       ]
     },
     { 
+      icon: '🏭', 
+      label: 'Stock', 
+      expanded: false,
+      children: [
+        { label: '📋 Gestion stock', route: '/shop/stock/list' }
+      ]
+    },
+    { 
       icon: '🛒', 
       label: 'Commandes', 
       expanded: false,
@@ -53,6 +61,7 @@ export class ShopLayoutComponent {
       ]
     },
     { icon: '💰', label: 'Ventes', route: '/shop/sales' },
+    { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
     { 
       icon: '👥', 
       label: 'Employés', 
@@ -77,6 +86,14 @@ export class ShopLayoutComponent {
       ]
     },
     { 
+      icon: '🏭', 
+      label: 'Stock', 
+      expanded: false,
+      children: [
+        { label: '📋 Gestion stock', route: '/shop/stock/list' }
+      ]
+    },
+    { 
       icon: '🛒', 
       label: 'Commandes', 
       expanded: false,
@@ -90,6 +107,8 @@ export class ShopLayoutComponent {
       label: 'Livraisons', 
       route: '/shop/deliveries/list'
     },
+    { icon: '💰', label: 'Ventes', route: '/shop/sales' },
+    { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
     { 
       icon: '👤', 
       label: 'Clients', 

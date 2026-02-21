@@ -74,7 +74,7 @@ interface Client {
             <tr *ngFor="let client of filteredClients">
               <td>
                 <div class="client-name">
-                  <span class="avatar">{{ client.firstName?.charAt(0) || '?' }}</span>
+                  <span class="avatar">{{ client.firstName.charAt(0) || '?' }}</span>
                   <span>{{ client.firstName }} {{ client.lastName }}</span>
                 </div>
               </td>

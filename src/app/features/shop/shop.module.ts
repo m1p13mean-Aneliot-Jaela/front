@@ -14,6 +14,9 @@ import { ShopEmployeeFormComponent } from './pages/employees/employee-form/shop-
 import { ShopClientsListComponent } from './pages/clients/client-list/shop-clients-list.component';
 import { ShopClientFormComponent } from './pages/clients/client-add-edit/shop-client-form.component';
 import { ShopDeliveriesListComponent } from './pages/deliveries/delivery-list/shop-deliveries-list.component';
+import { ShopStockListComponent } from './pages/stock/stock-list/shop-stock-list.component';
+import { PromotionListComponent } from './pages/promotions/promotion-list/promotion-list.component';
+import { PromotionFormComponent } from './pages/promotions/promotion-form/promotion-form.component';
 
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { PermissionGuard, EmployeeRoleGuard } from '../../core/guards/permission.guard';
@@ -29,6 +32,7 @@ const routes: Routes = [
       // Products
       { path: 'products/list', component: ShopProductListComponent },
       { path: 'products/add', component: ShopProductAddComponent },
+      { path: 'products/edit/:id', component: ShopProductAddComponent },
       
       // Orders with CRUD
       { path: 'orders/list', component: ShopOrderListComponent },
@@ -44,6 +48,14 @@ const routes: Routes = [
       
       // Deliveries
       { path: 'deliveries/list', component: ShopDeliveriesListComponent },
+      
+      // Stock Management
+      { path: 'stock/list', component: ShopStockListComponent },
+      
+      // Promotions
+      { path: 'promotions', component: PromotionListComponent },
+      { path: 'promotions/add', component: PromotionFormComponent },
+      { path: 'promotions/edit/:id', component: PromotionFormComponent },
       
       // Employee routes with permission guards
       { 
@@ -83,6 +95,9 @@ const routes: Routes = [
     ShopClientsListComponent,
     ShopClientFormComponent,
     ShopDeliveriesListComponent,
+    ShopStockListComponent,
+    PromotionListComponent,
+    PromotionFormComponent,
     RouterModule.forChild(routes)
   ]
 })
