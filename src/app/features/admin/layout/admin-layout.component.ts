@@ -42,7 +42,8 @@ export class AdminLayoutComponent {
       expanded: false,
       children: [
         { label: '📋 Liste', route: '/admin/shops/list' },
-        { label: '➕ Ajouter', route: '/admin/shops/add' }
+        { label: '➕ Ajouter', route: '/admin/shops/add' },
+        { label: '🏷️ Catégories', route: '/admin/shop-categories' }
       ]
     },
     { 
