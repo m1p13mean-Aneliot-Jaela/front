@@ -18,7 +18,24 @@ const routes: Routes = [
       { path: 'users/list', component: UserListComponent },
       { path: 'users/add', component: UserAddComponent },
       { path: 'shops/list', component: ShopListComponent },
+      { path: 'shops', component: ShopListComponent },
       { path: 'shops/add', component: ShopAddComponent },
+      { 
+        path: 'shops/:id/edit', 
+        loadComponent: () => import('./pages/shops/shop-edit/shop-edit.component').then(m => m.ShopEditComponent)
+      },
+      { 
+        path: 'shop-categories', 
+        loadComponent: () => import('./pages/shop-categories/shop-category-list/shop-category-list.component').then(m => m.ShopCategoryListComponent)
+      },
+      { 
+        path: 'shop-categories/add', 
+        loadComponent: () => import('./pages/shop-categories/shop-category-form/shop-category-form.component').then(m => m.ShopCategoryFormComponent)
+      },
+      { 
+        path: 'shop-categories/:id/edit', 
+        loadComponent: () => import('./pages/shop-categories/shop-category-form/shop-category-form.component').then(m => m.ShopCategoryFormComponent)
+      },
       { 
         path: 'products/list', 
         loadComponent: () => import('./pages/products/product-list/product-list.component').then(m => m.ProductListComponent)
