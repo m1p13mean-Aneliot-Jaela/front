@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ShopService } from '../../../services/shop.service';
 import { ShopCategoryService } from '../../../services/shop-category.service';
+import { ShopBoxService } from '../../../services/shop-box.service';
 import { Shop, ShopCategory } from '../../../../../shared/models/shop.model';
+import { ShopBox } from '../../../../../shared/models/shop-box.model';
 
 @Component({
   selector: 'app-shop-add',
@@ -44,6 +46,68 @@ import { Shop, ShopCategory } from '../../../../../shared/models/shop.model';
             </div>
           </div>
 
+          <!-- Shop Box -->
+          <div class="form-section">
+            <h3>Box de Boutique</h3>
+            
+            <div class="box-search-container">
+              <div class="form-group">
+                <label>Rechercher et assigner une box</label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="boxSearchQuery" 
+                  name="boxSearch"
+                  placeholder="Rechercher une box disponible..."
+                  (input)="filterBoxes()"
+                  (focus)="onBoxSearchFocus()"
+                  (blur)="onBoxSearchBlur()"
+                />
+              </div>
+
+              <!-- Search Results -->
+              <div *ngIf="showBoxDropdown && filteredBoxes.length > 0" class="search-results">
+                <div 
+                  *ngFor="let box of filteredBoxes" 
+                  class="search-result-item"
+                  (mousedown)="selectBox(box)"
+                >
+                  <span>{{ box.ref }}</span>
+                  <span class="box-status" [class.free]="box.current_status.status === 'free'">
+                    {{ box.current_status.status === 'free' ? 'Libre' : box.current_status.status }}
+                  </span>
+                  <span class="add-hint">Cliquer pour assigner</span>
+                </div>
+              </div>
+
+              <!-- No Results Message -->
+              <div *ngIf="showBoxDropdown && boxSearchQuery && filteredBoxes.length === 0 && shopBoxes.length > 0" class="no-results">
+                <p>Aucune box disponible trouvée</p>
+              </div>
+              
+              <!-- No Boxes Available Message -->
+              <div *ngIf="shopBoxes.length === 0" class="info-message">
+                <p>ℹ️ Aucune box libre disponible pour le moment</p>
+              </div>
+            </div>
+
+            <!-- Selected Box Display -->
+            <div *ngIf="selectedShopBox" class="selected-box-display">
+              <h4>Box assignée</h4>
+              <div class="selected-box-item">
+                <span class="box-ref">{{ selectedShopBox.ref }}</span>
+                <span class="box-status-badge free">{{ selectedShopBox.current_status.status === 'free' ? 'Libre' : selectedShopBox.current_status.status }}</span>
+                <button 
+                  type="button" 
+                  class="btn-remove" 
+                  (click)="clearBox()"
+                  title="Retirer cette box"
+                >
+                  <span>×</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Categories -->
           <div class="form-section">
             <h3>Catégories *</h3>
@@ -58,6 +122,7 @@ import { Shop, ShopCategory } from '../../../../../shared/models/shop.model';
                   placeholder="Rechercher une catégorie..."
                   (input)="filterCategories()"
                   (focus)="onSearchFocus()"
+                  (blur)="onCategorySearchBlur()"
                 />
               </div>
 
@@ -66,7 +131,7 @@ import { Shop, ShopCategory } from '../../../../../shared/models/shop.model';
                 <div 
                   *ngFor="let category of filteredCategories" 
                   class="search-result-item"
-                  (click)="selectCategory(category)"
+                  (mousedown)="selectCategory(category)"
                 >
                   <span>{{ category.name }}</span>
                   <span class="add-hint">Cliquer pour ajouter</span>
@@ -209,6 +274,9 @@ import { Shop, ShopCategory } from '../../../../../shared/models/shop.model';
       max-height: 200px;
       overflow-y: auto;
       background: white;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .search-result-item {
       padding: 0.75rem 1rem;
@@ -241,6 +309,18 @@ import { Shop, ShopCategory } from '../../../../../shared/models/shop.model';
       font-size: 0.875rem;
     }
     .no-results p {
+      margin: 0;
+    }
+    .info-message {
+      padding: 1rem;
+      text-align: center;
+      color: #0284c7;
+      font-size: 0.875rem;
+      background: #f0f9ff;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+    .info-message p {
       margin: 0;
     }
     .selected-categories-list {
@@ -309,6 +389,77 @@ import { Shop, ShopCategory } from '../../../../../shared/models/shop.model';
       background: #dc2626;
     }
     .btn-remove-list span {
+      display: block;
+      margin-top: -2px;
+    }
+    .box-search-container {
+      position: relative;
+    }
+    .selected-box-display {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f0f9ff;
+      border-radius: 8px;
+      border: 2px solid #bae6fd;
+    }
+    .selected-box-display h4 {
+      margin: 0 0 1rem 0;
+      color: #334155;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .selected-box-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      background: white;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      gap: 0.75rem;
+    }
+    .box-ref {
+      flex: 1;
+      color: #1e293b;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .box-status {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-left: 0.5rem;
+    }
+    .box-status.free {
+      color: #10b981;
+      font-weight: 600;
+    }
+    .box-status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #10b981;
+      color: white;
+    }
+    .btn-remove {
+      background: #ef4444;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      padding: 0;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+    .btn-remove:hover {
+      background: #dc2626;
+    }
+    .btn-remove span {
       display: block;
       margin-top: -2px;
     }
@@ -387,23 +538,30 @@ export class ShopAddComponent implements OnInit {
   filteredCategories: ShopCategory[] = [];
   showDropdown: boolean = false;
   
+  shopBoxes: ShopBox[] = [];
+  selectedShopBox: ShopBox | null = null;
+  boxSearchQuery: string = '';
+  filteredBoxes: ShopBox[] = [];
+  showBoxDropdown: boolean = false;
+  
   submitting = false;
   errorMessage = '';
 
   constructor(
     private shopService: ShopService,
     private shopCategoryService: ShopCategoryService,
+    private shopBoxService: ShopBoxService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadCategories();
+    this.loadShopBoxes();
   }
 
   loadCategories(): void {
     this.shopCategoryService.getAllCategories().subscribe({
       next: (response) => {
-        console.log('Raw response from backend:', response);
         if (response.success && response.data) {
           // Backend returns { categories: [], pagination: {} }
           const data = response.data as any;
@@ -413,65 +571,62 @@ export class ShopAddComponent implements OnInit {
             // Fallback for direct array response
             this.categories = response.data;
           }
-          console.log('Loaded categories:', this.categories);
-          if (this.categories.length > 0) {
-            console.log('First category structure:', this.categories[0]);
-            console.log('First category _id:', this.categories[0]._id);
-          }
         }
       },
       error: (err) => {
-        console.error('Error loading categories:', err);
+        // Error loading categories
       }
     });
   }
 
   onSearchFocus(): void {
-    if (this.categorySearchQuery.trim()) {
-      this.filterCategories();
-      this.showDropdown = true;
-    }
+    // Show all available categories when focusing on the input
+    this.filterCategories();
   }
 
   filterCategories(): void {
-    if (!this.categorySearchQuery.trim()) {
-      this.filteredCategories = [];
-      this.showDropdown = false;
-      return;
+    const query = this.categorySearchQuery.toLowerCase().trim();
+    
+    if (!query) {
+      // Show all available categories when no search query
+      this.filteredCategories = this.categories.filter(category => {
+        const categoryId = category._id || (category as any).id;
+        return !this.selectedCategories.includes(categoryId!);
+      });
+    } else {
+      // Filter by search query
+      this.filteredCategories = this.categories.filter(category => {
+        const categoryId = category._id || (category as any).id;
+        return category.name.toLowerCase().includes(query) && 
+               !this.selectedCategories.includes(categoryId!);
+      });
     }
+    
+    this.showDropdown = this.filteredCategories.length > 0;
+  }
 
-    const query = this.categorySearchQuery.toLowerCase();
-    this.filteredCategories = this.categories.filter(category => {
-      const categoryId = category._id || (category as any).id;
-      return category.name.toLowerCase().includes(query) && 
-             !this.selectedCategories.includes(categoryId!);
-    });
-    this.showDropdown = true;
+  onCategorySearchBlur(): void {
+    // Delay closing to allow click on dropdown items
+    setTimeout(() => {
+      this.showDropdown = false;
+    }, 200);
   }
 
   selectCategory(category: ShopCategory): void {
-    console.log('Category clicked:', category);
-    console.log('Category _id field:', category._id);
-    console.log('Category full object keys:', Object.keys(category));
-    
     // Try both _id and id fields
     const categoryId = category._id || (category as any).id;
     
     if (!categoryId) {
-      console.error('Category missing ID. Full object:', JSON.stringify(category, null, 2));
       alert('Erreur: Cette catégorie n\'a pas d\'identifiant. Vérifiez les données du backend.');
       return;
     }
     
     if (this.selectedCategories.includes(categoryId)) {
-      console.log('Category already added');
       return;
     }
     
     // Add the category directly
     this.selectedCategories.push(categoryId);
-    console.log('Category added:', category.name, 'with ID:', categoryId);
-    console.log('Total selected categories:', this.selectedCategories);
     
     // Reset the search
     this.categorySearchQuery = '';
@@ -480,20 +635,11 @@ export class ShopAddComponent implements OnInit {
   }
 
   removeCategory(categoryId: string): void {
-    console.log('Attempting to remove category ID:', categoryId);
-    console.log('Current selected categories:', this.selectedCategories);
-    
     if (!categoryId) {
-      console.error('Category ID is undefined or empty');
       return;
     }
     
-    const beforeLength = this.selectedCategories.length;
     this.selectedCategories = this.selectedCategories.filter(id => id !== categoryId);
-    const afterLength = this.selectedCategories.length;
-    
-    console.log('Categories removed:', beforeLength - afterLength);
-    console.log('Remaining selected categories:', this.selectedCategories);
   }
 
   getSelectedCategoryObjects(): ShopCategory[] {
@@ -505,8 +651,72 @@ export class ShopAddComponent implements OnInit {
 
   getCategoryId(category: ShopCategory): string {
     const id = category._id || (category as any).id;
-    console.log('Getting category ID for:', category.name, '=> ID:', id);
     return id || '';
+  }
+
+  loadShopBoxes(): void {
+    this.shopBoxService.getAllShopBoxes().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const data = response.data as any;
+          if (data.shopBoxes && Array.isArray(data.shopBoxes)) {
+            // Only load free boxes for new shop creation
+            this.shopBoxes = data.shopBoxes.filter((box: ShopBox) => box.current_status.status === 'free');
+          } else if (Array.isArray(response.data)) {
+            // Fallback for direct array response
+            this.shopBoxes = (response.data as ShopBox[]).filter((box: ShopBox) => box.current_status.status === 'free');
+          }
+        }
+      },
+      error: (err) => {
+        // Error loading shop boxes
+      }
+    });
+  }
+
+  onBoxSearchFocus(): void {
+    // Show all available boxes when focusing on the input
+    this.filterBoxes();
+  }
+
+  filterBoxes(): void {
+    const query = this.boxSearchQuery.toLowerCase().trim();
+    
+    if (!query) {
+      // Show all available boxes when no search query
+      this.filteredBoxes = this.shopBoxes.filter(box => 
+        !this.selectedShopBox || box._id !== this.selectedShopBox._id
+      );
+    } else {
+      // Filter by search query
+      this.filteredBoxes = this.shopBoxes.filter(box => 
+        box.ref.toLowerCase().includes(query) && 
+        (!this.selectedShopBox || box._id !== this.selectedShopBox._id)
+      );
+    }
+    
+    this.showBoxDropdown = this.filteredBoxes.length > 0;
+  }
+
+  selectBox(box: ShopBox): void {
+    this.selectedShopBox = box;
+    this.boxSearchQuery = '';
+    this.filteredBoxes = [];
+    this.showBoxDropdown = false;
+  }
+
+  onBoxSearchBlur(): void {
+    // Delay closing to allow click on dropdown items
+    setTimeout(() => {
+      this.showBoxDropdown = false;
+    }, 200);
+  }
+
+  clearBox(): void {
+    this.selectedShopBox = null;
+    this.boxSearchQuery = '';
+    this.filteredBoxes = [];
+    this.showBoxDropdown = false;
   }
 
   onSubmit(): void {
@@ -524,7 +734,6 @@ export class ShopAddComponent implements OnInit {
     const invalidCategories = this.selectedCategories.filter(id => !id || id.trim() === '');
     if (invalidCategories.length > 0) {
       this.errorMessage = 'Certaines catégories ont des identifiants invalides';
-      console.error('Invalid category IDs found:', invalidCategories);
       return;
     }
 
@@ -541,27 +750,37 @@ export class ShopAddComponent implements OnInit {
       }
     };
 
-    console.log('=== SHOP CREATION DEBUG ===');
-    console.log('Shop data to send:', JSON.stringify(shopData, null, 2));
-    console.log('Category IDs:', this.selectedCategories);
-    console.log('Category objects:', this.getSelectedCategoryObjects());
-    console.log('===========================');
-
     this.shopService.createShop(shopData).subscribe({
       next: (response) => {
-        console.log('Shop creation response:', response);
         if (response.success) {
-          alert('Boutique créée avec succès');
-          this.router.navigate(['/admin/shops']);
+          // If a shop box is selected, assign it to the newly created shop
+          const createdShop = Array.isArray(response.data) ? response.data[0] : response.data;
+          if (this.selectedShopBox && this.selectedShopBox._id && createdShop && (createdShop as any)._id) {
+            const shopId = (createdShop as any)._id;
+            const shopName = (createdShop as any).shop_name || this.shop.shop_name;
+            
+            this.shopBoxService.assignShop(this.selectedShopBox._id, {
+              shop_id: shopId,
+              shop_name: shopName
+            }).subscribe({
+              next: (boxResponse) => {
+                alert('Boutique créée et box assignée avec succès');
+                this.router.navigate(['/admin/shops']);
+              },
+              error: (boxErr) => {
+                // Shop was created but box assignment failed
+                alert('Boutique créée mais erreur lors de l\'assignation de la box');
+                this.router.navigate(['/admin/shops']);
+              }
+            });
+          } else {
+            alert('Boutique créée avec succès');
+            this.router.navigate(['/admin/shops']);
+          }
         }
         this.submitting = false;
       },
       error: (err) => {
-        console.error('=== ERROR CREATING SHOP ===');
-        console.error('Full error object:', err);
-        console.error('Error response:', err.error);
-        console.error('===========================');
-        
         // Parse validation errors if present
         if (err.error?.errors && Array.isArray(err.error.errors)) {
           const errorMessages = err.error.errors.map((e: any) => 
