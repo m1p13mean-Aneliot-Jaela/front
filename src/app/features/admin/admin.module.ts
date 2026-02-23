@@ -15,8 +15,13 @@ const routes: Routes = [
     component: AdminLayoutComponent,
     children: [
       { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'users', component: UserListComponent },
       { path: 'users/list', component: UserListComponent },
       { path: 'users/add', component: UserAddComponent },
+      { 
+        path: 'users/edit/:id', 
+        loadComponent: () => import('./pages/users/user-edit/user-edit.component').then(m => m.UserEditComponent)
+      },
       { path: 'shops/list', component: ShopListComponent },
       { path: 'shops', component: ShopListComponent },
       { path: 'shops/add', component: ShopAddComponent },
