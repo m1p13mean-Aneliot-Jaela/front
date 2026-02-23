@@ -42,6 +42,18 @@ const routes: Routes = [
         loadComponent: () => import('./pages/shop-categories/shop-category-form/shop-category-form.component').then(m => m.ShopCategoryFormComponent)
       },
       { 
+        path: 'shop-boxes', 
+        loadComponent: () => import('./pages/shop-boxes/shop-box-list/shop-box-list.component').then(m => m.ShopBoxListComponent)
+      },
+      { 
+        path: 'shop-boxes/add', 
+        loadComponent: () => import('./pages/shop-boxes/shop-box-add/shop-box-add.component').then(m => m.ShopBoxAddComponent)
+      },
+      { 
+        path: 'shop-boxes/edit/:id', 
+        loadComponent: () => import('./pages/shop-boxes/shop-box-edit/shop-box-edit.component').then(m => m.ShopBoxEditComponent)
+      },
+      { 
         path: 'products/list', 
         loadComponent: () => import('./pages/products/product-list/product-list.component').then(m => m.ProductListComponent)
       },
