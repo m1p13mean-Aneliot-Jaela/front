@@ -65,6 +65,18 @@ const routes: Routes = [
         path: 'products/edit/:id', 
         loadComponent: () => import('./pages/products/product-add/product-add.component').then(m => m.ProductAddComponent)
       },
+      {
+        path: 'lease-contracts',
+        loadComponent: () => import('./pages/lease-contracts/lease-contract-list/lease-contract-list.component').then(m => m.LeaseContractListComponent)
+      },
+      {
+        path: 'lease-contracts/add',
+        loadComponent: () => import('./pages/lease-contracts/lease-contract-form/lease-contract-form.component').then(m => m.LeaseContractFormComponent)
+      },
+      {
+        path: 'lease-contracts/:id/edit',
+        loadComponent: () => import('./pages/lease-contracts/lease-contract-form/lease-contract-form.component').then(m => m.LeaseContractFormComponent)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
