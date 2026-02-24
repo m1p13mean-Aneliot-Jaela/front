@@ -246,7 +246,9 @@ export class ShopOrderDetailComponent implements OnInit {
   }
 
   canAdvance(status: string): boolean {
-    return ['PENDING', 'CONFIRMED', 'SHIPPED'].includes(status);
+    // Shop can only advance: PENDING, CONFIRMED, PAID, SHIPPED
+    // PAYMENT_REQUESTED must wait for client confirmation
+    return ['PENDING', 'CONFIRMED', 'PAID', 'SHIPPED'].includes(status);
   }
 
   advanceStatus(): void {
@@ -254,12 +256,33 @@ export class ShopOrderDetailComponent implements OnInit {
     
     const nextStatus: Record<string, string> = {
       'PENDING': 'CONFIRMED',
-      'CONFIRMED': 'SHIPPED',
+      'CONFIRMED': 'PAYMENT_REQUESTED',
+      // 'PAYMENT_REQUESTED' -> 'PAID' is done by CLIENT, not shop
+      'PAID': 'SHIPPED',
       'SHIPPED': 'DELIVERED'
     };
     
     const newStatus = nextStatus[this.order.status];
-    if (newStatus && confirm(`Avancer vers "${this.getStatusLabel(newStatus)}" ?`)) {
+    if (!newStatus) return;
+    
+    // CONFIRMED → PAYMENT_REQUESTED
+    if (this.order.status === 'CONFIRMED') {
+      if (confirm(`Demander le paiement au client pour ${this.order.total_amount.toLocaleString()} Ar ?`)) {
+        this.orderService.updateStatus(this.order._id, newStatus).subscribe({
+          next: (response) => {
+            this.order = response.data;
+            alert('Demande de paiement envoyée au client');
+          },
+          error: (err) => {
+            alert('Erreur: ' + (err?.error?.message || 'Erreur inconnue'));
+          }
+        });
+      }
+      return;
+    }
+    
+    // PAID → SHIPPED or others
+    if (confirm(`Avancer vers "${this.getStatusLabel(newStatus)}" ?`)) {
       this.orderService.updateStatus(this.order._id, newStatus).subscribe({
         next: (response) => {
           this.order = response.data;
@@ -289,7 +312,8 @@ export class ShopOrderDetailComponent implements OnInit {
   getNextStatusLabel(currentStatus: string): string {
     const labels: Record<string, string> = {
       'PENDING': '✓ Confirmer la commande',
-      'CONFIRMED': '📦 Marquer comme expédiée',
+      'CONFIRMED': '💰 Demander paiement',
+      'PAID': '📦 Marquer comme expédiée',
       'SHIPPED': '🎉 Marquer comme livrée'
     };
     return labels[currentStatus] || 'Avancer';

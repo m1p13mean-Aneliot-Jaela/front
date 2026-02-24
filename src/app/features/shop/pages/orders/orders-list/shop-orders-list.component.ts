@@ -292,18 +292,58 @@ export class ShopOrdersListComponent implements OnInit {
   }
 
   canAdvance(status: string): boolean {
-    return ['PENDING', 'CONFIRMED', 'SHIPPED'].includes(status);
+    // Shop can only advance: PENDING, CONFIRMED, PAID, SHIPPED
+    // PAYMENT_REQUESTED must wait for client confirmation
+    return ['PENDING', 'CONFIRMED', 'PAID', 'SHIPPED'].includes(status);
   }
 
   advanceStatus(order: Order): void {
     const nextStatus: Record<string, string> = {
       'PENDING': 'CONFIRMED',
-      'CONFIRMED': 'SHIPPED',
+      'CONFIRMED': 'PAYMENT_REQUESTED',
+      // 'PAYMENT_REQUESTED' -> 'PAID' is done by CLIENT, not shop
+      'PAID': 'SHIPPED',
       'SHIPPED': 'DELIVERED'
     };
     
     const newStatus = nextStatus[order.status];
-    if (newStatus && confirm(`Avancer la commande ${order.order_number} vers "${this.getStatusLabel(newStatus)}" ?`)) {
+    if (!newStatus) return;
+    
+    // CONFIRMED → PAYMENT_REQUESTED: Shop requests payment from client
+    if (order.status === 'CONFIRMED') {
+      if (confirm(`Demander le paiement au client pour la commande ${order.order_number} ?\n\nLe client recevra une notification pour confirmer le paiement de ${order.total_amount.toLocaleString()} Ar.`)) {
+        this.orderService.updateStatus(order._id, newStatus).subscribe({
+          next: () => {
+            this.loadOrders();
+            this.loadStatusCounts();
+            alert('Demande de paiement envoyée au client');
+          },
+          error: (err) => {
+            alert('Erreur: ' + (err?.error?.message || 'Erreur inconnue'));
+          }
+        });
+      }
+      return;
+    }
+    
+    // PAID → SHIPPED: Shop ships after client paid
+    if (order.status === 'PAID') {
+      if (confirm(`Marquer la commande ${order.order_number} comme expédiée ?`)) {
+        this.orderService.updateStatus(order._id, newStatus).subscribe({
+          next: () => {
+            this.loadOrders();
+            this.loadStatusCounts();
+          },
+          error: (err) => {
+            alert('Erreur: ' + (err?.error?.message || 'Erreur inconnue'));
+          }
+        });
+      }
+      return;
+    }
+    
+    // Default: PENDING → CONFIRMED, SHIPPED → DELIVERED
+    if (confirm(`Avancer la commande ${order.order_number} vers "${this.getStatusLabel(newStatus)}" ?`)) {
       this.orderService.updateStatus(order._id, newStatus).subscribe({
         next: () => {
           this.loadOrders();

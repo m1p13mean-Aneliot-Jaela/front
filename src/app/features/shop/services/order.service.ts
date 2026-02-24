@@ -22,7 +22,7 @@ export interface CustomerInfo {
 }
 
 export interface OrderStatusHistory {
-  status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
+  status: 'PENDING' | 'CONFIRMED' | 'PAYMENT_REQUESTED' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
   changed_at: string;
   changed_by?: string;
   note?: string;
@@ -38,7 +38,7 @@ export interface Order {
   shipping_fee: number;
   discount: number;
   total_amount: number;
-  status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
+  status: 'PENDING' | 'CONFIRMED' | 'PAYMENT_REQUESTED' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
   status_history: OrderStatusHistory[];
   payment: {
     method: 'CASH' | 'CARD' | 'MOBILE_MONEY' | 'BANK_TRANSFER';
@@ -178,6 +178,15 @@ export class OrderService {
     );
   }
 
+  // Client confirms payment (changes PAYMENT_REQUESTED → PAID)
+  confirmPayment(orderId: string): Observable<{ success: boolean; message: string; data: Order }> {
+    return this.api.post<{ success: boolean; message: string; data: Order }>(
+      `/orders/${orderId}/confirm-payment`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
   // Update order status
   updateStatus(orderId: string, status: string, note?: string): Observable<{ success: boolean; message: string; data: Order }> {
     return this.api.patch<{ success: boolean; message: string; data: Order }>(
@@ -239,6 +248,8 @@ export class OrderService {
     const labels: Record<string, string> = {
       'PENDING': 'En attente',
       'CONFIRMED': 'Confirmée',
+      'PAYMENT_REQUESTED': 'Paiement demandé',
+      'PAID': 'Payée',
       'SHIPPED': 'Expédiée',
       'DELIVERED': 'Livrée',
       'CANCELED': 'Annulée'
@@ -251,6 +262,8 @@ export class OrderService {
     const colors: Record<string, string> = {
       'PENDING': '#f59e0b', // amber
       'CONFIRMED': '#3b82f6', // blue
+      'PAYMENT_REQUESTED': '#f97316', // orange
+      'PAID': '#10b981', // emerald
       'SHIPPED': '#8b5cf6', // violet
       'DELIVERED': '#22c55e', // green
       'CANCELED': '#dc2626'  // red
