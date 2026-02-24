@@ -64,6 +64,15 @@ export class AdminLayoutComponent {
         { label: '📋 Liste', route: '/admin/lease-contracts' },
         { label: '➕ Ajouter', route: '/admin/lease-contracts/add' }
       ]
+    },
+    { 
+      icon: '💰', 
+      label: 'Paiements de Loyer', 
+      expanded: false,
+      children: [
+        { label: '📋 Liste', route: '/admin/rent-payments' },
+        { label: '➕ Ajouter', route: '/admin/rent-payments/add' }
+      ]
     }
   ];
 
