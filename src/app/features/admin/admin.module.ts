@@ -77,6 +77,22 @@ const routes: Routes = [
         path: 'lease-contracts/:id/edit',
         loadComponent: () => import('./pages/lease-contracts/lease-contract-form/lease-contract-form.component').then(m => m.LeaseContractFormComponent)
       },
+      {
+        path: 'rent-payments',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-list/rent-payment-list.component').then(m => m.RentPaymentListComponent)
+      },
+      {
+        path: 'rent-payments/add',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-form/rent-payment-form.component').then(m => m.RentPaymentFormComponent)
+      },
+      {
+        path: 'rent-payments/:id',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-form/rent-payment-form.component').then(m => m.RentPaymentFormComponent)
+      },
+      {
+        path: 'rent-payments/:id/edit',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-form/rent-payment-form.component').then(m => m.RentPaymentFormComponent)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
