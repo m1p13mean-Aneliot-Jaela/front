@@ -1,0 +1,204 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2>📊 Tableau de bord Administrateur</h2>
+    <button class="btn-refresh" (click)="loadDashboardStats()" [disabled]="loading">
+      🔄 Actualiser
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des statistiques...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <p>❌ {{ error }}</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="stats && !loading" class="dashboard-content">
+    
+    <!-- Main Stats Grid -->
+    <div class="main-stats-grid">
+      <!-- Users Card -->
+      <div class="stat-card" routerLink="/admin/users">
+        <div class="stat-icon users-icon">👥</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.users.total }}</div>
+          <div class="stat-label">Utilisateurs</div>
+          <div class="stat-details">
+            <span class="detail-item">Admin: {{ stats.users.byType['admin'] || 0 }}</span>
+            <span class="detail-item">Shops: {{ stats.users.byType['shop'] || 0 }}</span>
+            <span class="detail-item">Buyers: {{ stats.users.byType['buyer'] || 0 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shops Card -->
+      <div class="stat-card" routerLink="/admin/shops">
+        <div class="stat-icon shops-icon">🏪</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.shops.total }}</div>
+          <div class="stat-label">Boutiques</div>
+          <div class="stat-details">
+            <span class="detail-item">Active: {{ stats.shops.byStatus['active'] || 0 }}</span>
+            <span class="detail-item">Pending: {{ stats.shops.byStatus['pending'] || 0 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lease Contracts Card -->
+      <div class="stat-card" routerLink="/admin/lease-contracts">
+        <div class="stat-icon contracts-icon">📄</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.leaseContracts.total }}</div>
+          <div class="stat-label">Contrats de Bail</div>
+          <div class="stat-details">
+            <span class="detail-item">Active: {{ stats.leaseContracts.byStatus['active'] || 0 }}</span>
+            <span class="detail-item" *ngIf="stats.leaseContracts.expiringSoon > 0">⚠️ {{ stats.leaseContracts.expiringSoon }} expirent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rent Payments Card -->
+      <div class="stat-card" routerLink="/admin/rent-payments">
+        <div class="stat-icon payments-icon">💰</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ formatCurrency(stats.rentPayments.amounts['SUCCESSFUL'] || 0) }}</div>
+          <div class="stat-label">Paiements Réussis</div>
+          <div class="stat-details">
+            <span class="detail-item">Pending: {{ stats.rentPayments.byStatus['PENDING'] || 0 }}</span>
+            <span class="detail-item" *ngIf="stats.rentPayments.overdue > 0">⚠️ {{ stats.rentPayments.overdue }} en retard</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secondary Stats Row -->
+    <div class="secondary-stats">
+      <!-- Pending Rent Payments -->
+      <div class="stat-card-sm" routerLink="/admin/rent-payments">
+        <div class="stat-sm-header">
+          <span class="stat-sm-icon">💳</span>
+          <span class="stat-sm-title">Paiements en Attente</span>
+        </div>
+        <div class="stat-sm-value">{{ stats.rentPayments.byStatus['PENDING'] || 0 }}</div>
+        <div class="stat-sm-footer">
+          <span class="badge badge-warning">
+            {{ formatCurrency(stats.rentPayments.amounts['PENDING'] || 0) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Overdue Payments -->
+      <div class="stat-card-sm" routerLink="/admin/rent-payments">
+        <div class="stat-sm-header">
+          <span class="stat-sm-icon">⚠️</span>
+          <span class="stat-sm-title">Paiements en Retard</span>
+        </div>
+        <div class="stat-sm-value">{{ stats.rentPayments.overdue }}</div>
+        <div class="stat-sm-footer">
+          <span class="badge badge-danger" *ngIf="stats.rentPayments.overdue > 0">
+            Action requise
+          </span>
+          <span class="stat-sm-detail" *ngIf="stats.rentPayments.overdue === 0">
+            Aucun retard
+          </span>
+        </div>
+      </div>
+
+      <!-- Expiring Contracts -->
+      <div class="stat-card-sm" routerLink="/admin/lease-contracts">
+        <div class="stat-sm-header">
+          <span class="stat-sm-icon">📄</span>
+          <span class="stat-sm-title">Contrats Expirant Bientôt</span>
+        </div>
+        <div class="stat-sm-value">{{ stats.leaseContracts.expiringSoon }}</div>
+        <div class="stat-sm-footer">
+          <span class="badge badge-warning" *ngIf="stats.leaseContracts.expiringSoon > 0">
+            30 prochains jours
+          </span>
+          <span class="stat-sm-detail" *ngIf="stats.leaseContracts.expiringSoon === 0">
+            Aucun contrat à expirer
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="recent-activity-section">
+      <h3>📋 Activité Récente</h3>
+      
+      <div class="activity-tabs">
+        <!-- Recent Users -->
+        <div class="activity-card">
+          <h4>Nouveaux Utilisateurs</h4>
+          <div class="activity-list">
+            <div *ngFor="let user of stats.recentActivity?.users" class="activity-item">
+              <div class="activity-icon">👤</div>
+              <div class="activity-content">
+                <div class="activity-title">{{ user.first_name }} {{ user.last_name }}</div>
+                <div class="activity-subtitle">{{ user.email }} • {{ user.user_type }}</div>
+              </div>
+              <div class="activity-time">{{ formatDate(user.registered_at) }}</div>
+            </div>
+            <div *ngIf="!stats.recentActivity?.users?.length" class="no-activity">
+              Aucune activité récente
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Shops -->
+        <div class="activity-card">
+          <h4>Nouvelles Boutiques</h4>
+          <div class="activity-list">
+            <div *ngFor="let shop of stats.recentActivity?.shops" class="activity-item">
+              <div class="activity-icon">🏪</div>
+              <div class="activity-content">
+                <div class="activity-title">{{ shop.shop_name }}</div>
+                <div class="activity-subtitle">
+                  <span [class]="'badge ' + getStatusBadgeClass(shop.current_status?.status)">
+                    {{ shop.current_status?.status || 'pending' }}
+                  </span>
+                </div>
+              </div>
+              <div class="activity-time">{{ formatDate(shop.created_at) }}</div>
+            </div>
+            <div *ngIf="!stats.recentActivity?.shops?.length" class="no-activity">
+              Aucune activité récente
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Status Chart -->
+    <div class="chart-section" *ngIf="stats.rentPayments">
+      <h3>💰 État des Paiements de Loyer</h3>
+      <div class="payment-stats-grid">
+        <div class="payment-stat">
+          <div class="payment-stat-label">En Attente</div>
+          <div class="payment-stat-value">{{ stats.rentPayments.byStatus['PENDING'] || 0 }}</div>
+          <div class="payment-stat-amount">{{ formatCurrency(stats.rentPayments.amounts['PENDING'] || 0) }}</div>
+        </div>
+        <div class="payment-stat success">
+          <div class="payment-stat-label">Réussi</div>
+          <div class="payment-stat-value">{{ stats.rentPayments.byStatus['SUCCESSFUL'] || 0 }}</div>
+          <div class="payment-stat-amount">{{ formatCurrency(stats.rentPayments.amounts['SUCCESSFUL'] || 0) }}</div>
+        </div>
+        <div class="payment-stat failed">
+          <div class="payment-stat-label">Échoué</div>
+          <div class="payment-stat-value">{{ stats.rentPayments.byStatus['FAILED'] || 0 }}</div>
+          <div class="payment-stat-amount">{{ formatCurrency(stats.rentPayments.amounts['FAILED'] || 0) }}</div>
+        </div>
+        <div class="payment-stat overdue">
+          <div class="payment-stat-label">En Retard</div>
+          <div class="payment-stat-value">{{ stats.rentPayments.overdue }}</div>
+          <div class="payment-stat-amount">⚠️ Action requise</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
