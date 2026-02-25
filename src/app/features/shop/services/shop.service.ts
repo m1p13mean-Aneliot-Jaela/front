@@ -47,6 +47,14 @@ export interface ShopProfile {
   name: string;
   logo?: string;
   description?: string;
+  categories?: {
+    category_id?: {
+      _id?: string;
+      name?: string;
+    };
+    name?: string;
+    assigned_at?: string;
+  }[];
   location?: ShopLocation;
   business_hours?: BusinessHours;
   contact?: ShopContact;
