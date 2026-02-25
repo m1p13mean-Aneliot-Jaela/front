@@ -113,7 +113,7 @@ export class AuthService {
       admin: '/admin/dashboard',
       brand: '/shop/dashboard',
       shop: '/shop/dashboard',
-      buyer: '/app/home'
+      buyer: '/client/home'
     };
 
     this.router.navigate([routes[userType]]);
