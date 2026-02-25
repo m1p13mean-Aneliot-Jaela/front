@@ -18,11 +18,11 @@ export class ClientLayoutComponent {
   cartCount = 3;
 
   navItems = [
-    { icon: '🏠', label: 'Accueil', route: '/app/home' },
-    { icon: '🏪', label: 'Boutiques', route: '/app/shops' },
-    { icon: '🔍', label: 'Rechercher', route: '/app/search' },
-    { icon: '❤️', label: 'Favoris', route: '/app/favorites' },
-    { icon: '📋', label: 'Commandes', route: '/app/orders' }
+    { icon: '🏠', label: 'Accueil', route: '/client/home' },
+    { icon: '🏪', label: 'Boutiques', route: '/client/shops' },
+    { icon: '🔍', label: 'Rechercher', route: '/client/search' },
+    { icon: '❤️', label: 'Favoris', route: '/client/favorites' },
+    { icon: '📋', label: 'Commandes', route: '/client/orders' }
   ];
 
   constructor(private authService: AuthService) {

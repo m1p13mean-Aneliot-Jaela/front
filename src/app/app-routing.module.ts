@@ -27,7 +27,7 @@ const routes: Routes = [
     loadChildren: () => import('./features/shop/shop.module').then(m => m.ShopModule)
   },
   {
-    path: 'app',
+    path: 'client',
     canActivate: [AuthGuard],
     loadChildren: () => import('./features/client/client.module').then(m => m.ClientModule)
   }
