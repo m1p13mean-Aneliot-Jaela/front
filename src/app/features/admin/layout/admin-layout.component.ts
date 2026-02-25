@@ -48,16 +48,7 @@ export class AdminLayoutComponent {
       ]
     },
     { 
-      icon: '📦', 
-      label: 'Produits', 
-      expanded: false,
-      children: [
-        { label: '📋 Liste', route: '/admin/products/list' },
-        { label: '➕ Ajouter', route: '/admin/products/add' }
-      ]
-    },
-    { 
-      icon: '📄', 
+      icon: '', 
       label: 'Contrats de Bail', 
       expanded: false,
       children: [

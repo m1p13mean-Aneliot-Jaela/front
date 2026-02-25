@@ -53,18 +53,6 @@ const routes: Routes = [
         path: 'shop-boxes/edit/:id', 
         loadComponent: () => import('./pages/shop-boxes/shop-box-edit/shop-box-edit.component').then(m => m.ShopBoxEditComponent)
       },
-      { 
-        path: 'products/list', 
-        loadComponent: () => import('./pages/products/product-list/product-list.component').then(m => m.ProductListComponent)
-      },
-      { 
-        path: 'products/add', 
-        loadComponent: () => import('./pages/products/product-add/product-add.component').then(m => m.ProductAddComponent)
-      },
-      { 
-        path: 'products/edit/:id', 
-        loadComponent: () => import('./pages/products/product-add/product-add.component').then(m => m.ProductAddComponent)
-      },
       {
         path: 'lease-contracts',
         loadComponent: () => import('./pages/lease-contracts/lease-contract-list/lease-contract-list.component').then(m => m.LeaseContractListComponent)
