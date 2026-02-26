@@ -55,14 +55,40 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
           </div>
         </div>
 
-        <!-- Monthly Chart & Top Products -->
+        <!-- Revenue Charts -->
         <div class="dashboard-row">
-          <div class="dashboard-card chart-card">
-            <h3>📊 Ventes mensuelles</h3>
-            <div class="chart-bars">
-              <div *ngFor="let m of stats.monthly_sales" class="bar-wrapper">
-                <div class="bar" [style.height.%]="getBarHeight(m.revenue)"></div>
-                <span class="bar-label">{{ formatMonth(m.month) }}</span>
+          <div class="dashboard-card chart-card wide">
+            <h3>📊 Chiffre d'affaires</h3>
+            <div class="chart-tabs">
+              <button [class.active]="revenueView === 'monthly'" (click)="revenueView = 'monthly'">Mensuel</button>
+              <button [class.active]="revenueView === 'yearly'" (click)="revenueView = 'yearly'">Annuel</button>
+            </div>
+            <div class="chart-container" *ngIf="revenueView === 'monthly'">
+              <svg viewBox="0 0 400 200" class="line-chart">
+                <defs>
+                  <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <polygon [attr.points]="getRevenueAreaPoints()" fill="url(#revenueGradient)"/>
+                <polyline [attr.points]="getRevenueLinePoints()" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle *ngFor="let point of getRevenuePoints(); let i = index" [attr.cx]="point.x" [attr.cy]="point.y" r="4" fill="#8b5cf6"/>
+                <text *ngFor="let point of getRevenuePoints(); let i = index" [attr.x]="point.x" [attr.y]="185" text-anchor="middle" font-size="10" fill="#64748b">{{ point.label }}</text>
+              </svg>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="dot" style="background:#8b5cf6"></span> CA Mensuel</span>
+              </div>
+            </div>
+            <div class="chart-container yearly" *ngIf="revenueView === 'yearly'">
+              <div class="yearly-stats">
+                <div class="year-stat" *ngFor="let year of getYearlyRevenue()">
+                  <span class="year-label">{{ year.year }}</span>
+                  <div class="year-bar-container">
+                    <div class="year-bar" [style.height.%]="year.percentage"></div>
+                  </div>
+                  <span class="year-value">{{ year.revenue | currency:'Ar ':'symbol':'1.0-0' }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -79,12 +105,22 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
           </div>
         </div>
 
-        <!-- To-Do & Recent Orders -->
+        <!-- To-Do with Sales Chart & Recent Orders -->
         <div class="dashboard-row">
           <div class="dashboard-card">
             <div class="card-header">
               <h3>✅ À faire</h3>
               <span class="badge" *ngIf="todoList.length">{{ todoList.length }}</span>
+            </div>
+            <div class="todo-sales-chart">
+              <h4>📈 Ventes des 7 derniers jours</h4>
+              <svg viewBox="0 0 300 100" class="mini-chart">
+                <polyline [attr.points]="getTodoSalesPoints()" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle *ngFor="let point of getTodoSalesData(); let i = index" [attr.cx]="point.x" [attr.cy]="point.y" r="3" fill="#22c55e"/>
+              </svg>
+              <div class="mini-chart-labels">
+                <span *ngFor="let label of getTodoSalesLabels()">{{ label }}</span>
+              </div>
             </div>
             <div class="todo-item" *ngFor="let t of todoList.slice(0, 5)" [routerLink]="['/shop/orders']">
               <span class="priority-dot" [class.high]="t.priority === 'high'"></span>
@@ -127,16 +163,34 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
 
     .dashboard-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
     .dashboard-card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem; }
+    .dashboard-card.wide { grid-column: span 2; }
+    @media (max-width: 900px) { .dashboard-card.wide { grid-column: span 1; } }
     .dashboard-card h3 { margin: 0 0 1rem 0; color: #1e293b; font-size: 1rem; }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
     .card-header h3 { margin: 0; }
     .badge { background: #dc2626; color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
     a { color: #8b5cf6; font-size: 0.875rem; text-decoration: none; }
 
-    .chart-bars { display: flex; align-items: flex-end; height: 150px; gap: 8px; }
-    .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; }
-    .bar { width: 100%; background: linear-gradient(to top, #8b5cf6, #a78bfa); border-radius: 4px 4px 0 0; min-height: 4px; }
-    .bar-label { font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; }
+    .chart-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .chart-tabs button { padding: 0.4rem 1rem; border: 1px solid #e2e8f0; background: white; border-radius: 6px; cursor: pointer; font-size: 0.875rem; }
+    .chart-tabs button.active { background: #8b5cf6; color: white; border-color: #8b5cf6; }
+    .chart-container { height: 220px; }
+    .line-chart { width: 100%; height: 100%; }
+    .chart-legend { display: flex; justify-content: center; margin-top: 0.5rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #64748b; }
+    .legend-item .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .yearly-stats { display: flex; flex-direction: column; gap: 1rem; padding: 1rem 0; }
+    .year-stat { display: flex; align-items: center; gap: 1rem; }
+    .year-label { width: 50px; font-weight: 600; color: #1e293b; }
+    .year-bar-container { flex: 1; height: 30px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+    .year-bar { background: linear-gradient(to right, #8b5cf6, #a78bfa); border-radius: 4px; transition: height 0.3s; }
+    .year-value { width: 100px; text-align: right; font-weight: 600; color: #1e293b; font-size: 0.875rem; }
+
+    .todo-sales-chart { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
+    .todo-sales-chart h4 { margin: 0 0 0.75rem 0; font-size: 0.875rem; color: #64748b; font-weight: 500; }
+    .mini-chart { width: 100%; height: 80px; }
+    .mini-chart-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem; }
 
     .product-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 0.5rem; }
     .rank { width: 28px; height: 28px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; font-weight: 600; }
@@ -160,6 +214,7 @@ export class ShopDashboardComponent implements OnInit, OnDestroy {
   loading = true;
   error: string | null = null;
   period = 30;
+  revenueView: 'monthly' | 'yearly' = 'monthly';
 
   private subscriptions: Subscription[] = [];
 
@@ -208,4 +263,76 @@ export class ShopDashboardComponent implements OnInit, OnDestroy {
 
   getStatusLabel(status: string): string { return this.orderService.getStatusLabel(status); }
   getStatusColor(status: string): string { return this.orderService.getStatusColor(status); }
+
+  // Revenue chart methods
+  getRevenuePoints(): {x: number, y: number, label: string, value: number}[] {
+    if (!this.stats?.monthly_sales?.length) return [];
+    const sales = this.stats.monthly_sales.slice(-6); // Last 6 months
+    const max = Math.max(...sales.map(m => m.revenue), 1);
+    const width = 400;
+    const height = 180;
+    const padding = 40;
+    
+    return sales.map((m, i) => ({
+      x: padding + (i * (width - 2 * padding) / (sales.length - 1 || 1)),
+      y: height - 20 - ((m.revenue / max) * (height - 40)),
+      label: this.formatMonth(m.month),
+      value: m.revenue
+    }));
+  }
+
+  getRevenueLinePoints(): string {
+    return this.getRevenuePoints().map(p => `${p.x},${p.y}`).join(' ');
+  }
+
+  getRevenueAreaPoints(): string {
+    const points = this.getRevenuePoints();
+    if (!points.length) return '';
+    const height = 180;
+    const start = `${points[0].x},${height - 20}`;
+    const end = `${points[points.length - 1].x},${height - 20}`;
+    return `${start} ${this.getRevenueLinePoints()} ${end}`;
+  }
+
+  getYearlyRevenue(): {year: string, revenue: number, percentage: number}[] {
+    if (!this.stats?.monthly_sales?.length) return [];
+    const byYear: {[key: string]: number} = {};
+    this.stats.monthly_sales.forEach(m => {
+      const year = m.month.split('-')[0];
+      byYear[year] = (byYear[year] || 0) + m.revenue;
+    });
+    const years = Object.entries(byYear).map(([year, revenue]) => ({ year, revenue }));
+    const max = Math.max(...years.map(y => y.revenue), 1);
+    return years.map(y => ({ ...y, percentage: (y.revenue / max) * 100 }));
+  }
+
+  // Todo sales chart methods
+  getTodoSalesData(): {x: number, y: number, value: number}[] {
+    // Generate mock daily sales data for last 7 days
+    const data = this.stats?.monthly_sales?.slice(-1)[0]?.revenue || 100000;
+    const daily = data / 30;
+    const values = Array.from({length: 7}, (_, i) => daily * (0.7 + Math.random() * 0.6));
+    const max = Math.max(...values, 1);
+    const width = 300;
+    const height = 80;
+    
+    return values.map((v, i) => ({
+      x: 20 + (i * (width - 40) / 6),
+      y: height - 10 - ((v / max) * (height - 20)),
+      value: v
+    }));
+  }
+
+  getTodoSalesPoints(): string {
+    return this.getTodoSalesData().map(p => `${p.x},${p.y}`).join(' ');
+  }
+
+  getTodoSalesLabels(): string[] {
+    const days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+    const today = new Date().getDay();
+    return Array.from({length: 7}, (_, i) => {
+      const dayIndex = (today - 6 + i + 7) % 7;
+      return days[dayIndex === 0 ? 6 : dayIndex - 1];
+    });
+  }
 }

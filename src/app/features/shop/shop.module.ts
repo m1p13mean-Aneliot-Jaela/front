@@ -16,11 +16,10 @@ import { ShopEmployeesListComponent } from './pages/employees/employees-list/sho
 import { ShopEmployeeFormComponent } from './pages/employees/employee-form/shop-employee-form.component';
 import { ShopClientsListComponent } from './pages/clients/client-list/shop-clients-list.component';
 import { ShopClientFormComponent } from './pages/clients/client-add-edit/shop-client-form.component';
-import { ShopDeliveriesListComponent } from './pages/deliveries/delivery-list/shop-deliveries-list.component';
+import { DeliveryListComponent } from './pages/delivery/list/delivery-list.component';
 import { ShopStockListComponent } from './pages/stock/stock-list/shop-stock-list.component';
 import { PromotionListComponent } from './pages/promotions/promotion-list/promotion-list.component';
 import { PromotionFormComponent } from './pages/promotions/promotion-form/promotion-form.component';
-import { DeliveryListComponent } from './pages/delivery/list/delivery-list.component';
 import { DeliveryZonesComponent } from './pages/delivery/zones/delivery-zones.component';
 import { ShopProfileComponent } from './pages/profile/shop-profile.component';
 
@@ -55,7 +54,7 @@ const routes: Routes = [
       { path: 'clients/edit/:id', component: ShopClientFormComponent },
       
       // Deliveries
-      { path: 'deliveries/list', component: ShopDeliveriesListComponent },
+      { path: 'deliveries/list', component: DeliveryListComponent },
       { path: 'deliveries/list2', component: DeliveryListComponent },
       { path: 'deliveries/zones', component: DeliveryZonesComponent },
       
@@ -110,11 +109,10 @@ const routes: Routes = [
     ShopEmployeeFormComponent,
     ShopClientsListComponent,
     ShopClientFormComponent,
-    ShopDeliveriesListComponent,
+    DeliveryListComponent,
     ShopStockListComponent,
     PromotionListComponent,
     PromotionFormComponent,
-    DeliveryListComponent,
     DeliveryZonesComponent,
     ShopProfileComponent,
     RouterModule.forChild(routes)
