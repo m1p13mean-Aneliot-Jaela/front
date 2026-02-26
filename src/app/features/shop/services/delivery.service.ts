@@ -52,7 +52,10 @@ export interface Delivery {
   delivery_address: DeliveryAddress;
   zone_id?: string;
   zone_name?: string;
-  delivery_fee: number;
+  delivery_fee: {
+    amount: number;
+    currency: string;
+  };
   free_delivery_applied?: boolean;
   requested_date?: string;
   scheduled_date?: string;
