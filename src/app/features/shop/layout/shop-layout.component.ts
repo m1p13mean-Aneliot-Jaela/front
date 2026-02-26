@@ -84,7 +84,7 @@ export class ShopLayoutComponent {
     { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
   ];
 
-  // Limited menu for STAFF (Dashboard, Produits, Commandes, Clients, Livraisons)
+  // Limited menu for STAFF (only what they have permission to see)
   private staffMenuItems: MenuItem[] = [
     { icon: '📊', label: 'Dashboard', route: '/shop/dashboard' },
     { 
@@ -92,8 +92,8 @@ export class ShopLayoutComponent {
       label: 'Produits', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/shop/products/list' },
-        { label: '➕ Ajouter', route: '/shop/products/add' }
+        { label: '📋 Voir liste', route: '/shop/products/list' }
+        // STAFF cannot add/edit products (edit_products: false)
       ]
     },
     { 
@@ -117,19 +117,8 @@ export class ShopLayoutComponent {
       icon: '🚚', 
       label: 'Livraisons', 
       route: '/shop/deliveries/list'
-    },
-    { icon: '💰', label: 'Ventes', route: '/shop/sales' },
-    { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
-    { 
-      icon: '👤', 
-      label: 'Clients', 
-      expanded: false,
-      children: [
-        { label: '📋 Liste', route: '/shop/clients/list' },
-        { label: '➕ Ajouter', route: '/shop/clients/add' }
-      ]
-    },
-    { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
+    }
+    // STAFF cannot see: Ventes, Promotions, Employés, Profil Boutique (management only)
   ];
 
   // Observable for filtered menu items
