@@ -886,7 +886,8 @@ export class ShopProductListComponent implements OnInit {
     }).subscribe({
       next: (response) => {
         // Convert Decimal128 prices to numbers
-        this.products = response.data.products.map((p: any) => ({
+        const productsData = response.data?.products || [];
+        this.products = productsData.map((p: any) => ({
           ...p,
           unit_price: typeof p.unit_price === 'object' && p.unit_price?.$numberDecimal
             ? parseFloat(p.unit_price.$numberDecimal)
@@ -896,8 +897,8 @@ export class ShopProductListComponent implements OnInit {
             : Number(p.cost_price) || 0
         }));
         this.filteredProducts = [...this.products];
-        this.pagination = response.data.pagination;
-        this.categories = response.data.filters.categories;
+        this.pagination = response.data?.pagination || this.pagination;
+        this.categories = response.data?.filters?.categories || [];
         this.loading = false;
         // Load active promotions for these products
         this.loadActivePromotions();

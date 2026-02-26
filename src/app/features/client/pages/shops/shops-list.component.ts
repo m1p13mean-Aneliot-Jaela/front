@@ -176,7 +176,7 @@ export class ShopsListComponent implements OnInit {
     this.error = null;
 
     this.http.get<{ success: boolean; data: Shop[] }>(
-      `${environment.apiUrl}/shops`
+      `${environment.apiUrl}/public/shops`
     ).subscribe({
       next: (response) => {
         this.shops = response.data || [];
