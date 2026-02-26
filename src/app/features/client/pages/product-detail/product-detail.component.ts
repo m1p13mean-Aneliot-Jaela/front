@@ -84,10 +84,10 @@ interface Product {
             <div class="actions">
               <button 
                 class="btn-order" 
-                (click)="addToOrder()"
+                (click)="goToCheckout()"
                 [disabled]="getStockQuantity() === 0"
               >
-                🛒 Ajouter à ma commande
+                🛒 Commander maintenant
               </button>
             </div>
           </div>
@@ -211,13 +211,34 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  addToOrder(): void {
-    if (!this.product || this.getStockQuantity() === 0) return;
+  goToCheckout(): void {
+    console.log('goToCheckout called');
+    console.log('product:', this.product);
+    console.log('stock:', this.getStockQuantity());
     
-    // TODO: Add to cart/order service
-    alert(`Produit "${this.product.name}" (x${this.quantity}) ajouté à votre commande!`);
+    if (!this.product) {
+      console.error('No product');
+      return;
+    }
+    if (this.getStockQuantity() === 0) {
+      console.error('No stock');
+      return;
+    }
     
-    // Navigate to orders page
-    this.router.navigate(['/client/orders']);
+    console.log('Navigating to checkout with:', {
+      product: this.product._id,
+      qty: this.quantity
+    });
+    
+    // Navigate to checkout page with product and quantity
+    this.router.navigate(['/client/checkout'], {
+      queryParams: {
+        product: this.product._id,
+        qty: this.quantity
+      }
+    }).then(
+      success => console.log('Navigation success:', success),
+      error => console.error('Navigation error:', error)
+    );
   }
 }

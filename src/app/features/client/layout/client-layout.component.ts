@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 
+import { SharedModule } from '../../../shared/shared.module';
 import { AuthService, User } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-client-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SharedModule],
   templateUrl: './client-layout.component.html',
   styleUrls: ['./client-layout.component.css']
 })

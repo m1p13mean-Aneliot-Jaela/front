@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 export interface ShopLocation {
   address?: string;
@@ -81,30 +83,33 @@ export interface ShopOpenStatus {
   providedIn: 'root'
 })
 export class ShopService {
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private authService: AuthService
+  ) {}
 
-  // Get my shop profile
+  // Get my shop profile (uses shop_id from auth)
   getMyProfile(): Observable<{ success: boolean; data: ShopProfile }> {
-    return this.api.get<{ success: boolean; data: ShopProfile }>(
-      '/shops/me/profile',
-      undefined,
-      { withCredentials: true }
-    );
+    const shopId = this.authService.currentUserValue?.shop_id;
+    if (!shopId) {
+      return throwError(() => new Error('Shop ID not found in user profile'));
+    }
+    return this.getProfile(shopId);
   }
 
-  // Update my shop profile
+  // Update my shop profile (uses shop_id from auth)
   updateMyProfile(profile: Partial<ShopProfile>): Observable<{ success: boolean; message: string; data: ShopProfile }> {
-    return this.api.patch<{ success: boolean; message: string; data: ShopProfile }>(
-      '/shops/me/profile',
-      profile,
-      { withCredentials: true }
-    );
+    const shopId = this.authService.currentUserValue?.shop_id;
+    if (!shopId) {
+      return throwError(() => new Error('Shop ID not found in user profile'));
+    }
+    return this.updateProfile(shopId, profile);
   }
 
-  // Get shop profile by ID
+  // Get shop profile by ID (uses public endpoint)
   getProfile(shopId: string): Observable<{ success: boolean; data: ShopProfile }> {
     return this.api.get<{ success: boolean; data: ShopProfile }>(
-      `/shops/${shopId}/profile`,
+      `/shops/${shopId}/public`,
       undefined,
       { withCredentials: true }
     );

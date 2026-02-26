@@ -168,6 +168,12 @@
   color: #1e293b;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .user-info {
   display: flex;
   align-items: center;
