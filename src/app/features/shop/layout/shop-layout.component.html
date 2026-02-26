@@ -60,10 +60,13 @@
     <!-- Header -->
     <header class="header">
       <h1>Tableau de bord Boutique</h1>
-      <div class="user-info" *ngIf="user$ | async as user">
-        <span class="badge shop">Shop</span>
-        <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
-        <div class="avatar">{{ user.first_name?.charAt(0) || '?' }}</div>
+      <div class="header-actions">
+        <app-notification-bell class="nav-item" [userType]="'shop'"></app-notification-bell>
+        <div class="user-info" *ngIf="user$ | async as user">
+          <span class="badge shop">Shop</span>
+          <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
+          <div class="avatar">{{ user.first_name?.charAt(0) || '?' }}</div>
+        </div>
       </div>
     </header>
 

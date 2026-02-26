@@ -10,6 +10,7 @@
         <a *ngFor="let item of navItems" [routerLink]="item.route" class="nav-item">
           {{ item.label }}
         </a>
+        <app-notification-bell class="nav-item" [userType]="'client'"></app-notification-bell>
       </nav>
 
       <button class="nav-item logout" (click)="logout()">Déconnexion</button>

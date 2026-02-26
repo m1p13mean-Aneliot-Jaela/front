@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { NotificationBellComponent } from '../../../shared/components/notification-bell/notification-bell.component';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { PermissionService } from '../../../core/services/permission.service';
 
@@ -24,7 +25,7 @@ interface MenuItem {
 @Component({
   selector: 'app-shop-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NotificationBellComponent],
   templateUrl: './shop-layout.component.html',
   styleUrls: ['./shop-layout.component.css']
 })

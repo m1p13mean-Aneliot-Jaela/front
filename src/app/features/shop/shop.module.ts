@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { SharedModule } from '../../shared/shared.module';
 
 import { ShopLayoutComponent } from './layout/shop-layout.component';
 import { ShopDashboardComponent } from './pages/dashboard/shop-dashboard.component';
@@ -95,6 +96,7 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
+    SharedModule,
     ShopLayoutComponent,
     ShopDashboardComponent,
     ShopProductListComponent,

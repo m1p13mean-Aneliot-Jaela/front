@@ -495,9 +495,15 @@ export class ShopProductAddComponent implements OnInit {
 
   loadCategories(): void {
     if (!this.shopId) return;
+
     this.productService.getCategories(this.shopId).subscribe({
       next: (response) => {
-        this.categories = response.data;
+        const raw = response?.data || [];
+        console.log('Raw categories from backend:', raw);
+        this.categories = raw
+          .map((c: any) => c.name || c || '')
+          .filter((name: string) => !!name);
+        console.log('Mapped categories:', this.categories);
       },
       error: (err) => console.error('Error loading categories:', err)
     });
