@@ -1,0 +1,113 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Lease Contracts Management</h2>
+    <button class="btn-primary" (click)="navigateToAdd()">+ Add Lease Contract</button>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-container">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Search by shop name, conditions..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+    <div class="filter-options">
+      <select [(ngModel)]="filterStatus" (change)="applyFilters()">
+        <option value="">All Statuses</option>
+        <option value="signed">Signed</option>
+        <option value="active">Active</option>
+        <option value="expired">Expired</option>
+        <option value="terminated">Terminated</option>
+      </select>
+      <select [(ngModel)]="filterPaymentFrequency" (change)="applyFilters()">
+        <option value="">All Payment Frequencies</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly</option>
+      </select>
+      <select [(ngModel)]="filterShopId" (change)="applyFilters()">
+        <option value="">All Shops</option>
+        <option *ngFor="let shop of shops" [value]="shop._id">{{ shop.shop_name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <!-- Table -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Shop Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Rent Amount</th>
+          <th>Payment Frequency</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contract of paginatedContracts" [class.expiring-soon]="isExpiringSoon(contract)">
+          <td>
+            <div class="shop-name">{{ contract.shop_name || 'N/A' }}</div>
+          </td>
+          <td>{{ formatDate(contract.start_date) }}</td>
+          <td>
+            <div>{{ formatDate(contract.end_date) }}</div>
+            <div *ngIf="isExpiringSoon(contract)" class="expiring-badge">⚠️ Expiring Soon</div>
+          </td>
+          <td>{{ formatCurrency(contract.rent_amount) }}</td>
+          <td>
+            <span class="frequency-badge">{{ contract.payment_frequency }}</span>
+          </td>
+          <td>
+            <span [class]="getStatusClass(contract.current_status?.status || '')">
+              {{ getStatusLabel(contract.current_status?.status || '') }}
+            </span>
+            <div class="status-actions">
+              <button 
+                *ngIf="contract.current_status?.status === 'signed'" 
+                class="btn-xs btn-activate" 
+                (click)="updateStatus(contract, 'active')"
+                title="Activate">
+                Activate
+              </button>
+              <button 
+                *ngIf="contract.current_status?.status === 'active'" 
+                class="btn-xs btn-terminate" 
+                (click)="updateStatus(contract, 'terminated')"
+                title="Terminate">
+                Terminate
+              </button>
+            </div>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-view" (click)="viewContract(contract)" title="View">👁️</button>
+              <button class="btn-edit" (click)="editContract(contract)" title="Edit">✏️</button>
+              <button class="btn-delete" (click)="deleteContract(contract)" title="Delete">🗑️</button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="paginatedContracts.length === 0">
+          <td colspan="7" class="no-data">No lease contracts found</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+  </div>
+</div>

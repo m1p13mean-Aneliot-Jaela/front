@@ -53,17 +53,33 @@ const routes: Routes = [
         path: 'shop-boxes/edit/:id', 
         loadComponent: () => import('./pages/shop-boxes/shop-box-edit/shop-box-edit.component').then(m => m.ShopBoxEditComponent)
       },
-      { 
-        path: 'products/list', 
-        loadComponent: () => import('./pages/products/product-list/product-list.component').then(m => m.ProductListComponent)
+      {
+        path: 'lease-contracts',
+        loadComponent: () => import('./pages/lease-contracts/lease-contract-list/lease-contract-list.component').then(m => m.LeaseContractListComponent)
       },
-      { 
-        path: 'products/add', 
-        loadComponent: () => import('./pages/products/product-add/product-add.component').then(m => m.ProductAddComponent)
+      {
+        path: 'lease-contracts/add',
+        loadComponent: () => import('./pages/lease-contracts/lease-contract-form/lease-contract-form.component').then(m => m.LeaseContractFormComponent)
       },
-      { 
-        path: 'products/edit/:id', 
-        loadComponent: () => import('./pages/products/product-add/product-add.component').then(m => m.ProductAddComponent)
+      {
+        path: 'lease-contracts/:id/edit',
+        loadComponent: () => import('./pages/lease-contracts/lease-contract-form/lease-contract-form.component').then(m => m.LeaseContractFormComponent)
+      },
+      {
+        path: 'rent-payments',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-list/rent-payment-list.component').then(m => m.RentPaymentListComponent)
+      },
+      {
+        path: 'rent-payments/add',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-form/rent-payment-form.component').then(m => m.RentPaymentFormComponent)
+      },
+      {
+        path: 'rent-payments/:id',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-form/rent-payment-form.component').then(m => m.RentPaymentFormComponent)
+      },
+      {
+        path: 'rent-payments/:id/edit',
+        loadComponent: () => import('./pages/rent-payments/rent-payment-form/rent-payment-form.component').then(m => m.RentPaymentFormComponent)
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

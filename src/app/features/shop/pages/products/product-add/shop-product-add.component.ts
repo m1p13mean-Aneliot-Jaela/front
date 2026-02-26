@@ -5,6 +5,7 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { ProductService, Product, CreateProductRequest, UpdateProductRequest } from '../../../services/product.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { PermissionService } from '../../../../../core/services/permission.service';
+import { ShopService } from '../../../services/shop.service';
 
 // Type pour le statut du produit
 type ProductStatus = 'DRAFT' | 'PENDING' | 'ACTIVE' | 'REJECTED';
@@ -134,9 +135,9 @@ interface ProductStatusInfo {
           <div class="form-row">
             <div class="form-group">
               <label>Catégorie principale</label>
-              <select [(ngModel)]="selectedCategory" name="category" (change)="addCategory()">
+              <select [(ngModel)]="selectedCategoryId" name="category" (change)="addCategory()">
                 <option value="">Sélectionner une catégorie</option>
-                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
               </select>
             </div>
           </div>
@@ -435,7 +436,7 @@ export class ShopProductAddComponent implements OnInit {
   error: string | null = null;
   isDragging = false;
   
-  categories: string[] = [];
+  categories: { _id: string; name: string }[] = [];
   newCategory = '';
   tagsInput = '';
   
@@ -463,13 +464,15 @@ export class ShopProductAddComponent implements OnInit {
     current_status: { status: 'DRAFT', reason: '', updated_at: new Date().toISOString() }
   };
   selectedCategory = '';
+  selectedCategoryId = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
     private authService: AuthService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private shopService: ShopService
   ) {}
 
   ngOnInit(): void {
@@ -509,7 +512,7 @@ export class ShopProductAddComponent implements OnInit {
           .filter((c: any) => !!c._id && !!c.name);
         console.log('Mapped categories:', this.categories);
       },
-      error: (err) => console.error('Error loading categories:', err)
+      error: (err) => console.error('Error loading shop categories:', err)
     });
   }
 
@@ -607,10 +610,14 @@ export class ShopProductAddComponent implements OnInit {
   }
 
   addCategory(): void {
-    if (this.selectedCategory && !this.product.categories.find(c => c.name === this.selectedCategory)) {
-      this.product.categories.push({ name: this.selectedCategory });
+    if (!this.selectedCategoryId) return;
+    const selected = this.categories.find(c => c._id === this.selectedCategoryId);
+    if (!selected) return;
+
+    if (!this.product.categories.find(c => c.category_id === selected._id)) {
+      this.product.categories.push({ category_id: selected._id, name: selected.name });
     }
-    this.selectedCategory = '';
+    this.selectedCategoryId = '';
   }
 
   removeCategory(index: number): void {
