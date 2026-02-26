@@ -495,14 +495,18 @@ export class ShopProductAddComponent implements OnInit {
 
   loadCategories(): void {
     if (!this.shopId) return;
-
+    
+    // Use dedicated categories endpoint
     this.productService.getCategories(this.shopId).subscribe({
       next: (response) => {
         const raw = response?.data || [];
         console.log('Raw categories from backend:', raw);
         this.categories = raw
-          .map((c: any) => c.name || c || '')
-          .filter((name: string) => !!name);
+          .map((c: any) => ({
+            _id: c._id || c.id || c || '',
+            name: c.name || c || ''
+          }))
+          .filter((c: any) => !!c._id && !!c.name);
         console.log('Mapped categories:', this.categories);
       },
       error: (err) => console.error('Error loading categories:', err)
