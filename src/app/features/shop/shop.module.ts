@@ -7,7 +7,6 @@ import { ShopLayoutComponent } from './layout/shop-layout.component';
 import { ShopDashboardComponent } from './pages/dashboard/shop-dashboard.component';
 import { ShopProductListComponent } from './pages/products/product-list/shop-product-list.component';
 import { ShopProductAddComponent } from './pages/products/product-add/shop-product-add.component';
-import { ShopOrderListComponent } from './pages/orders/order-list/shop-order-list.component';
 import { ShopOrdersListComponent } from './pages/orders/orders-list/shop-orders-list.component';
 import { ShopOrderFormComponent } from './pages/orders/order-add-edit/shop-order-form.component';
 import { ShopOrderDetailComponent } from './pages/orders/order-detail/shop-order-detail.component';
@@ -22,6 +21,7 @@ import { PromotionListComponent } from './pages/promotions/promotion-list/promot
 import { PromotionFormComponent } from './pages/promotions/promotion-form/promotion-form.component';
 import { DeliveryZonesComponent } from './pages/delivery/zones/delivery-zones.component';
 import { ShopProfileComponent } from './pages/profile/shop-profile.component';
+import { ShopQuoteRequestsComponent } from './pages/quote-requests/shop-quote-requests.component';
 
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { PermissionGuard, EmployeeRoleGuard } from '../../core/guards/permission.guard';
@@ -45,6 +45,9 @@ const routes: Routes = [
       { path: 'orders/add', component: ShopOrderFormComponent },
       { path: 'orders/edit/:id', component: ShopOrderFormComponent },
       { path: 'orders/:id', component: ShopOrderDetailComponent },
+      
+      // Quote Requests
+      { path: 'quote-requests', component: ShopQuoteRequestsComponent },
       
       { path: 'sales', component: ShopSalesComponent },
       
@@ -100,7 +103,6 @@ const routes: Routes = [
     ShopDashboardComponent,
     ShopProductListComponent,
     ShopProductAddComponent,
-    ShopOrderListComponent,
     ShopOrdersListComponent,
     ShopOrderFormComponent,
     ShopOrderDetailComponent,
@@ -115,6 +117,7 @@ const routes: Routes = [
     PromotionFormComponent,
     DeliveryZonesComponent,
     ShopProfileComponent,
+    ShopQuoteRequestsComponent,
     RouterModule.forChild(routes)
   ]
 })

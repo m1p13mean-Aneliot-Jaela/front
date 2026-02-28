@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
 
 interface Shop {
@@ -11,6 +12,7 @@ interface Shop {
   mall_location?: string;
   categories?: Array<{
     category_id?: {
+      _id?: string;
       name?: string;
     };
     name?: string;
@@ -24,13 +26,39 @@ interface Shop {
   };
 }
 
+interface ShopCategory {
+  _id: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-shops-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   template: `
     <div class="page-container">
       <h2>Nos Boutiques</h2>
+      
+      <!-- Search & Filters -->
+      <div class="filters-container">
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (input)="applyFilters()"
+            placeholder="🔍 Rechercher une boutique..."
+            class="search-input">
+        </div>
+        
+        <div class="filter-row">
+          <select [(ngModel)]="selectedCategory" (change)="applyFilters()" class="filter-select">
+            <option value="">Toutes les catégories</option>
+            <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
+          </select>
+          
+          <button class="btn-reset" (click)="resetFilters()">🔄 Réinitialiser</button>
+        </div>
+      </div>
       
       <!-- Loading -->
       <div *ngIf="loading" class="loading">
@@ -43,16 +71,19 @@ interface Shop {
       </div>
       
       <!-- Empty -->
-      <div *ngIf="!loading && !error && shops.length === 0" class="empty">
-        Aucune boutique disponible pour le moment.
+      <div *ngIf="!loading && !error && filteredShops.length === 0" class="empty">
+        Aucune boutique trouvée.
       </div>
       
       <!-- Shops Grid -->
-      <div class="shops-grid" *ngIf="!loading && shops.length > 0">
-        <div class="shop-card" *ngFor="let shop of shops" (click)="viewShop(shop._id)">
+      <div class="shops-grid" *ngIf="!loading && filteredShops.length > 0">
+        <div class="shop-card" *ngFor="let shop of filteredShops" (click)="viewShop(shop._id)">
           <div class="shop-image">
             <img *ngIf="shop.logo" [src]="shop.logo" [alt]="shop.shop_name" />
             <span *ngIf="!shop.logo" class="shop-emoji">🏪</span>
+            <button class="btn-favorite" (click)="toggleFavorite($event, shop._id)">
+              {{ isFavorite(shop._id) ? '❤️' : '🤍' }}
+            </button>
           </div>
           <div class="shop-info">
             <h3>{{ shop.shop_name }}</h3>
@@ -162,13 +193,60 @@ interface Shop {
 })
 export class ShopsListComponent implements OnInit {
   shops: Shop[] = [];
+  filteredShops: Shop[] = [];
+  categories: ShopCategory[] = [];
   loading = true;
   error: string | null = null;
+  
+  // Filters
+  searchQuery = '';
+  selectedCategory = '';
+  
+  // Favorites (stored in localStorage for now)
+  favoriteShops: string[] = [];
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    this.loadFavorites();
+    this.loadCategories();
     this.loadShops();
+  }
+  
+  loadFavorites(): void {
+    const favs = localStorage.getItem('favoriteShops');
+    this.favoriteShops = favs ? JSON.parse(favs) : [];
+  }
+  
+  saveFavorites(): void {
+    localStorage.setItem('favoriteShops', JSON.stringify(this.favoriteShops));
+  }
+  
+  isFavorite(shopId: string): boolean {
+    return this.favoriteShops.includes(shopId);
+  }
+  
+  toggleFavorite(event: Event, shopId: string): void {
+    event.stopPropagation();
+    if (this.isFavorite(shopId)) {
+      this.favoriteShops = this.favoriteShops.filter(id => id !== shopId);
+    } else {
+      this.favoriteShops.push(shopId);
+    }
+    this.saveFavorites();
+  }
+  
+  loadCategories(): void {
+    this.http.get<{ success: boolean; data: any[] }>(
+      `${environment.apiUrl}/shop-categories`
+    ).subscribe({
+      next: (response) => {
+        this.categories = response.data || [];
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+      }
+    });
   }
 
   loadShops(): void {
@@ -180,6 +258,7 @@ export class ShopsListComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         this.shops = response.data || [];
+        this.filteredShops = [...this.shops];
         this.loading = false;
       },
       error: (err) => {
@@ -188,6 +267,38 @@ export class ShopsListComponent implements OnInit {
         console.error('Error loading shops:', err);
       }
     });
+  }
+  
+  applyFilters(): void {
+    let result = [...this.shops];
+    
+    // Filter by search query
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase();
+      result = result.filter(shop => 
+        shop.shop_name.toLowerCase().includes(query) ||
+        (shop.description && shop.description.toLowerCase().includes(query)) ||
+        (shop.mall_location && shop.mall_location.toLowerCase().includes(query))
+      );
+    }
+    
+    // Filter by category
+    if (this.selectedCategory) {
+      result = result.filter(shop => 
+        shop.categories?.some(cat => 
+          cat.category_id?._id === this.selectedCategory || 
+          cat.category_id?.name === this.selectedCategory
+        )
+      );
+    }
+    
+    this.filteredShops = result;
+  }
+  
+  resetFilters(): void {
+    this.searchQuery = '';
+    this.selectedCategory = '';
+    this.filteredShops = [...this.shops];
   }
 
   getCategoryName(shop: Shop): string {
@@ -204,7 +315,6 @@ export class ShopsListComponent implements OnInit {
   }
 
   viewShop(shopId: string): void {
-    // Navigate to shop detail page
     window.location.href = `/client/shops/${shopId}`;
   }
 }

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
 import { FormsModule } from '@angular/forms';
+import { CartService } from '../../services/cart.service';
 
 interface Shop {
   _id: string;
@@ -66,6 +67,15 @@ interface Pagination {
       <!-- Shop Header -->
       <div class="shop-header">
         <a routerLink="/client/shops" class="back-link">← Retour aux boutiques</a>
+        <!-- <div class="shop-actions">
+          <a
+            class="btn-quote"
+            [routerLink]="['/client/quote-requests/new']"
+            [queryParams]="{ shopId: shopId }"
+          >
+            📝 Demander un devis
+          </a>
+        </div> -->
         <div class="shop-info-header">
           <div class="shop-logo">
             <img *ngIf="shop.logo" [src]="shop.logo" [alt]="shop.shop_name" />
@@ -195,6 +205,12 @@ interface Pagination {
                   {{ product.cost_price?.toLocaleString() }} Ar
                 </span>
               </div>
+              <button 
+                class="btn-add-cart" 
+                (click)="addToCart($event, product)"
+                [disabled]="product.stock_quantity === 0 || !product.is_available">
+                🛒 Ajouter
+              </button>
             </div>
           </div>
         </div>
@@ -242,6 +258,29 @@ interface Pagination {
       padding: 2rem;
       border-radius: 12px;
       margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .shop-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .btn-quote {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      padding: 0.6rem 0.9rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .btn-quote:hover {
+      background: rgba(255,255,255,0.22);
     }
     .back-link {
       color: rgba(255,255,255,0.9);
@@ -460,6 +499,7 @@ interface Pagination {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      margin-bottom: 0.5rem;
     }
     .price {
       font-weight: 600;
@@ -470,6 +510,25 @@ interface Pagination {
       text-decoration: line-through;
       color: #94a3b8;
       font-size: 0.85rem;
+    }
+    .btn-add-cart {
+      width: 100%;
+      padding: 0.5rem;
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-add-cart:hover:not(:disabled) {
+      background: #7c3aed;
+    }
+    .btn-add-cart:disabled {
+      background: #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
     }
 
     /* Pagination */
@@ -548,12 +607,13 @@ export class ShopDetailComponent implements OnInit {
     pages: 0
   };
 
-  private shopId: string = '';
+  shopId: string = '';
   private filterTimeout: any;
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -661,5 +721,36 @@ export class ShopDetailComponent implements OnInit {
   viewProduct(productId: string): void {
     // Navigate to product detail
     window.location.href = `/client/products/${productId}`;
+  }
+
+  addToCart(event: Event, product: Product): void {
+    event.stopPropagation(); // Prevent navigation to product detail
+    
+    if (!this.shop) return;
+    
+    // Check if we can add from this shop
+    if (!this.cartService.canAddFromShop(this.shopId)) {
+      alert('Vous avez déjà des produits d\'une autre boutique dans votre panier. Veuillez vider le panier ou finaliser votre demande avant d\'ajouter des produits d\'une autre boutique.');
+      return;
+    }
+    
+    this.cartService.addToCart({
+      product_id: product._id,
+      product_name: product.name,
+      shop_id: this.shopId,
+      shop_name: this.shop.shop_name,
+      quantity: 1,
+      unit_price: product.unit_price
+    });
+    
+    // Show confirmation
+    const button = event.target as HTMLButtonElement;
+    const originalText = button.textContent;
+    button.textContent = '✓ Ajouté !';
+    button.disabled = true;
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.disabled = false;
+    }, 1500);
   }
 }
