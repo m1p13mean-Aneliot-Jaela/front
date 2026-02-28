@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { ProductService, Product, CreateProductRequest, UpdateProductRequest } from '../../../services/product.service';
+import { ShopService } from '../../../services/shop.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { PermissionService } from '../../../../../core/services/permission.service';
-import { ShopService } from '../../../services/shop.service';
 
 // Type pour le statut du produit
 type ProductStatus = 'DRAFT' | 'PENDING' | 'ACTIVE' | 'REJECTED';
@@ -448,7 +448,7 @@ export class ShopProductAddComponent implements OnInit {
     cost_price: number;
     image_url: string;
     images: { image_url: string; created_at: string }[];
-    categories: { category_id?: string; name: string }[];
+    categories: { category_id?: string; name: string; assigned_at?: string }[];
     initial_stock: number;
     current_status: ProductStatusInfo;
   } = {
@@ -497,22 +497,19 @@ export class ShopProductAddComponent implements OnInit {
   }
 
   loadCategories(): void {
-    if (!this.shopId) return;
-    
-    // Use dedicated categories endpoint
-    this.productService.getCategories(this.shopId).subscribe({
-      next: (response) => {
-        const raw = response?.data || [];
-        console.log('Raw categories from backend:', raw);
-        this.categories = raw
-          .map((c: any) => ({
-            _id: c._id || c.id || c || '',
-            name: c.name || c || ''
-          }))
-          .filter((c: any) => !!c._id && !!c.name);
-        console.log('Mapped categories:', this.categories);
+    // Use shop service to get categories for this shop
+    this.shopService.getMyCategories().subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          const categories = response.data.categories || [];
+          // Map to format expected by component: { _id, name }
+          this.categories = categories.map((c: any) => ({
+            _id: c.category_id?.toString() || c._id || c.id || '',
+            name: c.name || ''
+          })).filter((c: any) => !!c._id && !!c.name);
+        }
       },
-      error: (err) => console.error('Error loading shop categories:', err)
+      error: (err: any) => console.error('Error loading categories:', err)
     });
   }
 
@@ -540,7 +537,13 @@ export class ShopProductAddComponent implements OnInit {
           cost_price: costPrice,
           image_url: p.image_url || '',
           images: Array.isArray(p.images) ? p.images : [],
-          categories: Array.isArray(p.categories) ? p.categories : [],
+          categories: Array.isArray(p.categories) 
+            ? p.categories.map((c: any) => ({
+                category_id: c.category_id?.toString?.() || c.category_id || '',
+                name: c.name || '',
+                assigned_at: c.assigned_at && typeof c.assigned_at === 'string' ? c.assigned_at : new Date().toISOString()
+              }))
+            : [],
           initial_stock: 0,
           current_status: (p.current_status || { status: 'DRAFT', reason: '', updated_at: new Date().toISOString() }) as ProductStatusInfo
         };
@@ -567,12 +570,14 @@ export class ShopProductAddComponent implements OnInit {
         description: this.product.description || undefined,
         unit_price: this.product.unit_price,
         cost_price: this.product.cost_price || undefined,
-        image_url: this.product.image_url || undefined,
+        image_url: this.product.images.length > 0 ? this.product.images[0].image_url : undefined,
+        images: this.product.images,
         categories: this.product.categories
       };
 
       this.productService.updateProduct(this.productId, updateData).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('DEBUG: Update product response:', response);
           this.router.navigate(['/shop/products/list']);
         },
         error: (err) => {
@@ -597,7 +602,10 @@ export class ShopProductAddComponent implements OnInit {
       };
 
       this.productService.createProduct(createData).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('DEBUG: Create product response:', response);
+          console.log('DEBUG: Product data returned:', response.data);
+          console.log('DEBUG: Images in response:', response.data?.images);
           this.router.navigate(['/shop/products/list']);
         },
         error: (err) => {
@@ -615,7 +623,11 @@ export class ShopProductAddComponent implements OnInit {
     if (!selected) return;
 
     if (!this.product.categories.find(c => c.category_id === selected._id)) {
-      this.product.categories.push({ category_id: selected._id, name: selected.name });
+      this.product.categories.push({ 
+        category_id: selected._id, 
+        name: selected.name,
+        assigned_at: new Date().toISOString()
+      });
     }
     this.selectedCategoryId = '';
   }

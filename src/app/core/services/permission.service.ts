@@ -19,6 +19,7 @@ export type Permission =
   // Stock
   | 'manage_stock'        // Gérer le stock
   // Promotions
+  | 'view_promotions'     // Voir les promotions
   | 'manage_promotions'   // Gérer les promotions
   // Deliveries
   | 'view_deliveries'     // Voir les livraisons
@@ -84,6 +85,7 @@ export class PermissionService {
         // STAFF can view
         case 'view_products':
         case 'view_orders':
+        case 'view_promotions':  // STAFF can view promotions
         case 'manage_stock':
         case 'view_deliveries':
           return true;
@@ -99,7 +101,7 @@ export class PermissionService {
         case 'view_sales':
         case 'view_reports':
         case 'manage_employees':
-        case 'manage_promotions':
+        case 'manage_promotions':  // STAFF cannot manage promotions
         case 'edit_shop_profile':
           return false;
         
@@ -143,6 +145,10 @@ export class PermissionService {
   }
 
   canDeleteEmployees(): boolean {
+    return this.hasPermission('manage_employees');
+  }
+
+  canManagePermissions(): boolean {
     return this.hasPermission('manage_employees');
   }
 

@@ -61,6 +61,7 @@ export class ShopLayoutComponent {
         { label: '📋 Liste', route: '/shop/orders/list' }
       ]
     },
+    { icon: '📝', label: 'Demandes clients', route: '/shop/quote-requests' },
     {
       icon: '🚚',
       label: 'Livraisons',
@@ -86,7 +87,6 @@ export class ShopLayoutComponent {
 
   // Limited menu for STAFF (only what they have permission to see)
   private staffMenuItems: MenuItem[] = [
-    { icon: '📊', label: 'Dashboard', route: '/shop/dashboard' },
     { 
       icon: '📦', 
       label: 'Produits', 
@@ -117,8 +117,10 @@ export class ShopLayoutComponent {
       icon: '🚚', 
       label: 'Livraisons', 
       route: '/shop/deliveries/list'
-    }
-    // STAFF cannot see: Ventes, Promotions, Employés, Profil Boutique (management only)
+    },
+    { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
+    { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
+    // STAFF cannot see: Dashboard, Ventes, Employés, Demandes clients (management only)
   ];
 
   // Observable for filtered menu items

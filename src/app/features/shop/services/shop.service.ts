@@ -97,6 +97,15 @@ export class ShopService {
     return this.getProfile(shopId);
   }
 
+  // Get my shop categories (uses shop_id from auth)
+  getMyCategories(): Observable<{ success: boolean; data: { categories: any[] } }> {
+    return this.api.get<{ success: boolean; data: { categories: any[] } }>(
+      `/shops/me/categories`,
+      undefined,
+      { withCredentials: true }
+    );
+  }
+
   // Update my shop profile (uses shop_id from auth)
   updateMyProfile(profile: Partial<ShopProfile>): Observable<{ success: boolean; message: string; data: ShopProfile }> {
     const shopId = this.authService.currentUserValue?.shop_id;

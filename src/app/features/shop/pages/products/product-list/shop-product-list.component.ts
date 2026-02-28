@@ -30,6 +30,27 @@ import { PermissionService } from '../../../../../core/services/permission.servi
       </div>
     </div>
 
+    <!-- Filtres -->
+    <div class="filters-bar">
+      <input type="text" 
+             class="search-input" 
+             placeholder="🔍 Rechercher un produit..."
+             [(ngModel)]="searchTerm"
+             (input)="applyFilters()">
+      
+      <select class="filter-select" [(ngModel)]="categoryFilter" (change)="applyFilters()">
+        <option value="">Toutes les catégories</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+      
+      <select class="filter-select" [(ngModel)]="hasPromoFilter" (change)="applyFilters()">
+        <option value="">Tous les produits</option>
+        <option value="true">🔥 En promotion</option>
+      </select>
+      
+      <button class="btn-filter" (click)="resetFilters()">🔄 Réinitialiser</button>
+    </div>
+
     <div *ngIf="!loading && !error" class="products-table-container">
   <table class="products-table">
     <thead>
@@ -49,10 +70,10 @@ import { PermissionService } from '../../../../../core/services/permission.servi
 
         <!-- Image -->
         <td>
-          <img *ngIf="product.image_url"
-               [src]="product.image_url"
+          <img *ngIf="product.image_url || product.images?.[0]?.image_url"
+               [src]="product.image_url || product.images?.[0]?.image_url"
                class="table-thumbnail">
-          <div *ngIf="!product.image_url" class="table-no-image">📦</div>
+          <div *ngIf="!product.image_url && !product.images?.[0]?.image_url" class="table-no-image">📦</div>
         </td>
 
         <!-- Nom + Description -->
@@ -819,7 +840,7 @@ export class ShopProductListComponent implements OnInit {
   categoryFilter = '';
 /* ... */
   isBannedFilter: boolean | '' = '';
-  hasPromoFilter: boolean | '' = '';
+  hasPromoFilter: string = '';
   stockFilter = '';
 
   loading = false;
@@ -950,8 +971,9 @@ export class ShopProductListComponent implements OnInit {
       result = result.filter(p => p.is_banned === this.isBannedFilter);
     }
 
-    if (this.hasPromoFilter !== '') {
-      result = result.filter(p => p.is_on_promo === this.hasPromoFilter);
+    if (this.hasPromoFilter) {
+      const hasPromo = this.hasPromoFilter === 'true';
+      result = result.filter(p => p.is_on_promo === hasPromo);
     }
 
     this.filteredProducts = result;
@@ -1114,6 +1136,12 @@ export class ShopProductListComponent implements OnInit {
     this.promotionService.getActivePromotionsForProducts(this.shopId).subscribe({
       next: (response) => {
         this.activePromotions = response.data;
+        // Update products with is_on_promo flag based on active promotions
+        this.products = this.products.map(p => ({
+          ...p,
+          is_on_promo: !!this.getProductPromo(p)
+        }));
+        this.applyFilters();
       },
       error: (err) => console.error('Error loading promotions:', err)
     });
