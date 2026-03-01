@@ -90,7 +90,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
               <td>
                 <div class="fee" [class.free]="delivery.free_delivery_applied">
                   <span *ngIf="delivery.free_delivery_applied" class="free-badge">GRATUIT</span>
-                  <span *ngIf="!delivery.free_delivery_applied">{{ delivery.delivery_fee | number }} Ar</span>
+                  <span *ngIf="!delivery.free_delivery_applied">{{ getDeliveryFeeAmount(delivery) | number }} {{ getDeliveryFeeCurrency(delivery) }}</span>
                 </div>
               </td>
 
@@ -748,18 +748,26 @@ export class DeliveryListComponent implements OnInit {
   loadDeliveries(): void {
     if (!this.shopId) return;
     this.loading = true;
+    console.log('🔍 [DeliveryList] Loading deliveries for shop:', this.shopId);
     this.deliveryService.getDeliveries(this.shopId, {
       page: this.pagination.page,
       limit: this.pagination.limit,
       status: this.statusFilter as DeliveryStatus || undefined
     }).subscribe({
       next: (response: { success: boolean; data: { deliveries: Delivery[]; pagination: any } }) => {
+        console.log('✅ [DeliveryList] Response:', response);
+        console.log('📦 [DeliveryList] Deliveries count:', response.data?.deliveries?.length);
+        console.log('📦 [DeliveryList] First delivery:', response.data?.deliveries?.[0]);
         this.deliveries = response.data.deliveries;
         this.filteredDeliveries = this.deliveries;
         this.pagination = response.data.pagination;
+        console.log('📦 [DeliveryList] this.deliveries assigned:', this.deliveries.length);
+        console.log('📦 [DeliveryList] this.filteredDeliveries assigned:', this.filteredDeliveries.length);
         this.loading = false;
+        console.log('📦 [DeliveryList] loading set to false');
       },
-      error: () => {
+      error: (err) => {
+        console.error('❌ [DeliveryList] Error loading deliveries:', err);
         this.error = 'Erreur lors du chargement';
         this.loading = false;
       }
@@ -905,5 +913,24 @@ export class DeliveryListComponent implements OnInit {
   closeDetailsModal(): void {
     this.showDetailsModal = false;
     this.selectedDelivery = null;
+  }
+
+  getDeliveryFeeAmount(delivery: Delivery): number {
+    const fee: any = (delivery as any)?.delivery_fee;
+    if (fee && typeof fee === 'object' && typeof fee.amount === 'number') {
+      return fee.amount;
+    }
+    if (typeof fee === 'number') {
+      return fee;
+    }
+    return 0;
+  }
+
+  getDeliveryFeeCurrency(delivery: Delivery): string {
+    const fee: any = (delivery as any)?.delivery_fee;
+    if (fee && typeof fee === 'object' && typeof fee.currency === 'string') {
+      return fee.currency;
+    }
+    return 'Ar';
   }
 }

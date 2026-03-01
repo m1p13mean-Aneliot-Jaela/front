@@ -92,7 +92,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
         <!-- Empty State -->
         <div *ngIf="!loading && filteredStocks.length === 0" class="empty-state">
           <p>Aucun stock trouvé</p>
-          <button class="btn-primary" routerLink="../products/add">Créer un produit</button>
+          <button class="btn-primary" routerLink="/shop/products/add">Créer un produit</button>
         </div>
 
         <!-- Loading -->

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { SharedModule } from '../../shared/shared.module';
 
 import { ShopLayoutComponent } from './layout/shop-layout.component';
 import { ShopDashboardComponent } from './pages/dashboard/shop-dashboard.component';
 import { ShopProductListComponent } from './pages/products/product-list/shop-product-list.component';
 import { ShopProductAddComponent } from './pages/products/product-add/shop-product-add.component';
-import { ShopOrderListComponent } from './pages/orders/order-list/shop-order-list.component';
 import { ShopOrdersListComponent } from './pages/orders/orders-list/shop-orders-list.component';
 import { ShopOrderFormComponent } from './pages/orders/order-add-edit/shop-order-form.component';
 import { ShopOrderDetailComponent } from './pages/orders/order-detail/shop-order-detail.component';
@@ -15,13 +15,13 @@ import { ShopEmployeesListComponent } from './pages/employees/employees-list/sho
 import { ShopEmployeeFormComponent } from './pages/employees/employee-form/shop-employee-form.component';
 import { ShopClientsListComponent } from './pages/clients/client-list/shop-clients-list.component';
 import { ShopClientFormComponent } from './pages/clients/client-add-edit/shop-client-form.component';
-import { ShopDeliveriesListComponent } from './pages/deliveries/delivery-list/shop-deliveries-list.component';
+import { DeliveryListComponent } from './pages/delivery/list/delivery-list.component';
 import { ShopStockListComponent } from './pages/stock/stock-list/shop-stock-list.component';
 import { PromotionListComponent } from './pages/promotions/promotion-list/promotion-list.component';
 import { PromotionFormComponent } from './pages/promotions/promotion-form/promotion-form.component';
-import { DeliveryListComponent } from './pages/delivery/list/delivery-list.component';
 import { DeliveryZonesComponent } from './pages/delivery/zones/delivery-zones.component';
 import { ShopProfileComponent } from './pages/profile/shop-profile.component';
+import { ShopQuoteRequestsComponent } from './pages/quote-requests/shop-quote-requests.component';
 
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { PermissionGuard, EmployeeRoleGuard } from '../../core/guards/permission.guard';
@@ -46,6 +46,9 @@ const routes: Routes = [
       { path: 'orders/edit/:id', component: ShopOrderFormComponent },
       { path: 'orders/:id', component: ShopOrderDetailComponent },
       
+      // Quote Requests
+      { path: 'quote-requests', component: ShopQuoteRequestsComponent },
+      
       { path: 'sales', component: ShopSalesComponent },
       
       // Clients with CRUD
@@ -54,7 +57,7 @@ const routes: Routes = [
       { path: 'clients/edit/:id', component: ShopClientFormComponent },
       
       // Deliveries
-      { path: 'deliveries/list', component: ShopDeliveriesListComponent },
+      { path: 'deliveries/list', component: DeliveryListComponent },
       { path: 'deliveries/list2', component: DeliveryListComponent },
       { path: 'deliveries/zones', component: DeliveryZonesComponent },
       
@@ -95,11 +98,11 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
+    SharedModule,
     ShopLayoutComponent,
     ShopDashboardComponent,
     ShopProductListComponent,
     ShopProductAddComponent,
-    ShopOrderListComponent,
     ShopOrdersListComponent,
     ShopOrderFormComponent,
     ShopOrderDetailComponent,
@@ -108,13 +111,13 @@ const routes: Routes = [
     ShopEmployeeFormComponent,
     ShopClientsListComponent,
     ShopClientFormComponent,
-    ShopDeliveriesListComponent,
+    DeliveryListComponent,
     ShopStockListComponent,
     PromotionListComponent,
     PromotionFormComponent,
-    DeliveryListComponent,
     DeliveryZonesComponent,
     ShopProfileComponent,
+    ShopQuoteRequestsComponent,
     RouterModule.forChild(routes)
   ]
 })

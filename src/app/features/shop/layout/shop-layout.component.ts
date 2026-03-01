@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { NotificationBellComponent } from '../../../shared/components/notification-bell/notification-bell.component';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { PermissionService } from '../../../core/services/permission.service';
 
@@ -24,7 +25,7 @@ interface MenuItem {
 @Component({
   selector: 'app-shop-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NotificationBellComponent],
   templateUrl: './shop-layout.component.html',
   styleUrls: ['./shop-layout.component.css']
 })
@@ -60,6 +61,7 @@ export class ShopLayoutComponent {
         { label: '📋 Liste', route: '/shop/orders/list' }
       ]
     },
+    { icon: '📝', label: 'Demandes clients', route: '/shop/quote-requests' },
     {
       icon: '🚚',
       label: 'Livraisons',
@@ -83,16 +85,15 @@ export class ShopLayoutComponent {
     { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
   ];
 
-  // Limited menu for STAFF (Dashboard, Produits, Commandes, Clients, Livraisons)
+  // Limited menu for STAFF (only what they have permission to see)
   private staffMenuItems: MenuItem[] = [
-    { icon: '📊', label: 'Dashboard', route: '/shop/dashboard' },
     { 
       icon: '📦', 
       label: 'Produits', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/shop/products/list' },
-        { label: '➕ Ajouter', route: '/shop/products/add' }
+        { label: '📋 Voir liste', route: '/shop/products/list' }
+        // STAFF cannot add/edit products (edit_products: false)
       ]
     },
     { 
@@ -117,18 +118,9 @@ export class ShopLayoutComponent {
       label: 'Livraisons', 
       route: '/shop/deliveries/list'
     },
-    { icon: '💰', label: 'Ventes', route: '/shop/sales' },
     { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
-    { 
-      icon: '👤', 
-      label: 'Clients', 
-      expanded: false,
-      children: [
-        { label: '📋 Liste', route: '/shop/clients/list' },
-        { label: '➕ Ajouter', route: '/shop/clients/add' }
-      ]
-    },
     { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
+    // STAFF cannot see: Dashboard, Ventes, Employés, Demandes clients (management only)
   ];
 
   // Observable for filtered menu items

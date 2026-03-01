@@ -48,21 +48,21 @@ export class AdminLayoutComponent {
       ]
     },
     { 
-      icon: '📦', 
-      label: 'Produits', 
-      expanded: false,
-      children: [
-        { label: '📋 Liste', route: '/admin/products/list' },
-        { label: '➕ Ajouter', route: '/admin/products/add' }
-      ]
-    },
-    { 
-      icon: '📄', 
+      icon: '', 
       label: 'Contrats de Bail', 
       expanded: false,
       children: [
         { label: '📋 Liste', route: '/admin/lease-contracts' },
         { label: '➕ Ajouter', route: '/admin/lease-contracts/add' }
+      ]
+    },
+    { 
+      icon: '💰', 
+      label: 'Paiements de Loyer', 
+      expanded: false,
+      children: [
+        { label: '📋 Liste', route: '/admin/rent-payments' },
+        { label: '➕ Ajouter', route: '/admin/rent-payments/add' }
       ]
     }
   ];

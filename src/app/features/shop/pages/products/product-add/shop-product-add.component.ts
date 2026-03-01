@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { ProductService, Product, CreateProductRequest, UpdateProductRequest } from '../../../services/product.service';
+import { ShopService } from '../../../services/shop.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { PermissionService } from '../../../../../core/services/permission.service';
 
@@ -134,9 +135,9 @@ interface ProductStatusInfo {
           <div class="form-row">
             <div class="form-group">
               <label>Catégorie principale</label>
-              <select [(ngModel)]="selectedCategory" name="category" (change)="addCategory()">
+              <select [(ngModel)]="selectedCategoryId" name="category" (change)="addCategory()">
                 <option value="">Sélectionner une catégorie</option>
-                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
               </select>
             </div>
           </div>
@@ -435,7 +436,7 @@ export class ShopProductAddComponent implements OnInit {
   error: string | null = null;
   isDragging = false;
   
-  categories: string[] = [];
+  categories: { _id: string; name: string }[] = [];
   newCategory = '';
   tagsInput = '';
   
@@ -447,7 +448,7 @@ export class ShopProductAddComponent implements OnInit {
     cost_price: number;
     image_url: string;
     images: { image_url: string; created_at: string }[];
-    categories: { category_id?: string; name: string }[];
+    categories: { category_id?: string; name: string; assigned_at?: string }[];
     initial_stock: number;
     current_status: ProductStatusInfo;
   } = {
@@ -463,13 +464,15 @@ export class ShopProductAddComponent implements OnInit {
     current_status: { status: 'DRAFT', reason: '', updated_at: new Date().toISOString() }
   };
   selectedCategory = '';
+  selectedCategoryId = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
     private authService: AuthService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private shopService: ShopService
   ) {}
 
   ngOnInit(): void {
@@ -494,12 +497,19 @@ export class ShopProductAddComponent implements OnInit {
   }
 
   loadCategories(): void {
-    if (!this.shopId) return;
-    this.productService.getCategories(this.shopId).subscribe({
-      next: (response) => {
-        this.categories = response.data;
+    // Use shop service to get categories for this shop
+    this.shopService.getMyCategories().subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          const categories = response.data.categories || [];
+          // Map to format expected by component: { _id, name }
+          this.categories = categories.map((c: any) => ({
+            _id: c.category_id?.toString() || c._id || c.id || '',
+            name: c.name || ''
+          })).filter((c: any) => !!c._id && !!c.name);
+        }
       },
-      error: (err) => console.error('Error loading categories:', err)
+      error: (err: any) => console.error('Error loading categories:', err)
     });
   }
 
@@ -527,7 +537,13 @@ export class ShopProductAddComponent implements OnInit {
           cost_price: costPrice,
           image_url: p.image_url || '',
           images: Array.isArray(p.images) ? p.images : [],
-          categories: Array.isArray(p.categories) ? p.categories : [],
+          categories: Array.isArray(p.categories) 
+            ? p.categories.map((c: any) => ({
+                category_id: c.category_id?.toString?.() || c.category_id || '',
+                name: c.name || '',
+                assigned_at: c.assigned_at && typeof c.assigned_at === 'string' ? c.assigned_at : new Date().toISOString()
+              }))
+            : [],
           initial_stock: 0,
           current_status: (p.current_status || { status: 'DRAFT', reason: '', updated_at: new Date().toISOString() }) as ProductStatusInfo
         };
@@ -554,12 +570,14 @@ export class ShopProductAddComponent implements OnInit {
         description: this.product.description || undefined,
         unit_price: this.product.unit_price,
         cost_price: this.product.cost_price || undefined,
-        image_url: this.product.image_url || undefined,
+        image_url: this.product.images.length > 0 ? this.product.images[0].image_url : undefined,
+        images: this.product.images,
         categories: this.product.categories
       };
 
       this.productService.updateProduct(this.productId, updateData).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('DEBUG: Update product response:', response);
           this.router.navigate(['/shop/products/list']);
         },
         error: (err) => {
@@ -584,7 +602,10 @@ export class ShopProductAddComponent implements OnInit {
       };
 
       this.productService.createProduct(createData).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('DEBUG: Create product response:', response);
+          console.log('DEBUG: Product data returned:', response.data);
+          console.log('DEBUG: Images in response:', response.data?.images);
           this.router.navigate(['/shop/products/list']);
         },
         error: (err) => {
@@ -597,10 +618,18 @@ export class ShopProductAddComponent implements OnInit {
   }
 
   addCategory(): void {
-    if (this.selectedCategory && !this.product.categories.find(c => c.name === this.selectedCategory)) {
-      this.product.categories.push({ name: this.selectedCategory });
+    if (!this.selectedCategoryId) return;
+    const selected = this.categories.find(c => c._id === this.selectedCategoryId);
+    if (!selected) return;
+
+    if (!this.product.categories.find(c => c.category_id === selected._id)) {
+      this.product.categories.push({ 
+        category_id: selected._id, 
+        name: selected.name,
+        assigned_at: new Date().toISOString()
+      });
     }
-    this.selectedCategory = '';
+    this.selectedCategoryId = '';
   }
 
   removeCategory(index: number): void {

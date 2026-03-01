@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PromotionService, Promotion, PromotionStats } from '../../../services/promotion.service';
+import { ProductService, Product } from '../../../services/product.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
@@ -67,6 +68,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
           <thead>
             <tr>
               <th>Code / Titre</th>
+              <th>Produits</th>
               <th>Type</th>
               <th>Valeur</th>
               <th>Période</th>
@@ -85,6 +87,16 @@ import { AuthService } from '../../../../../core/services/auth.service';
                 </div>
                 <div class="promo-desc" *ngIf="promo.description">
                   {{ promo.description | slice:0:50 }}...
+                </div>
+              </td>
+
+              <!-- Produits concernés -->
+              <td>
+                <div class="products-list" *ngIf="promo.applicable_products === 'ALL' || !promo.applicable_products">
+                  <span class="badge all">🛍️ Tous les produits</span>
+                </div>
+                <div class="products-list" *ngIf="promo.applicable_products && promo.applicable_products !== 'ALL'">
+                  <div class="product-names">{{ getProductNames(promo) }}</div>
                 </div>
               </td>
 
@@ -258,6 +270,11 @@ import { AuthService } from '../../../../../core/services/auth.service';
       cursor: pointer;
       color: #64748b;
     }
+    .btn-filter.active-promos {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #f59e0b;
+    }
 
     /* Table */
     .promotions-table-container {
@@ -288,6 +305,29 @@ import { AuthService } from '../../../../../core/services/auth.service';
     }
     .promotions-table tr:hover {
       background: #f8fafc;
+    }
+
+    /* Products List */
+    .products-list {
+      max-width: 200px;
+    }
+    .product-names {
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.4;
+      max-height: 60px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .products-list .badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .products-list .badge.all {
+      background: #dbeafe;
+      color: #1d4ed8;
     }
 
     /* Promo Info */
@@ -485,6 +525,7 @@ export class PromotionListComponent implements OnInit {
   loading = false;
   error: string | null = null;
   private shopId: string | null = null;
+  products: Product[] = [];
   
   pagination = {
     page: 1,
@@ -495,6 +536,7 @@ export class PromotionListComponent implements OnInit {
 
   constructor(
     private promotionService: PromotionService,
+    private productService: ProductService,
     private authService: AuthService,
     private router: Router
   ) { }
@@ -503,11 +545,22 @@ export class PromotionListComponent implements OnInit {
     const user = this.authService.currentUserValue;
     if (user?.shop_id) {
       this.shopId = user.shop_id;
+      this.loadProducts();
       this.loadPromotions();
       this.loadStats();
     } else {
       this.error = 'Shop ID non trouvé. Veuillez vous reconnecter.';
     }
+  }
+
+  loadProducts(): void {
+    if (!this.shopId) return;
+    this.productService.getProductsByShop(this.shopId, { limit: 100 }).subscribe({
+      next: (response) => {
+        this.products = response.data.products;
+      },
+      error: (err) => console.error('Error loading products:', err)
+    });
   }
 
   loadPromotions(): void {
@@ -639,5 +692,22 @@ export class PromotionListComponent implements OnInit {
   getUsagePercentage(promo: Promotion): number {
     if (!promo.usage_limit || !promo.usage_count) return 0;
     return Math.min((promo.usage_count / promo.usage_limit) * 100, 100);
+  }
+
+  getProductsCount(promo: Promotion): number {
+    if (promo.applicable_products === 'ALL' || !promo.applicable_products) return 0;
+    if (Array.isArray(promo.applicable_products)) return promo.applicable_products.length;
+    return 0;
+  }
+
+  getProductNames(promo: Promotion): string {
+    if (promo.applicable_products === 'ALL' || !promo.applicable_products) return 'Tous les produits';
+    if (Array.isArray(promo.applicable_products)) {
+      const names = promo.applicable_products
+        .map(id => this.products.find(p => p._id === id)?.name)
+        .filter(name => name);
+      return names.length > 0 ? names.join(', ') : `${promo.applicable_products.length} produit(s)`;
+    }
+    return '';
   }
 }

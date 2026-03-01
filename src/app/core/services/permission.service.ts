@@ -1,25 +1,35 @@
 import { Injectable } from '@angular/core';
 import { AuthService, User } from './auth.service';
 
+// Permissions must match backend: employee.service.js getPermissions()
 export type Permission = 
-  | 'employees.view'      // Voir la liste des employés
-  | 'employees.create'    // Créer un employé
-  | 'employees.edit'      // Modifier un employé
-  | 'employees.delete'    // Supprimer un employé
-  | 'employees.manage_permissions' // Gérer les permissions
-  | 'clients.view'        // Voir la liste des clients
+  // Products
+  | 'view_products'       // Voir les produits
+  | 'edit_products'       // Modifier les produits (ajouter/modifier/supprimer)
+  | 'delete_products'     // Supprimer les produits
+  // Orders
+  | 'view_orders'         // Voir les commandes
+  | 'process_orders'      // Traiter les commandes
+  | 'cancel_orders'       // Annuler les commandes
+  // Sales & Reports
+  | 'view_sales'          // Voir les ventes
+  | 'view_reports'        // Voir les rapports
+  // Employees
+  | 'manage_employees'    // Gérer les employés
+  // Stock
+  | 'manage_stock'        // Gérer le stock
+  // Promotions
+  | 'view_promotions'     // Voir les promotions
+  | 'manage_promotions'   // Gérer les promotions
+  // Deliveries
+  | 'view_deliveries'     // Voir les livraisons
+  // Shop Profile
+  | 'edit_shop_profile'   // Modifier le profil boutique
+  // Clients (legacy compatibility)
+  | 'clients.view'        // Voir les clients
   | 'clients.create'      // Créer un client
   | 'clients.edit'        // Modifier un client
-  | 'clients.delete'      // Supprimer un client
-  | 'orders.view'         // Voir les commandes
-  | 'orders.create'       // Créer une commande
-  | 'orders.edit'         // Modifier une commande
-  | 'orders.delete'       // Supprimer une commande
-  | 'products.view'       // Voir les produits
-  | 'products.create'     // Créer un produit
-  | 'products.edit'       // Modifier un produit
-  | 'products.delete'     // Supprimer un produit
-  | 'deliveries.view';    // Voir les livraisons
+  | 'clients.delete';     // Supprimer un client
 
 @Injectable({
   providedIn: 'root'
@@ -57,69 +67,50 @@ export class PermissionService {
   }
 
   /**
-   * Check shop employee permissions
+   * Check shop employee permissions - must match backend employee.service.js
    */
   private hasShopPermission(user: User, permission: Permission): boolean {
     const role = user.role;
 
     if (!role) return false;
 
-    // MANAGER_SHOP - Full access to employee management
+    // MANAGER_SHOP - Full access
     if (role === 'MANAGER_SHOP') {
       return true; // Manager has all permissions
     }
 
-    // STAFF - Limited access
+    // STAFF - Limited access (matches backend permissions)
     if (role === 'STAFF') {
       switch (permission) {
-        case 'employees.view':
-          return true; // Can view employees
-        case 'employees.create':
-        case 'employees.edit':
-        case 'employees.delete':
-        case 'employees.manage_permissions':
-          return false; // Cannot modify employees
+        // STAFF can view
+        case 'view_products':
+        case 'view_orders':
+        case 'view_promotions':  // STAFF can view promotions
+        case 'manage_stock':
+        case 'view_deliveries':
+          return true;
+        
+        // STAFF can process orders but not cancel
+        case 'process_orders':
+          return true;
+        
+        // Everything else is false
+        case 'edit_products':
+        case 'delete_products':
+        case 'cancel_orders':
+        case 'view_sales':
+        case 'view_reports':
+        case 'manage_employees':
+        case 'manage_promotions':  // STAFF cannot manage promotions
+        case 'edit_shop_profile':
+          return false;
+        
         default:
           return false;
       }
     }
 
     return false;
-  }
-
-  /**
-   * Check if user can view employees
-   */
-  canViewEmployees(): boolean {
-    return this.hasPermission('employees.view');
-  }
-
-  /**
-   * Check if user can create employees
-   */
-  canCreateEmployees(): boolean {
-    return this.hasPermission('employees.create');
-  }
-
-  /**
-   * Check if user can edit employees
-   */
-  canEditEmployees(): boolean {
-    return this.hasPermission('employees.edit');
-  }
-
-  /**
-   * Check if user can delete employees
-   */
-  canDeleteEmployees(): boolean {
-    return this.hasPermission('employees.delete');
-  }
-
-  /**
-   * Check if user can manage permissions
-   */
-  canManagePermissions(): boolean {
-    return this.hasPermission('employees.manage_permissions');
   }
 
   /**
@@ -136,6 +127,29 @@ export class PermissionService {
   isStaff(): boolean {
     const user = this.getCurrentUser();
     return user?.role === 'STAFF';
+  }
+
+  /**
+   * Legacy helper methods for employee management
+   */
+  canViewEmployees(): boolean {
+    return this.hasPermission('manage_employees');
+  }
+
+  canCreateEmployees(): boolean {
+    return this.hasPermission('manage_employees');
+  }
+
+  canEditEmployees(): boolean {
+    return this.hasPermission('manage_employees');
+  }
+
+  canDeleteEmployees(): boolean {
+    return this.hasPermission('manage_employees');
+  }
+
+  canManagePermissions(): boolean {
+    return this.hasPermission('manage_employees');
   }
 
   /**

@@ -1,21 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { NotificationBellComponent } from './components/notification-bell/notification-bell.component';
 
 @NgModule({
-  declarations: [
-    // Shared components, pipes, and directives will be declared here
-  ],
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule,
+    NotificationBellComponent
   ],
   exports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
-    // Export shared components, pipes, and directives here
+    ReactiveFormsModule,
+    RouterModule,
+    NotificationBellComponent
   ]
 })
 export class SharedModule { }

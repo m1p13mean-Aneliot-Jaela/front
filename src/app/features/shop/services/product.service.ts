@@ -106,7 +106,7 @@ export interface CreateProductRequest {
     created_at: string;
   }[];
   shop_id: string;
-  categories?: { category_id?: string; name: string }[];
+  categories?: { category_id?: string; name: string; assigned_at?: string }[];
   initial_stock?: number; // Pour initialiser le stock séparé
   current_status?: {
     status: 'DRAFT' | 'PENDING' | 'ACTIVE' | 'REJECTED';
@@ -122,7 +122,11 @@ export interface UpdateProductRequest {
   unit_price?: number;
   cost_price?: number;
   image_url?: string;
-  categories?: { category_id?: string; name: string }[];
+  images?: {
+    image_url: string;
+    created_at: string;
+  }[];
+  categories?: { category_id?: string; name: string; assigned_at?: string }[];
 }
 
 export interface SetPromotionRequest {
