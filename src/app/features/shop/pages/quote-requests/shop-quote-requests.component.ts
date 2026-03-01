@@ -6,6 +6,7 @@ import { ShopQuoteRequestService, QuoteRequest, QuoteStats, ManagerResponseItem 
 import { AuthService } from '../../../../core/services/auth.service';
 import { ProductService, Product } from '../../services/product.service';
 import { EmployeeService, Employee } from '../../services/employee.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-shop-quote-requests',
@@ -1064,7 +1065,8 @@ export class ShopQuoteRequestsComponent implements OnInit {
     private productService: ProductService,
     private employeeService: EmployeeService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -1274,6 +1276,8 @@ export class ShopQuoteRequestsComponent implements OnInit {
       promotion_code: this.promotionCode
     }).subscribe({
       next: () => {
+        // Refresh notifications after responding to quote
+        this.notificationService.refreshNotifications();
         this.closeResponseModal();
         this.loadQuotes();
       },
@@ -1326,6 +1330,8 @@ export class ShopQuoteRequestsComponent implements OnInit {
       this.selectedStaffId || undefined
     ).subscribe({
       next: (response) => {
+        // Refresh notifications after converting quote to order
+        this.notificationService.refreshNotifications();
         this.closeStaffModal();
         this.loadQuotes(); // Refresh the list
         // Optionally navigate to the created order

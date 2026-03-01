@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { OrderService, Order } from '../../services/order.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-order-detail',
@@ -417,7 +418,8 @@ export class OrderDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -456,6 +458,8 @@ export class OrderDetailComponent implements OnInit {
     this.orderService.confirmPayment(this.order._id).subscribe({
       next: (response) => {
         this.paying = false;
+        // Refresh notifications after payment confirmation
+        this.notificationService.refreshNotifications();
         alert('Paiement confirmé avec succès !');
         this.loadOrder(this.order!._id); // Reload to show updated status
       },

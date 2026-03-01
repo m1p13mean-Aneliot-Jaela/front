@@ -8,6 +8,7 @@ import { QuoteRequestService, QuoteRequestItem } from '../../services/quote-requ
 import { AuthService } from '../../../../core/services/auth.service';
 import { CartService, Cart } from '../../services/cart.service';
 import { environment } from '../../../../../environments/environment';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 interface ShopPublic {
   _id: string;
@@ -273,7 +274,8 @@ export class CreateQuoteRequestComponent implements OnInit {
     private authService: AuthService,
     private cartService: CartService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -442,6 +444,8 @@ export class CreateQuoteRequestComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.submitting = false;
+        // Refresh notifications
+        this.notificationService.refreshNotifications();
         // Clear cart if coming from cart
         if (this.fromCart) {
           this.cartService.clearCart();

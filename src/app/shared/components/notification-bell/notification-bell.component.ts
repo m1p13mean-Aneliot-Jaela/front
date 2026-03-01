@@ -293,11 +293,42 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  // Types de notifications pour la boutique (commandes, paiements)
-  private shopNotificationTypes = ['ORDER_NEW', 'ORDER_PAID'];
+  // Types de notifications pour la boutique (commandes, paiements, devis, loyer)
+  private shopNotificationTypes = [
+    'ORDER_NEW', 
+    'ORDER_PAID', 
+    'QUOTE_REQUEST',
+    'QUOTE_ACCEPTED',
+    'QUOTE_REJECTED',
+    'PAYMENT_RECEIVED',
+    'RENT_PAYMENT_DUE',
+    'RENT_PAYMENT_RECEIVED',
+    'RENT_PAYMENT_OVERDUE',
+    'RENT_PAYMENT_FAILED',
+    'STOCK_LOW',
+    'STOCK_OUT',
+    'REVIEW_NEW'
+  ];
   
-  // Types de notifications pour le client (statuts de commande, promotions)
-  private clientNotificationTypes = ['ORDER_CONFIRMED', 'ORDER_PAYMENT_REQUESTED', 'ORDER_SHIPPED', 'ORDER_DELIVERED', 'ORDER_CANCELED', 'NEW_SHOP', 'PRODUCT_PROMOTION', 'PROMOTION'];
+  // Types de notifications pour le client (statuts de commande, devis, promotions)
+  private clientNotificationTypes = [
+    'ORDER_NEW',
+    'ORDER_CREATED',
+    'ORDER_ASSIGNED',
+    'ORDER_CONFIRMED', 
+    'ORDER_PAYMENT_REQUESTED', 
+    'ORDER_SHIPPED', 
+    'ORDER_DELIVERED', 
+    'ORDER_CANCELED',
+    'ORDER_REFUNDED',
+    'QUOTE_RESPONSE',
+    'PROMOTION_NEW',
+    'PROMOTION_EXPIRING',
+    'WISHLIST_PRICE_DROP',
+    'WELCOME',
+    'SYSTEM',
+    'DELIVERY_UPDATE'
+  ];
 
   get filteredNotifications(): Notification[] {
     if (this.userType === 'shop') {

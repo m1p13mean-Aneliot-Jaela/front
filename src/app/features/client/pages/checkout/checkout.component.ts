@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { OrderService, CreateOrderRequest, OrderItem } from '../../services/order.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 interface Product {
   _id: string;
@@ -272,7 +273,8 @@ export class CheckoutComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private orderService: OrderService,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -360,6 +362,8 @@ export class CheckoutComponent implements OnInit {
     this.orderService.createOrder(orderData).subscribe({
       next: (response) => {
         this.submitting = false;
+        // Refresh notifications to show the new order notification
+        this.notificationService.refreshNotifications();
         // Navigate to confirmation page
         this.router.navigate(['/client/order-confirmation', response.data._id], {
           state: { order: response.data }

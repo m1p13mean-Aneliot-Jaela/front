@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { OrderService, Order } from '../../../services/order.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { PermissionService } from '../../../../../core/services/permission.service';
+import { NotificationService } from '../../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-shop-order-list',
@@ -386,7 +387,8 @@ export class ShopOrderListComponent implements OnInit {
     private orderService: OrderService,
     private authService: AuthService,
     private permissionService: PermissionService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -492,6 +494,8 @@ export class ShopOrderListComponent implements OnInit {
     event.stopPropagation();
     this.orderService.updateStatus(orderId, status).subscribe({
       next: () => {
+        // Refresh notifications after status update
+        this.notificationService.refreshNotifications();
         this.loadOrders();
         this.loadStats();
       },
@@ -511,6 +515,8 @@ export class ShopOrderListComponent implements OnInit {
     if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
       this.orderService.updateStatus(orderId, 'CANCELED', 'Annulée par le vendeur').subscribe({
         next: () => {
+          // Refresh notifications after canceling order
+          this.notificationService.refreshNotifications();
           this.loadOrders();
           this.loadStats();
         },
