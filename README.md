@@ -213,6 +213,38 @@ The production Docker image uses:
 
 Nginx serves the built application on port 80, mapped to port 4200 on the host.
 
+## Vercel Deployment
+
+The application is configured for easy deployment on Vercel.
+
+### Quick Deploy
+
+1. Push your code to GitHub, GitLab, or Bitbucket
+2. Import your repository in [Vercel Dashboard](https://vercel.com/new)
+3. Select the `front` directory as the root
+4. Vercel will auto-detect Angular and deploy
+
+### CLI Deploy
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy from the front directory
+cd front
+vercel
+```
+
+### Configuration
+
+The `vercel.json` file contains:
+- Build and output directory settings
+- Routing configuration for Angular SPA
+- Security headers
+- Cache headers for static assets
+
+For detailed deployment instructions, see [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md).
+
 ## License
 
 MIT
