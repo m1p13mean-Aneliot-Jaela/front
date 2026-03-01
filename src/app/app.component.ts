@@ -17,14 +17,21 @@ export class AppComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.initializeBackend();
+    // Only initialize backend in production (Render free tier sleeps)
+    if (environment.production) {
+      this.initializeBackend();
+    } else {
+      // In development, skip initialization
+      this.isBackendReady = true;
+    }
   }
 
   private initializeBackend() {
     const startTime = Date.now();
+    const baseUrl = environment.apiUrl.replace('/api', '');
     
     // Wake up the backend (free Render services sleep after 15 min)
-    this.http.get(`${environment.apiUrl.replace('/api', '')}/health`, { 
+    this.http.get(`${baseUrl}/health`, { 
       observe: 'response',
       headers: { 'Content-Type': 'application/json' }
     }).subscribe({
