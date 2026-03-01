@@ -279,7 +279,6 @@ import { Shop } from '../../../../../shared/models/shop.model';
       margin-right: 0.25rem;
       display: inline-block;
     }
-    }
     .badge.active { background: #d1fae5; color: #059669; }
     .badge.inactive { background: #fee2e2; color: #dc2626; }
     .badge.verified { background: #dbeafe; color: #2563eb; }
