@@ -78,22 +78,22 @@ interface Pagination {
             [routerLink]="['/client/quote-requests/new']"
             [queryParams]="{ shopId: shopId }"
           >
-            📝 Demander un devis
+            ✎ Demander un devis
           </a>
         </div> -->
         <div class="shop-info-header">
           <div class="shop-logo">
             <img *ngIf="shop.logo" [src]="shop.logo" [alt]="shop.shop_name" />
-            <span *ngIf="!shop.logo">🏪</span>
+            <span *ngIf="!shop.logo">▣</span>
           </div>
           <div class="shop-details">
             <h1>{{ shop.shop_name }}</h1>
             <p class="description" *ngIf="shop.description">{{ shop.description }}</p>
             <p class="location" *ngIf="shop.mall_location">
-              📍 {{ shop.mall_location }}
+              ● {{ shop.mall_location }}
             </p>
             <div class="rating" *ngIf="shop.review_stats?.average_rating">
-              ⭐ {{ shop.review_stats?.average_rating?.toFixed(1) }} 
+              ★ {{ shop.review_stats?.average_rating?.toFixed(1) }} 
               ({{ shop.review_stats?.total_reviews }} avis)
             </div>
           </div>
@@ -102,7 +102,7 @@ interface Pagination {
 
       <!-- Filters Section -->
       <div class="filters-section">
-        <h3>🔍 Rechercher des produits</h3>
+        <h3>⌕ Rechercher des produits</h3>
         <div class="filters-grid">
           <!-- Search by name -->
           <div class="filter-input">
@@ -161,7 +161,7 @@ interface Pagination {
 
         <!-- Clear filters -->
         <button class="btn-clear" (click)="clearFilters()" *ngIf="hasActiveFilters()">
-          🗑️ Réinitialiser les filtres
+          ↻ Réinitialiser les filtres
         </button>
       </div>
 
@@ -192,7 +192,7 @@ interface Pagination {
           <div class="product-card" *ngFor="let product of products" (click)="viewProduct(product._id)">
             <div class="product-image">
               <img *ngIf="getProductImage(product)" [src]="getProductImage(product)" [alt]="product.name" />
-              <span *ngIf="!getProductImage(product)" class="product-emoji">📦</span>
+              <span *ngIf="!getProductImage(product)" class="product-emoji">▦</span>
               <span class="badge-sale" *ngIf="hasActivePromo(product)">
                 -{{ getPromoDiscountPercent(product) }}%
               </span>
@@ -215,7 +215,7 @@ interface Pagination {
                 class="btn-add-cart" 
                 (click)="addToCart($event, product)"
                 [disabled]="product.stock_quantity === 0 || !product.is_available">
-                🛒 Ajouter
+                ⊞ Ajouter
               </button>
             </div>
           </div>

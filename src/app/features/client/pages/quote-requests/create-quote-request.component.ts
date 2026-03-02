@@ -52,14 +52,14 @@ interface ProductsResponse {
   template: `
     <div class="page">
       <div class="header">
-        <h2>📝 Nouvelle demande de devis</h2>
+        <h2>✎ Nouvelle demande de devis</h2>
         <p class="subtitle">Décrivez vos besoins et envoyez la demande à une boutique.</p>
       </div>
 
       <div *ngIf="error" class="error">{{ error }}</div>
 
       <div class="card">
-        <h3>🏪 Boutique</h3>
+        <h3>▣ Boutique</h3>
 
         <div class="form-row">
           <label>Boutique</label>
@@ -71,7 +71,7 @@ interface ProductsResponse {
 
         <div *ngIf="selectedShop" class="shop-preview">
           <div class="shop-name">{{ selectedShop.shop_name }}</div>
-          <div class="shop-meta" *ngIf="selectedShop.mall_location">📍 {{ selectedShop.mall_location }}</div>
+          <div class="shop-meta" *ngIf="selectedShop.mall_location">● {{ selectedShop.mall_location }}</div>
         </div>
       </div>
 
@@ -121,7 +121,7 @@ interface ProductsResponse {
 
       <div class="card">
         <div class="items-header">
-          <h3>📦 Produits du panier</h3>
+          <h3>▦ Produits du panier</h3>
           <a routerLink="/client/cart" class="btn-link">Modifier le panier →</a>
         </div>
 

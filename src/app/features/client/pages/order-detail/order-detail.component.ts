@@ -75,7 +75,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
 
         <!-- Payment Section -->
         <div class="payment-card" *ngIf="order.status === 'PAYMENT_REQUESTED'">
-          <h2>💳 Paiement</h2>
+          <h2>▭ Paiement</h2>
           <p class="payment-desc">Le vendeur attend votre paiement. Choisissez votre méthode de paiement :</p>
           
           <div class="payment-methods">
@@ -409,10 +409,10 @@ export class OrderDetailComponent implements OnInit {
   selectedMethod: string | null = null;
 
   paymentMethods = [
-    { id: 'MOBILE_MONEY', name: 'Mobile Money', icon: '📱', description: 'Airtel Money, MVola, Orange Money' },
-    { id: 'BANK_TRANSFER', name: 'Virement bancaire', icon: '🏦', description: 'Transfert depuis votre compte bancaire' },
-    { id: 'CARD', name: 'Carte bancaire', icon: '💳', description: 'Visa, Mastercard' },
-    { id: 'CASH', name: 'Espèces', icon: '💵', description: 'Paiement à la livraison' }
+    { id: 'MOBILE_MONEY', name: 'Mobile Money', icon: '▯', description: 'Airtel Money, MVola, Orange Money' },
+    { id: 'BANK_TRANSFER', name: 'Virement bancaire', icon: '▤', description: 'Transfert depuis votre compte bancaire' },
+    { id: 'CARD', name: 'Carte bancaire', icon: '▭', description: 'Visa, Mastercard' },
+    { id: 'CASH', name: 'Espèces', icon: '▬', description: 'Paiement à la livraison' }
   ];
 
   constructor(

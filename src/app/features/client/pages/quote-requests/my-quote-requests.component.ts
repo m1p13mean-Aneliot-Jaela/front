@@ -12,7 +12,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   template: `
     <div class="quote-requests-page">
       <div class="page-header">
-        <h2>📝 Mes demandes de devis</h2>
+        <h2>✎ Mes demandes de devis</h2>
         <p class="subtitle">Suivez vos demandes et les réponses des boutiques</p>
         <div class="header-actions">
           <a class="btn-primary" routerLink="/client/quote-requests/new">Nouvelle demande</a>
@@ -44,7 +44,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 
       <!-- Empty state -->
       <div *ngIf="!loading && !error && quotes.length === 0" class="empty-state">
-        <div class="empty-icon">📝</div>
+        <div class="empty-icon">✎</div>
         <h3>Aucune demande trouvée</h3>
         <p *ngIf="hasSearched">Aucune demande n'est associée à ce numéro de téléphone.</p>
         <p *ngIf="!hasSearched && isAuthenticated">Vous n'avez pas encore fait de demande de devis.</p>
@@ -86,7 +86,7 @@ import { AuthService } from '../../../../core/services/auth.service';
           <!-- Manager response preview -->
           <div class="manager-response" *ngIf="quote.manager_response">
             <div class="response-header">
-              <span class="response-by">💼 Réponse de {{ quote.handled_by_name || 'le manager' }}</span>
+              <span class="response-by">◈ Réponse de {{ quote.handled_by_name || 'le manager' }}</span>
             </div>
             <p class="response-message" *ngIf="quote.manager_response.message">
               "{{ quote.manager_response.message }}"
@@ -103,14 +103,14 @@ import { AuthService } from '../../../../core/services/auth.service';
           <!-- Client response actions -->
           <div class="client-actions" *ngIf="quote.status === 'QUOTE_SENT' && !quote.client_response">
             <div class="action-hint">
-              ⏰ Ce devis expire le {{ quote.expires_at | date:'dd/MM/yyyy' }}
+              ◷ Ce devis expire le {{ quote.expires_at | date:'dd/MM/yyyy' }}
             </div>
             <div class="action-buttons">
               <button class="btn-accept" (click)="respondToQuote(quote._id, true, $event)">
-                ✅ Accepter
+                ✓ Accepter
               </button>
               <button class="btn-reject" (click)="respondToQuote(quote._id, false, $event)">
-                ❌ Refuser
+                ✗ Refuser
               </button>
             </div>
           </div>
@@ -118,14 +118,14 @@ import { AuthService } from '../../../../core/services/auth.service';
           <!-- Client response result -->
           <div class="client-response" *ngIf="quote.client_response">
             <span [class]="quote.client_response.accepted ? 'accepted' : 'rejected'">
-              {{ quote.client_response.accepted ? '✅ Vous avez accepté' : '❌ Vous avez refusé' }}
+              {{ quote.client_response.accepted ? '✓ Vous avez accepté' : '✗ Vous avez refusé' }}
             </span>
             <span class="response-date">le {{ quote.client_response.responded_at | date:'dd/MM/yyyy' }}</span>
           </div>
 
           <!-- Converted to order -->
           <div class="converted-info" *ngIf="quote.status === 'CONVERTED' && quote.converted_order_id">
-            <span class="converted-badge">🎉 Commande créée !</span>
+            <span class="converted-badge">✓ Commande créée !</span>
             <button class="btn-view-order" (click)="viewOrder(quote.converted_order_id, $event)">
               Voir la commande →
             </button>
