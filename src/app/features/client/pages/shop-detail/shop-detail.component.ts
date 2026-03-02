@@ -37,7 +37,7 @@ interface Product {
   description?: string;
   unit_price: number;
   cost_price?: number;
-  images?: string[];
+  images?: Array<string | { [key: string]: any }>;
   image_url?: string;
   category_id?: {
     _id?: string;
@@ -49,6 +49,11 @@ interface Product {
     category_id?: { name?: string };
     name?: string;
   }>;
+  current_promo?: {
+    promo_price: number;
+    start_date: string;
+    end_date: string;
+  };
 }
 
 interface Pagination {
@@ -149,6 +154,7 @@ interface Pagination {
               <option value="price_asc">Prix croissant</option>
               <option value="price_desc">Prix décroissant</option>
               <option value="name">Nom A-Z</option>
+              <option value="promo">En promotion</option>
             </select>
           </div>
         </div>
@@ -185,10 +191,10 @@ interface Pagination {
         <div class="products-grid" *ngIf="!loading && products.length > 0">
           <div class="product-card" *ngFor="let product of products" (click)="viewProduct(product._id)">
             <div class="product-image">
-              <img *ngIf="product.images && product.images.length > 0" [src]="product.images[0]" [alt]="product.name" />
-              <span *ngIf="!product.images || product.images.length === 0" class="product-emoji">📦</span>
-              <span class="badge-sale" *ngIf="product.cost_price && product.cost_price > product.unit_price">
-                -{{ getDiscountPercent(product) }}%
+              <img *ngIf="getProductImage(product)" [src]="getProductImage(product)" [alt]="product.name" />
+              <span *ngIf="!getProductImage(product)" class="product-emoji">📦</span>
+              <span class="badge-sale" *ngIf="hasActivePromo(product)">
+                -{{ getPromoDiscountPercent(product) }}%
               </span>
               <span class="badge-out" *ngIf="product.stock_quantity === 0 || !product.is_available">
                 Indisponible
@@ -200,9 +206,9 @@ interface Pagination {
                 {{ product.category_id?.name }}
               </p>
               <div class="price-row">
-                <span class="price">{{ product.unit_price?.toLocaleString() }} Ar</span>
-                <span class="original-price" *ngIf="product.cost_price && product.cost_price > product.unit_price">
-                  {{ product.cost_price?.toLocaleString() }} Ar
+                <span class="price" [class.promo-price]="hasActivePromo(product)">{{ getDisplayPrice(product) | number }} Ar</span>
+                <span class="original-price" *ngIf="hasActivePromo(product)">
+                  {{ product.unit_price | number }} Ar
                 </span>
               </div>
               <button 
@@ -506,6 +512,9 @@ interface Pagination {
       color: #1e293b;
       font-size: 1rem;
     }
+    .price.promo-price {
+      color: #dc2626;
+    }
     .original-price {
       text-decoration: line-through;
       color: #94a3b8;
@@ -659,6 +668,7 @@ export class ShopDetailComponent implements OnInit {
     if (this.minPrice !== null) params.minPrice = this.minPrice;
     if (this.maxPrice !== null) params.maxPrice = this.maxPrice;
     if (this.selectedCategory) params.category = this.selectedCategory;
+    if (this.sortBy && this.sortBy !== 'newest') params.sortBy = this.sortBy;
 
     const queryString = Object.keys(params)
       .map(key => `${key}=${encodeURIComponent(params[key])}`)
@@ -669,6 +679,22 @@ export class ShopDetailComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         this.products = response.data.products;
+        // console.log('DEBUG: Products loaded:', this.products.length);
+        // console.log('DEBUG: First product images:', this.products[0]?.images);
+        // console.log('DEBUG: First product image_url:', this.products[0]?.image_url);
+        const firstWithPromo: any = this.products.find((p: any) => !!p?.current_promo);
+        if (firstWithPromo) {
+          console.log('DEBUG: First product with current_promo:', {
+            id: firstWithPromo?._id,
+            name: firstWithPromo?.name,
+            unit_price: firstWithPromo?.unit_price,
+            current_promo: firstWithPromo?.current_promo,
+            hasActivePromo: this.hasActivePromo(firstWithPromo),
+            displayPrice: this.getDisplayPrice(firstWithPromo)
+          });
+        } else {
+          console.log('DEBUG: No products with current_promo in response');
+        }
         this.pagination = response.data.pagination;
         this.loading = false;
       },
@@ -718,6 +744,101 @@ export class ShopDetailComponent implements OnInit {
     return Math.round(((product.cost_price - product.unit_price) / product.cost_price) * 100);
   }
 
+  // Helper methods for promo and images
+  getProductImage(product: Product): string | null {
+    if (product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
+      if (typeof firstImage === 'string') {
+        return firstImage;
+      }
+      if (typeof firstImage === 'object' && firstImage !== null) {
+        const imgObj: any = firstImage;
+        if (typeof imgObj.image_url === 'string') return imgObj.image_url;
+        if (typeof imgObj.url === 'string') return imgObj.url;
+        if (typeof imgObj.src === 'string') return imgObj.src;
+        if (typeof imgObj.path === 'string') return imgObj.path;
+        const values = Object.values(imgObj);
+        for (const val of values) {
+          if (typeof val === 'string' && (val.startsWith('http') || val.startsWith('data:'))) {
+            return val;
+          }
+        }
+      }
+    }
+    if (product.image_url) {
+      return product.image_url;
+    }
+    return null;
+  }
+
+  private coerceNumber(value: any): number | null {
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+    if (typeof value === 'string' && value.trim() !== '') {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : null;
+    }
+    return null;
+  }
+
+  private parseDate(value: any): Date | null {
+    if (!value) return null;
+    if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+    if (typeof value === 'string') {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    if (typeof value === 'number') {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    if (typeof value === 'object') {
+      const anyVal: any = value;
+      if (typeof anyVal.$date === 'string' || typeof anyVal.$date === 'number') {
+        return this.parseDate(anyVal.$date);
+      }
+      if (typeof anyVal.date === 'string' || typeof anyVal.date === 'number') {
+        return this.parseDate(anyVal.date);
+      }
+      if (typeof anyVal.iso === 'string') {
+        return this.parseDate(anyVal.iso);
+      }
+      if (typeof anyVal.toString === 'function') {
+        const str = anyVal.toString();
+        if (typeof str === 'string' && str !== '[object Object]') {
+          return this.parseDate(str);
+        }
+      }
+    }
+    return null;
+  }
+
+  hasActivePromo(product: Product): boolean {
+    if (!product.current_promo) return false;
+    const promoPrice = this.coerceNumber((product.current_promo as any).promo_price);
+    if (promoPrice === null) return false;
+    const start = this.parseDate((product.current_promo as any).start_date);
+    const end = this.parseDate((product.current_promo as any).end_date);
+    if (!start || !end) return false;
+    const now = new Date();
+    return now >= start && now <= end;
+  }
+
+  getPromoDiscountPercent(product: Product): number {
+    if (!this.hasActivePromo(product)) return 0;
+    const original = this.coerceNumber(product.unit_price) ?? 0;
+    const promo = this.coerceNumber((product.current_promo as any)!.promo_price) ?? 0;
+    if (original <= 0) return 0;
+    return Math.round(((original - promo) / original) * 100);
+  }
+
+  getDisplayPrice(product: Product): number {
+    if (this.hasActivePromo(product)) {
+      const promo = this.coerceNumber((product.current_promo as any)!.promo_price);
+      if (promo !== null) return promo;
+    }
+    return product.unit_price;
+  }
+
   viewProduct(productId: string): void {
     // Navigate to product detail
     window.location.href = `/client/products/${productId}`;
@@ -740,7 +861,7 @@ export class ShopDetailComponent implements OnInit {
       shop_id: this.shopId,
       shop_name: this.shop.shop_name,
       quantity: 1,
-      unit_price: product.unit_price
+      unit_price: this.getDisplayPrice(product)
     });
     
     // Show confirmation
