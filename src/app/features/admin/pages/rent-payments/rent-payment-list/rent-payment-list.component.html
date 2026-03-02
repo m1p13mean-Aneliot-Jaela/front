@@ -144,14 +144,14 @@
           </td>
           <td>
             <div class="action-buttons">
-              <button class="btn-view" (click)="viewPayment(payment)" title="Voir">👁️</button>
-              <button class="btn-edit" (click)="editPayment(payment)" title="Modifier">✏️</button>
+              <button class="btn-view" (click)="viewPayment(payment)" title="Voir">◉</button>
+              <button class="btn-edit" (click)="editPayment(payment)" title="Modifier">✎</button>
               <button 
                 class="btn-delete" 
                 (click)="deletePayment(payment)" 
                 title="Supprimer"
                 [disabled]="payment.current_status?.status !== 'PENDING'">
-                🗑️
+                ✕
               </button>
             </div>
           </td>

@@ -88,9 +88,9 @@ import { Shop } from '../../../../../shared/models/shop.model';
                 </span>
               </td>
               <td>
-                <button class="btn-view" (click)="viewShop(shop)" title="Voir">👁️</button>
-                <button class="btn-edit" (click)="editShop(shop)" title="Modifier">✏️</button>
-                <button class="btn-delete" (click)="deleteShop(shop)" title="Supprimer">🗑️</button>
+                <button class="btn-view" (click)="viewShop(shop)" title="Voir">◉</button>
+                <button class="btn-edit" (click)="editShop(shop)" title="Modifier">✎</button>
+                <button class="btn-delete" (click)="deleteShop(shop)" title="Supprimer">✕</button>
               </td>
             </tr>
             <tr *ngIf="paginatedShops.length === 0">

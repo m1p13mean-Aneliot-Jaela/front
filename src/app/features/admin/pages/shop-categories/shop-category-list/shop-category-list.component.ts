@@ -59,8 +59,8 @@ import { ShopCategory } from '../../../../../shared/models/shop.model';
               </td>
               <td>{{ formatDate(category.createdAt) }}</td>
               <td>
-                <button class="btn-edit" (click)="editCategory(category)" title="Modifier">✏️</button>
-                <button class="btn-delete" (click)="deleteCategory(category)" title="Supprimer">🗑️</button>
+                <button class="btn-edit" (click)="editCategory(category)" title="Modifier">✎</button>
+                <button class="btn-delete" (click)="deleteCategory(category)" title="Supprimer">✕</button>
               </td>
             </tr>
             <tr *ngIf="filteredCategories.length === 0">

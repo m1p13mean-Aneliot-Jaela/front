@@ -81,15 +81,15 @@ import { User, UserFilters } from '../../../../../shared/models/user.model';
               </td>
               <td>{{ formatDate(user.registered_at) }}</td>
               <td class="actions-cell">
-                <button class="btn-edit" (click)="editUser(user)" title="Modifier">✏️</button>
+                <button class="btn-edit" (click)="editUser(user)" title="Modifier">✎</button>
                 <button 
                   class="btn-status" 
                   (click)="toggleUserStatus(user)" 
                   [title]="user.current_status.status === 'active' ? 'Suspendre' : 'Activer'"
                 >
-                  {{ user.current_status.status === 'active' ? '🔒' : '✓' }}
+                  {{ user.current_status.status === 'active' ? '●' : '○' }}
                 </button>
-                <button class="btn-delete" (click)="deleteUser(user)" title="Supprimer">🗑️</button>
+                <button class="btn-delete" (click)="deleteUser(user)" title="Supprimer">✕</button>
               </td>
             </tr>
             <tr *ngIf="paginatedUsers.length === 0">

@@ -85,14 +85,14 @@ import { Shop } from '../../../../../shared/models/shop.model';
               </td>
               <td>{{ formatDate(box.created_at) }}</td>
               <td class="actions-cell">
-                <button class="btn-edit" (click)="editBox(box)" title="Modifier">✏️</button>
+                <button class="btn-edit" (click)="editBox(box)" title="Modifier">✎</button>
                 <button 
                   *ngIf="!box.current_assignment?.shop_id"
                   class="btn-assign" 
                   (click)="openAssignModal(box)" 
                   title="Assigner une boutique"
                 >
-                  🏪
+                  ◆
                 </button>
                 <button 
                   *ngIf="box.current_assignment?.shop_id"
@@ -100,9 +100,9 @@ import { Shop } from '../../../../../shared/models/shop.model';
                   (click)="unassignShop(box)" 
                   title="Retirer l'assignation"
                 >
-                  🔓
+                  ◇
                 </button>
-                <button class="btn-delete" (click)="deleteBox(box)" title="Supprimer">🗑️</button>
+                <button class="btn-delete" (click)="deleteBox(box)" title="Supprimer">✕</button>
               </td>
             </tr>
             <tr *ngIf="paginatedBoxes.length === 0">
