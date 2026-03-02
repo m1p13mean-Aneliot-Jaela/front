@@ -1,1 +1,17 @@
-<router-outlet></router-outlet>
+<!-- Backend Initialization Loading Screen -->
+<div *ngIf="!isBackendReady" class="initialization-overlay">
+  <div class="initialization-content">
+    <div class="spinner"></div>
+    <h2>Préparation de votre expérience</h2>
+    <p>{{ initializationMessage }}</p>
+    <div class="loading-info">
+      <small *ngIf="!backendError">Cela peut prendre environ 30 secondes au premier chargement...</small>
+      <small *ngIf="backendError" class="error-text">Problème de connexion détecté. Nouvelle tentative...</small>
+    </div>
+  </div>
+</div>
+
+<!-- Main Application -->
+<div *ngIf="isBackendReady" class="app-container">
+  <router-outlet></router-outlet>
+</div>

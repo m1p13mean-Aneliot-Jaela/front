@@ -2,22 +2,48 @@
   <header class="header">
     <div class="header-container">
       <div class="brand">
-        <span class="logo">🛍️</span>
+        <span class="logo">�</span>
         <span class="brand-text">Shopping App</span>
       </div>
 
-      <nav class="nav">
-        <a *ngFor="let item of navItems" [routerLink]="item.route" class="nav-item">
+      <!-- Hamburger Menu Button -->
+      <button class="hamburger-menu" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- Navigation Menu -->
+      <nav class="nav" [class.mobile-open]="mobileMenuOpen">
+        <a *ngFor="let item of navItems" 
+           [routerLink]="item.route" 
+           class="nav-item"
+           (click)="mobileMenuOpen = false">
           {{ item.label }}
         </a>
         <app-notification-bell class="nav-item" [userType]="'client'"></app-notification-bell>
+        <button class="nav-item logout" (click)="logout(); mobileMenuOpen = false">Déconnexion</button>
       </nav>
-
-      <button class="nav-item logout" (click)="logout()">Déconnexion</button>
     </div>
   </header>
+
+  <!-- Overlay for mobile menu -->
+  <div class="menu-overlay" 
+       *ngIf="mobileMenuOpen" 
+       (click)="mobileMenuOpen = false"></div>
 
   <main class="main-content">
     <router-outlet></router-outlet>
   </main>
+
+  <!-- Footer -->
+  <footer class="client-footer">
+    <div class="footer-content">
+      <p class="footer-text">
+        Développé par: <strong>RAMAMONJISOA Aina Aneliot</strong> (ETU002533) & 
+        <strong>ANDRIANAHERISOA Jaela Matehotia</strong> (ETU002677)
+      </p>
+      <p class="footer-year">© 2026 - Centre Commercial Management System</p>
+    </div>
+  </footer>
 </div>

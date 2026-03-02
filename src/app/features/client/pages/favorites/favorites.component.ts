@@ -29,7 +29,7 @@ import { FavoritesService, FavoriteShop } from '../../services/favorites.service
       </div>
       <ng-template #empty>
         <div class="empty-state">
-          <span class="icon">❤️</span>
+          <span class="icon">★</span>
           <p>Vous n'avez pas encore de favoris</p>
           <button class="btn-primary" (click)="discoverProducts()">Découvrir des produits</button>
         </div>

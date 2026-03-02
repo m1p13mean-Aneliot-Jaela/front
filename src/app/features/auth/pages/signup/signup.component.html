@@ -1,72 +1,114 @@
-<div class="signup-container">
-  <div class="signup-box">
-    <h2>Inscription</h2>
-    <p class="subtitle">Créez votre compte pour continuer</p>
+<div class="auth-container">
+  <div class="auth-card">
+    <!-- Left Panel: Blue Info Panel -->
+    <div class="info-panel panel-left">
+      <div class="decorative-circle circle-1"></div>
+      <div class="decorative-circle circle-2"></div>
+      <div class="decorative-circle circle-3"></div>
 
-    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="first_name">Prénom</label>
-          <input
-            type="text"
-            id="first_name"
-            formControlName="first_name"
-            placeholder="Votre prénom"
-          />
+      <div class="shield-logo">⚙</div>
+
+      <h2>Déjà membre<br/>de notre centre ?</h2>
+      <p class="info-description">
+        Connectez-vous pour accéder à vos commandes et profiter de nos offres exclusives.
+      </p>
+
+      <button class="btn-switch" routerLink="/login">SE CONNECTER</button>
+    </div>
+
+    <!-- Right Panel: Signup Form -->
+    <div class="form-panel panel-right">
+      <div class="form-content">
+        <div class="form-header">
+          <h1>Créez votre compte</h1>
+          <p>Rejoignez notre centre commercial et profitez de nos offres</p>
         </div>
 
-        <div class="form-group">
-          <label for="last_name">Nom</label>
-          <input
-            type="text"
-            id="last_name"
-            formControlName="last_name"
-            placeholder="Votre nom"
-          />
-        </div>
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+          <div class="field" style="animation-delay: 0.1s">
+            <label>* NOM COMPLET</label>
+            <div class="form-row">
+              <input
+                type="text"
+                formControlName="first_name"
+                placeholder="Prénom"
+                [class.focused]="signupForm.get('first_name')?.dirty || signupForm.get('first_name')?.touched"
+              />
+              <input
+                type="text"
+                formControlName="last_name"
+                placeholder="Nom"
+                [class.focused]="signupForm.get('last_name')?.dirty || signupForm.get('last_name')?.touched"
+              />
+            </div>
+          </div>
+
+          <div class="field" style="animation-delay: 0.15s">
+            <label>TÉLÉPHONE (OPTIONNEL)</label>
+            <input
+              type="text"
+              formControlName="phone"
+              placeholder="Votre numéro"
+              [class.focused]="signupForm.get('phone')?.dirty || signupForm.get('phone')?.touched"
+            />
+          </div>
+
+          <div class="field" style="animation-delay: 0.2s">
+            <label>* ADRESSE EMAIL</label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="exemple@gestio.io"
+              [class.focused]="signupForm.get('email')?.dirty || signupForm.get('email')?.touched"
+            />
+          </div>
+
+          <div class="field" style="animation-delay: 0.25s">
+            <label>* MOT DE PASSE</label>
+            <div class="input-with-icon">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Min. 6 caractères"
+                [class.focused]="signupForm.get('password')?.dirty || signupForm.get('password')?.touched"
+              />
+              <span class="icon-right" (click)="togglePassword()">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Password Strength Indicator -->
+          <div *ngIf="signupForm.get('password')?.value?.length > 0" class="password-strength">
+            <div class="strength-bars">
+              <div class="strength-bar" [class.active]="passwordStrength >= 1" [style.background]="passwordStrength >= 1 ? passwordStrengthColor : '#E2E8F0'"></div>
+              <div class="strength-bar" [class.active]="passwordStrength >= 2" [style.background]="passwordStrength >= 2 ? passwordStrengthColor : '#E2E8F0'"></div>
+              <div class="strength-bar" [class.active]="passwordStrength >= 3" [style.background]="passwordStrength >= 3 ? passwordStrengthColor : '#E2E8F0'"></div>
+            </div>
+            <span class="strength-label" [style.color]="passwordStrengthColor">{{ passwordStrengthLabel }}</span>
+          </div>
+
+          <div *ngIf="error" class="error-message">{{ error }}</div>
+
+          <button type="submit" class="btn-primary" [disabled]="loading || signupForm.invalid">
+            <span *ngIf="!loading">CRÉER MON COMPTE</span>
+            <div *ngIf="loading" class="spinner"></div>
+          </button>
+
+          <p class="terms-text">
+            En créant un compte, vous acceptez nos
+            <a href="#" class="terms-link">Conditions d'utilisation</a>
+            et notre
+            <a href="#" class="terms-link">Politique de confidentialité</a>
+          </p>
+        </form>
       </div>
-
-      <div class="form-group">
-        <label for="phone">Téléphone (optionnel)</label>
-        <input
-          type="text"
-          id="phone"
-          formControlName="phone"
-          placeholder="Votre numéro"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          placeholder="votre@email.com"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          placeholder="password"
-        />
-      </div>
-
-      <div *ngIf="error" class="error-message">{{ error }}</div>
-
-      <button type="submit" class="btn-signup" [disabled]="loading || signupForm.invalid">
-        <span *ngIf="!loading">Créer mon compte</span>
-        <span *ngIf="loading" class="spinner"></span>
-      </button>
-    </form>
-
-    <div class="login-link">
-      <span>Déjà un compte ?</span>
-      <a routerLink="/login">Se connecter</a>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="auth-footer">
+    <p>RAMAMONJISOA Aina Aneliot, ETU002533</p>
+    <p>ANDRIANAHERISOA Jaela Matehotia, ETU002677</p>
+  </footer>
 </div>

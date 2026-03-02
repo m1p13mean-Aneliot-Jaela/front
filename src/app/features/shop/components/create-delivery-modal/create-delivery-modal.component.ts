@@ -24,8 +24,8 @@ interface Order {
     <div class="modal-overlay" (click)="close()">
       <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>🚚 Créer la livraison</h3>
-          <p class="order-info">Commande {{ order?._id?.slice(-6) }}</p>
+          <h3>⇄ Créer la livraison</h3>
+          <p class="order-info">Commande {{ order._id.slice(-6) }}</p>
         </div>
 
         <form (ngSubmit)="createDelivery()" class="delivery-form">
@@ -48,7 +48,7 @@ interface Order {
           <div class="fee-preview" *ngIf="feeInfo">
             <div class="fee-row">
               <span>Montant commande:</span>
-              <strong>{{ order?.total_amount || 0 | number }} Ar</strong>
+              <strong>{{ order.total_amount || 0 | number }} Ar</strong>
             </div>
             <div class="fee-row" *ngIf="feeInfo.free_delivery_applied">
               <span>Frais de livraison:</span>
@@ -60,7 +60,7 @@ interface Order {
             </div>
             <div class="fee-row total" *ngIf="!feeInfo.free_delivery_applied">
               <span>Total avec livraison:</span>
-              <strong>{{ (order?.total_amount || 0) + feeInfo.fee | number }} Ar</strong>
+              <strong>{{ (order.total_amount || 0) + feeInfo.fee | number }} Ar</strong>
             </div>
           </div>
 
@@ -120,7 +120,7 @@ interface Order {
           <div class="modal-actions">
             <button type="button" class="btn-secondary" (click)="close()">Annuler</button>
             <button type="submit" class="btn-primary" [disabled]="!canSubmit() || saving">
-              {{ saving ? 'Création...' : '🚚 Créer la livraison' }}
+              {{ saving ? 'Création...' : '⇄ Créer la livraison' }}
             </button>
           </div>
         </form>

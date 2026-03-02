@@ -1,8 +1,8 @@
 <div class="dashboard-container">
   <div class="dashboard-header">
-    <h2>📊 Tableau de bord Administrateur</h2>
+    <h2>☰ Tableau de bord Administrateur</h2>
     <button class="btn-refresh" (click)="loadDashboardStats()" [disabled]="loading">
-      🔄 Actualiser
+      ⟳ Actualiser
     </button>
   </div>
 
@@ -24,7 +24,7 @@
     <div class="main-stats-grid">
       <!-- Users Card -->
       <div class="stat-card" routerLink="/admin/users">
-        <div class="stat-icon users-icon">👥</div>
+        <div class="stat-icon users-icon">⚐</div>
         <div class="stat-content">
           <div class="stat-value">{{ stats.users.total }}</div>
           <div class="stat-label">Utilisateurs</div>
@@ -38,7 +38,7 @@
 
       <!-- Shops Card -->
       <div class="stat-card" routerLink="/admin/shops">
-        <div class="stat-icon shops-icon">🏪</div>
+        <div class="stat-icon shops-icon">◆</div>
         <div class="stat-content">
           <div class="stat-value">{{ stats.shops.total }}</div>
           <div class="stat-label">Boutiques</div>
@@ -51,7 +51,7 @@
 
       <!-- Lease Contracts Card -->
       <div class="stat-card" routerLink="/admin/lease-contracts">
-        <div class="stat-icon contracts-icon">📄</div>
+        <div class="stat-icon contracts-icon">≣</div>
         <div class="stat-content">
           <div class="stat-value">{{ stats.leaseContracts.total }}</div>
           <div class="stat-label">Contrats de Bail</div>
@@ -64,7 +64,7 @@
 
       <!-- Rent Payments Card -->
       <div class="stat-card" routerLink="/admin/rent-payments">
-        <div class="stat-icon payments-icon">💰</div>
+        <div class="stat-icon payments-icon">◈</div>
         <div class="stat-content">
           <div class="stat-value">{{ formatCurrency(stats.rentPayments.amounts['SUCCESSFUL'] || 0) }}</div>
           <div class="stat-label">Paiements Réussis</div>
@@ -81,7 +81,7 @@
       <!-- Pending Rent Payments -->
       <div class="stat-card-sm" routerLink="/admin/rent-payments">
         <div class="stat-sm-header">
-          <span class="stat-sm-icon">💳</span>
+          <span class="stat-sm-icon">▫</span>
           <span class="stat-sm-title">Paiements en Attente</span>
         </div>
         <div class="stat-sm-value">{{ stats.rentPayments.byStatus['PENDING'] || 0 }}</div>
@@ -112,7 +112,7 @@
       <!-- Expiring Contracts -->
       <div class="stat-card-sm" routerLink="/admin/lease-contracts">
         <div class="stat-sm-header">
-          <span class="stat-sm-icon">📄</span>
+          <span class="stat-sm-icon">≣</span>
           <span class="stat-sm-title">Contrats Expirant Bientôt</span>
         </div>
         <div class="stat-sm-value">{{ stats.leaseContracts.expiringSoon }}</div>
@@ -129,7 +129,7 @@
 
     <!-- Recent Activity Section -->
     <div class="recent-activity-section">
-      <h3>📋 Activité Récente</h3>
+      <h3>▫ Activité Récente</h3>
       
       <div class="activity-tabs">
         <!-- Recent Users -->
@@ -137,7 +137,7 @@
           <h4>Nouveaux Utilisateurs</h4>
           <div class="activity-list">
             <div *ngFor="let user of stats.recentActivity?.users" class="activity-item">
-              <div class="activity-icon">👤</div>
+              <div class="activity-icon">⚐</div>
               <div class="activity-content">
                 <div class="activity-title">{{ user.first_name }} {{ user.last_name }}</div>
                 <div class="activity-subtitle">{{ user.email }} • {{ user.user_type }}</div>
@@ -155,7 +155,7 @@
           <h4>Nouvelles Boutiques</h4>
           <div class="activity-list">
             <div *ngFor="let shop of stats.recentActivity?.shops" class="activity-item">
-              <div class="activity-icon">🏪</div>
+              <div class="activity-icon">◆</div>
               <div class="activity-content">
                 <div class="activity-title">{{ shop.shop_name }}</div>
                 <div class="activity-subtitle">
@@ -176,7 +176,7 @@
 
     <!-- Payment Status Chart -->
     <div class="chart-section" *ngIf="stats.rentPayments">
-      <h3>💰 État des Paiements de Loyer</h3>
+      <h3>◈ État des Paiements de Loyer</h3>
       <div class="payment-stats-grid">
         <div class="payment-stat">
           <div class="payment-stat-label">En Attente</div>

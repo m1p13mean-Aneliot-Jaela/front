@@ -81,15 +81,15 @@ import { User, UserFilters } from '../../../../../shared/models/user.model';
               </td>
               <td>{{ formatDate(user.registered_at) }}</td>
               <td class="actions-cell">
-                <button class="btn-edit" (click)="editUser(user)" title="Modifier">✏️</button>
+                <button class="btn-edit" (click)="editUser(user)" title="Modifier">✎</button>
                 <button 
                   class="btn-status" 
                   (click)="toggleUserStatus(user)" 
                   [title]="user.current_status.status === 'active' ? 'Suspendre' : 'Activer'"
                 >
-                  {{ user.current_status.status === 'active' ? '🔒' : '✓' }}
+                  {{ user.current_status.status === 'active' ? '●' : '○' }}
                 </button>
-                <button class="btn-delete" (click)="deleteUser(user)" title="Supprimer">🗑️</button>
+                <button class="btn-delete" (click)="deleteUser(user)" title="Supprimer">✕</button>
               </td>
             </tr>
             <tr *ngIf="paginatedUsers.length === 0">
@@ -398,6 +398,65 @@ import { User, UserFilters } from '../../../../../shared/models/user.model';
     }
     .btn-danger:hover {
       background: #b91c1c;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .filters-container {
+        flex-direction: column;
+      }
+      .filter-options {
+        flex-direction: column;
+      }
+      .filter-options select {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 1rem;
+      }
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+      .btn-primary {
+        width: 100%;
+      }
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        min-width: 700px;
+      }
+      .pagination {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .pagination-info {
+        order: 1;
+      }
+      .pagination-controls {
+        order: 3;
+      }
+      .items-per-page {
+        order: 2;
+      }
+    }
+
+    @media (max-width: 480px) {
+      th, td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+      }
+      .modal-content {
+        padding: 1.5rem;
+      }
+      .modal-actions {
+        flex-direction: column;
+      }
     }
   `]
 })

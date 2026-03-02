@@ -15,7 +15,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
       <div class="header">
         <h1>Gestion des Stocks</h1>
         <div class="header-actions">
-          <button class="btn-secondary" (click)="refreshStocks()">🔄 Rafraîchir</button>
+          <button class="btn-secondary" (click)="refreshStocks()">↻ Rafraîchir</button>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
                 <span class="quantity" [class.warning]="isLowStock(stock)" [class.danger]="isOutOfStock(stock)">
                   {{ stock.current_quantity }}
                 </span>
-                <span *ngIf="isLowStock(stock)" class="alert-badge">⚠️ Faible</span>
+                <span *ngIf="isLowStock(stock)" class="alert-badge">⚠ Faible</span>
                 <span *ngIf="isOutOfStock(stock)" class="alert-badge danger">❌ Épuisé</span>
               </td>
               <td class="date-cell">{{ stock.updated_at | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -82,7 +82,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
                   ⚖️
                 </button>
                 <button class="btn-icon history" (click)="viewHistory(stock)" title="Historique">
-                  📋
+                  ≡
                 </button>
               </td>
             </tr>
@@ -418,6 +418,25 @@ import { AuthService } from '../../../../../core/services/auth.service';
       text-align: center;
       padding: 2rem;
       color: #64748b;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .stock-page { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .stock-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .stock-container { overflow-x: auto; }
+      .stock-table { min-width: 800px; }
+    }
+
+    @media (max-width: 480px) {
+      .stock-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .stock-table th, .stock-table td { padding: 0.5rem; font-size: 0.75rem; }
     }
   `]
 })

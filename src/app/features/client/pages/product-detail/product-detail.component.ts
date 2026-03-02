@@ -87,7 +87,7 @@ interface Product {
                 (click)="goToCheckout()"
                 [disabled]="getStockQuantity() === 0"
               >
-                🛒 Commander maintenant
+                ⊞ Commander maintenant
               </button>
             </div>
           </div>

@@ -30,39 +30,39 @@ export class AdminLayoutComponent {
   sidebarCollapsed = false;
 
   menuItems: MenuItem[] = [
-    { icon: '📊', label: 'Dashboard', route: '/admin/dashboard' },
+    { icon: '☰', label: 'Dashboard', route: '/admin/dashboard' },
     { 
-      icon: '👥', 
+      icon: '⚐', 
       label: 'Utilisateurs', 
       route: '/admin/users/list'
     },
     { 
-      icon: '🏪', 
+      icon: '◆', 
       label: 'Boutiques', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/admin/shops/list' },
-        { label: '➕ Ajouter', route: '/admin/shops/add' },
-        { label: '🏷️ Catégories', route: '/admin/shop-categories' },
-        { label: '📦 Boxes', route: '/admin/shop-boxes' }
+        { label: '▫ Liste', route: '/admin/shops/list' },
+        { label: '⊕ Ajouter', route: '/admin/shops/add' },
+        { label: '≡ Catégories', route: '/admin/shop-categories' },
+        { label: '▢ Boxes', route: '/admin/shop-boxes' }
       ]
     },
     { 
-      icon: '', 
+      icon: '≣', 
       label: 'Contrats de Bail', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/admin/lease-contracts' },
-        { label: '➕ Ajouter', route: '/admin/lease-contracts/add' }
+        { label: '▫ Liste', route: '/admin/lease-contracts' },
+        { label: '⊕ Ajouter', route: '/admin/lease-contracts/add' }
       ]
     },
     { 
-      icon: '💰', 
+      icon: '◈', 
       label: 'Paiements de Loyer', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/admin/rent-payments' },
-        { label: '➕ Ajouter', route: '/admin/rent-payments/add' }
+        { label: '▫ Liste', route: '/admin/rent-payments' },
+        { label: '⊕ Ajouter', route: '/admin/rent-payments/add' }
       ]
     }
   ];

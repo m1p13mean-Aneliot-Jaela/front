@@ -9,19 +9,19 @@ import { CommonModule } from '@angular/common';
   <!-- Features / Quick Actions -->
   <section class="features">
     <div class="feature-card">
-      <span class="icon">🏪</span>
+      <span class="icon">▣</span>
       <span>Boutiques</span>
     </div>
     <div class="feature-card">
-      <span class="icon">📋</span>
+      <span class="icon">☰</span>
       <span>Mes commandes</span>
     </div>
     <div class="feature-card">
-      <span class="icon">❤️</span>
+      <span class="icon">★</span>
       <span>Favoris</span>
     </div>
     <div class="feature-card">
-      <span class="icon">🎟️</span>
+      <span class="icon">◈</span>
       <span>Promotions</span>
     </div>
   </section>

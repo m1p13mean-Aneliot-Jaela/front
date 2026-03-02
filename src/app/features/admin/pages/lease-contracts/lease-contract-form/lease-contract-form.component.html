@@ -1,11 +1,11 @@
 <div class="page-container">
   <div class="header">
-    <h2>{{ isEditMode ? 'Edit Lease Contract' : 'Add New Lease Contract' }}</h2>
-    <button class="btn-secondary" (click)="cancel()">← Back to List</button>
+    <h2>{{ isEditMode ? 'Modifier le Contrat de Bail' : 'Ajouter un Nouveau Contrat de Bail' }}</h2>
+    <button class="btn-secondary" (click)="cancel()">← Retour à la Liste</button>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="loading" class="loading">Chargement...</div>
 
   <!-- Error State -->
   <div *ngIf="error" class="error">{{ error }}</div>
@@ -16,25 +16,25 @@
       
       <!-- Shop Selection -->
       <div class="form-group">
-        <label for="shop_id">Shop <span class="required">*</span></label>
+        <label for="shop_id">Boutique <span class="required">*</span></label>
         <select 
           id="shop_id" 
           name="shop_id" 
           [(ngModel)]="contract.shop_id" 
           required
           [disabled]="isEditMode">
-          <option value="">-- Select Shop --</option>
+          <option value="">-- Sélectionner une Boutique --</option>
           <option *ngFor="let shop of shops" [value]="shop._id">
             {{ shop.shop_name }}
           </option>
         </select>
-        <small *ngIf="isEditMode" class="help-text">Shop cannot be changed in edit mode</small>
+        <small *ngIf="isEditMode" class="help-text">La boutique ne peut pas être modifiée en mode édition</small>
       </div>
 
       <!-- Date Range -->
       <div class="form-row">
         <div class="form-group">
-          <label for="start_date">Start Date <span class="required">*</span></label>
+          <label for="start_date">Date de Début <span class="required">*</span></label>
           <input 
             type="date" 
             id="start_date" 
@@ -45,7 +45,7 @@
         </div>
 
         <div class="form-group">
-          <label for="end_date">End Date <span class="required">*</span></label>
+          <label for="end_date">Date de Fin <span class="required">*</span></label>
           <input 
             type="date" 
             id="end_date" 
@@ -59,67 +59,67 @@
       <!-- Financial Info -->
       <div class="form-row">
         <div class="form-group">
-          <label for="rent_amount">Rent Amount (€) <span class="required">*</span></label>
+          <label for="rent_amount">Montant du Loyer (Ar) <span class="required">*</span></label>
           <input 
             type="number" 
             id="rent_amount" 
             name="rent_amount" 
             [(ngModel)]="contract.rent_amount" 
-            step="0.01"
+            step="1"
             min="0"
             required
-            placeholder="0.00"
+            placeholder="0"
           />
         </div>
 
         <div class="form-group">
-          <label for="payment_frequency">Payment Frequency <span class="required">*</span></label>
+          <label for="payment_frequency">Fréquence de Paiement <span class="required">*</span></label>
           <select 
             id="payment_frequency" 
             name="payment_frequency" 
             [(ngModel)]="contract.payment_frequency" 
             required>
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
+            <option value="monthly">Mensuel</option>
+            <option value="quarterly">Trimestriel</option>
           </select>
         </div>
       </div>
 
       <!-- Status (only on edit) -->
       <div class="form-group" *ngIf="isEditMode">
-        <label for="status">Status</label>
+        <label for="status">Statut</label>
         <select 
           id="status" 
           name="status" 
           [(ngModel)]="contract.current_status!.status">
-          <option value="signed">Signed</option>
-          <option value="active">Active</option>
-          <option value="expired">Expired</option>
-          <option value="terminated">Terminated</option>
+          <option value="signed">Signé</option>
+          <option value="active">Actif</option>
+          <option value="expired">Expiré</option>
+          <option value="terminated">Résilié</option>
         </select>
       </div>
 
       <!-- Status Reason (only on edit) -->
       <div class="form-group" *ngIf="isEditMode">
-        <label for="status_reason">Status Change Reason (Optional)</label>
+        <label for="status_reason">Raison du Changement de Statut (Optionnel)</label>
         <input 
           type="text" 
           id="status_reason" 
           name="status_reason" 
           [(ngModel)]="statusReason"
-          placeholder="Enter reason for status change..."
+          placeholder="Entrez la raison du changement de statut..."
         />
       </div>
 
       <!-- Special Conditions -->
       <div class="form-group">
-        <label for="special_conditions">Special Conditions</label>
+        <label for="special_conditions">Conditions Spéciales</label>
         <textarea 
           id="special_conditions" 
           name="special_conditions" 
           [(ngModel)]="contract.special_conditions"
           rows="4"
-          placeholder="Enter any special conditions or notes..."
+          placeholder="Entrez les conditions spéciales ou notes..."
         ></textarea>
       </div>
 
@@ -130,13 +130,13 @@
           class="btn-secondary" 
           (click)="cancel()"
           [disabled]="submitting">
-          Cancel
+          Annuler
         </button>
         <button 
           type="submit" 
           class="btn-primary" 
           [disabled]="submitting || !contractForm.valid">
-          {{ submitting ? 'Saving...' : (isEditMode ? 'Update Contract' : 'Create Contract') }}
+          {{ submitting ? 'Enregistrement...' : (isEditMode ? 'Modifier le Contrat' : 'Créer le Contrat') }}
         </button>
       </div>
     </form>

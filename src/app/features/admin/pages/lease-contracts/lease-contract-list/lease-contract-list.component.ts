@@ -154,19 +154,19 @@ export class LeaseContractListComponent implements OnInit {
     if (!contract._id) return;
 
     const confirmed = confirm(
-      `Are you sure you want to delete the lease contract for ${contract.shop_name}?`
+      `Êtes-vous sûr de vouloir supprimer le contrat de bail pour ${contract.shop_name}?`
     );
 
     if (confirmed) {
       this.leaseContractService.deleteLeaseContract(contract._id).subscribe({
         next: (response) => {
           if (response.success) {
-            alert('Lease contract deleted successfully');
+            alert('Contrat de bail supprimé avec succès');
             this.loadContracts();
           }
         },
         error: (err) => {
-          alert(err.error?.message || 'Failed to delete lease contract');
+          alert(err.error?.message || 'Échec de la suppression du contrat de bail');
         }
       });
     }
@@ -175,17 +175,17 @@ export class LeaseContractListComponent implements OnInit {
   updateStatus(contract: LeaseContract, newStatus: string): void {
     if (!contract._id) return;
 
-    const reason = prompt('Reason for status change (optional):');
+    const reason = prompt('Raison du changement de statut (optionnel):');
 
     this.leaseContractService.updateContractStatus(contract._id, newStatus, reason || '').subscribe({
       next: (response) => {
         if (response.success) {
-          alert('Contract status updated successfully');
+          alert('Statut du contrat mis à jour avec succès');
           this.loadContracts();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to update contract status');
+        alert(err.error?.message || 'Échec de la mise à jour du statut du contrat');
       }
     });
   }
@@ -202,10 +202,10 @@ export class LeaseContractListComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const statusLabels: { [key: string]: string } = {
-      'active': 'Active',
-      'expired': 'Expired',
-      'terminated': 'Terminated',
-      'signed': 'Signed'
+      'active': 'Actif',
+      'expired': 'Expiré',
+      'terminated': 'Résilié',
+      'signed': 'Signé'
     };
     return statusLabels[status] || status;
   }
@@ -216,8 +216,13 @@ export class LeaseContractListComponent implements OnInit {
   }
 
   formatCurrency(amount: number | undefined): string {
-    if (!amount) return '0 €';
-    return `${amount.toFixed(2)} €`;
+    if (!amount) return '0 Ar';
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'MGA',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
   }
 
   isExpiringSoon(contract: LeaseContract): boolean {

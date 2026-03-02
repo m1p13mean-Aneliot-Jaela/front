@@ -52,7 +52,7 @@ interface DisplayOrder {
       </div>
       <ng-template #empty>
         <div class="empty-state">
-          <span class="icon">📋</span>
+          <span class="icon">☰</span>
           <p>{{ loading ? 'Chargement...' : 'Vous n\'avez pas encore de commandes' }}</p>
           <button class="btn-primary" (click)="goShopping()" *ngIf="!loading">Faire des achats</button>
         </div>
@@ -221,7 +221,7 @@ export class OrdersComponent implements OnInit {
         name: item.product_name,
         shop: 'Boutique',
         price: this.formatPrice(item.total_price),
-        image: '📦'
+        image: '▭'
       }))
     }));
   }

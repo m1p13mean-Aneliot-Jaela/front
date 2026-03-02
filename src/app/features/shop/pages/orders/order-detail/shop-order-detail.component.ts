@@ -27,13 +27,13 @@ import { OrderService, Order, OrderStatusHistory } from '../../../services/order
       <div class="order-grid">
         <!-- Customer Info -->
         <div class="info-card">
-          <h3>👤 Client</h3>
+          <h3>⚐ Client</h3>
           <div class="info-content">
             <p class="name">{{ order.customer.name }}</p>
-            <p class="phone">📞 {{ order.customer.phone }}</p>
+            <p class="phone">☎ {{ order.customer.phone }}</p>
             <p class="email" *ngIf="order.customer.email">✉️ {{ order.customer.email }}</p>
             <div class="address" *ngIf="order.customer.address">
-              <p>📍 {{ order.customer.address.street }}</p>
+              <p>⊛ {{ order.customer.address.street }}</p>
               <p>{{ order.customer.address.city }} {{ order.customer.address.postal_code }}</p>
             </div>
           </div>
@@ -41,7 +41,7 @@ import { OrderService, Order, OrderStatusHistory } from '../../../services/order
 
         <!-- Order Info -->
         <div class="info-card">
-          <h3>📋 Détails</h3>
+          <h3>≡ Détails</h3>
           <div class="info-content">
             <div class="info-row">
               <span>Date:</span>
@@ -81,7 +81,7 @@ import { OrderService, Order, OrderStatusHistory } from '../../../services/order
 
         <!-- Order Items -->
         <div class="info-card wide">
-          <h3>🛍️ Articles ({{ order.items.length }})</h3>
+          <h3>◈ Articles ({{ order.items.length }})</h3>
           <table class="items-table">
             <thead>
               <tr>
@@ -122,7 +122,7 @@ import { OrderService, Order, OrderStatusHistory } from '../../../services/order
 
         <!-- Status History -->
         <div class="info-card wide">
-          <h3>📜 Historique des statuts</h3>
+          <h3>≡ Historique des statuts</h3>
           <div class="history-timeline">
             <div 
               *ngFor="let entry of order.status_history; let last = last" 
@@ -141,7 +141,7 @@ import { OrderService, Order, OrderStatusHistory } from '../../../services/order
 
         <!-- Notes -->
         <div class="info-card wide" *ngIf="order.customer_note || order.internal_note">
-          <h3>📝 Notes</h3>
+          <h3>✎ Notes</h3>
           <div class="notes-content">
             <div class="note-box" *ngIf="order.customer_note">
               <strong>Note client:</strong>
@@ -209,6 +209,27 @@ import { OrderService, Order, OrderStatusHistory } from '../../../services/order
 
     .loading, .error { text-align: center; padding: 3rem; }
     .error { color: #dc2626; }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .order-detail { padding: 1rem; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .order-detail { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .items-table { min-width: 600px; }
+      .detail-card { overflow-x: auto; }
+    }
+
+    @media (max-width: 480px) {
+      .order-detail { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .btn-back { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .items-table th, .items-table td { padding: 0.5rem; font-size: 0.75rem; }
+    }
   `]
 })
 export class ShopOrderDetailComponent implements OnInit {
@@ -312,9 +333,9 @@ export class ShopOrderDetailComponent implements OnInit {
   getNextStatusLabel(currentStatus: string): string {
     const labels: Record<string, string> = {
       'PENDING': '✓ Confirmer la commande',
-      'CONFIRMED': '💰 Demander paiement',
-      'PAID': '📦 Marquer comme expédiée',
-      'SHIPPED': '🎉 Marquer comme livrée'
+      'CONFIRMED': '◎ Demander paiement',
+      'PAID': '▢ Marquer comme expédiée',
+      'SHIPPED': '✓ Marquer comme livrée'
     };
     return labels[currentStatus] || 'Avancer';
   }

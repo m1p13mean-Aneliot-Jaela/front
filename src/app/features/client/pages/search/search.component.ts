@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
       <h2>Rechercher</h2>
       <div class="search-box">
         <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher des produits, boutiques...">
-        <button (click)="search()">🔍 Rechercher</button>
+        <button (click)="search()">⌕ Rechercher</button>
       </div>
       
       <div class="filters">
@@ -127,10 +127,10 @@ import { FormsModule } from '@angular/forms';
 export class SearchComponent {
   searchQuery = '';
   results = [
-    { name: 'iPhone 15 Pro', shop: 'Tech Store', price: '4,500,000 Ar', image: '📱' },
-    { name: 'Air Max 90', shop: 'Sport Pro', price: '180,000 Ar', image: '👟' },
-    { name: 'Robe été', shop: 'Fashion Plus', price: '45,000 Ar', image: '👗' },
-    { name: 'Fauteuil design', shop: 'Maison Déco', price: '250,000 Ar', image: '🪑' }
+    { name: 'iPhone 15 Pro', shop: 'Tech Store', price: '4,500,000 Ar', image: '▭' },
+    { name: 'Air Max 90', shop: 'Sport Pro', price: '180,000 Ar', image: '▸' },
+    { name: 'Robe été', shop: 'Fashion Plus', price: '45,000 Ar', image: '◆' },
+    { name: 'Fauteuil design', shop: 'Maison Déco', price: '250,000 Ar', image: '▣' }
   ];
 
   search() {
