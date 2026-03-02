@@ -106,6 +106,36 @@
   width: 100%;
 }
 
+/* Footer Styles */
+.client-footer {
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem 2rem;
+  margin-top: auto;
+}
+
+.footer-content {
+  text-align: center;
+  color: #64748b;
+}
+
+.footer-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.footer-text strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.footer-year {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
 /* Hamburger Menu */
 .hamburger-menu {
   display: none;
@@ -242,6 +272,14 @@
   .main-content {
     padding: 1.5rem 1rem;
   }
+
+  .client-footer {
+    padding: 1rem 1.5rem;
+  }
+
+  .footer-text {
+    font-size: 0.8125rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -261,5 +299,17 @@
 
   .main-content {
     padding: 1rem 0.75rem;
+  }
+
+  .client-footer {
+    padding: 0.875rem 1rem;
+  }
+
+  .footer-text {
+    font-size: 0.75rem;
+  }
+
+  .footer-year {
+    font-size: 0.6875rem;
   }
 }
