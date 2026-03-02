@@ -43,21 +43,21 @@ import { NotificationService } from '../../../../../shared/services/notification
       <div class="filters-bar">
         <input type="text" 
                class="search-input" 
-               placeholder="🔍 Rechercher une commande..."
+               placeholder="⌕ Rechercher une commande..."
                [(ngModel)]="searchTerm"
                (input)="applyFilters()">
         
         <select class="filter-select" [(ngModel)]="statusFilter" (change)="applyFilters()">
           <option value="">Tous les statuts</option>
-          <option value="PENDING">🟡 En attente</option>
-          <option value="CONFIRMED">🔵 Confirmée</option>
-          <option value="PAID">💰 Payée</option>
-          <option value="SHIPPED">🚚 Expédiée</option>
+          <option value="PENDING">● En attente</option>
+          <option value="CONFIRMED">● Confirmée</option>
+          <option value="PAID">◎ Payée</option>
+          <option value="SHIPPED">⇄ Expédiée</option>
           <option value="DELIVERED">✅ Livrée</option>
           <option value="CANCELED">❌ Annulée</option>
         </select>
 
-        <button class="btn-filter" (click)="resetFilters()">🔄 Réinitialiser</button>
+        <button class="btn-filter" (click)="resetFilters()">↻ Réinitialiser</button>
       </div>
 
       <!-- Orders List -->
@@ -74,7 +74,7 @@ import { NotificationService } from '../../../../../shared/services/notification
           </div>
           
           <div class="order-customer">
-            👤 {{ order.customer.name }} • {{ order.items.length }} article(s)
+            ⚐ {{ order.customer.name }} • {{ order.items.length }} article(s)
           </div>
           
           <div class="order-items" *ngIf="order.items.length > 0">
@@ -93,11 +93,11 @@ import { NotificationService } from '../../../../../shared/services/notification
               
               <!-- STAFF can ship orders (process_orders) -->
               <button class="btn-icon" (click)="updateStatus(order._id, 'SHIPPED', $event)" 
-                      *ngIf="canProcessOrders && (order.status === 'PAID' || order.status === 'CONFIRMED')" title="Expédier">🚚</button>
+                      *ngIf="canProcessOrders && (order.status === 'PAID' || order.status === 'CONFIRMED')" title="Expédier">⇄</button>
               
               <!-- Only MANAGER can deliver -->
               <button class="btn-icon" (click)="updateStatus(order._id, 'DELIVERED', $event)" 
-                      *ngIf="canProcessOrders && order.status === 'SHIPPED'" title="Livrer">📦</button>
+                      *ngIf="canProcessOrders && order.status === 'SHIPPED'" title="Livrer">▢</button>
               
               <!-- Only MANAGER can cancel (cancel_orders permission) -->
               <button class="btn-icon cancel" (click)="cancelOrder(order._id, $event)" 

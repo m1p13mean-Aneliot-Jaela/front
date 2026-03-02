@@ -1,10 +1,13 @@
-<div class="shop-layout" [class.collapsed]="sidebarCollapsed">
+<div class="shop-layout" [class.collapsed]="sidebarCollapsed" [class.mobile-menu-open]="mobileMenuOpen">
+  <!-- Mobile Menu Backdrop -->
+  <div class="mobile-backdrop" *ngIf="mobileMenuOpen" (click)="closeMobileMenu()"></div>
+  
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo">
-        <span class="icon">🏪</span>
-        <span class="text">Shop</span>
+        <span class="icon">◆</span>
+        <span class="text">Boutique</span>
       </div>
       <button class="toggle-btn" (click)="toggleSidebar()">
         <span>{{ sidebarCollapsed ? '→' : '←' }}</span>
@@ -27,6 +30,7 @@
               [routerLink]="child.route"
               class="submenu-item"
               routerLinkActive="active"
+              (click)="closeMobileMenu()"
             >
               {{ child.label }}
             </a>
@@ -39,6 +43,7 @@
             [routerLink]="item.route"
             class="nav-item"
             routerLinkActive="active"
+            (click)="closeMobileMenu()"
           >
             <span class="icon">{{ item.icon }}</span>
             <span class="label">{{ item.label }}</span>
@@ -59,11 +64,14 @@
   <main class="main-content">
     <!-- Header -->
     <header class="header">
+      <button class="mobile-menu-btn" (click)="toggleMobileMenu()">
+        <span class="hamburger-icon">☰</span>
+      </button>
       <h1>Tableau de bord Boutique</h1>
       <div class="header-actions">
         <app-notification-bell class="nav-item" [userType]="'shop'"></app-notification-bell>
         <div class="user-info" *ngIf="user$ | async as user">
-          <span class="badge shop">Shop</span>
+          <span class="badge shop">Boutique</span>
           <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
           <div class="avatar">{{ user.first_name?.charAt(0) || '?' }}</div>
         </div>
@@ -74,5 +82,16 @@
     <div class="content">
       <router-outlet></router-outlet>
     </div>
+    
+    <!-- Footer -->
+    <footer class="shop-footer">
+      <div class="footer-content">
+        <p class="footer-text">
+          Développé par: <strong>RAMAMONJISOA Aina Aneliot</strong> (ETU002533) & 
+          <strong>ANDRIANAHERISOA Jaela Matehotia</strong> (ETU002677)
+        </p>
+        <p class="footer-year">© 2026 - Centre Commercial Management System</p>
+      </div>
+    </footer>
   </main>
 </div>

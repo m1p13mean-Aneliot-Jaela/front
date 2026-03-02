@@ -35,7 +35,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
           <span class="stat-label">Total {{ stats.period }}j</span>
         </div>
         <div class="stat-card delivered">
-          <span class="stat-value">{{ stats.byStatus?.DELIVERED || 0 }}</span>
+          <span class="stat-value">{{ stats.byStatus.DELIVERED || 0 }}</span>
           <span class="stat-label">Livrés</span>
         </div>
         <div class="stat-card transit">
@@ -75,10 +75,10 @@ import { AuthService } from '../../../../../core/services/auth.service';
               <!-- Destination -->
               <td>
                 <div class="destination">
-                  <div class="recipient">{{ delivery.delivery_address?.recipient_name || '—' }}</div>
-                  <div class="address">{{ delivery.delivery_address?.city || '—' }}</div>
-                  <div class="phone" *ngIf="delivery.delivery_address?.recipient_phone">
-                    📞 {{ delivery.delivery_address?.recipient_phone }}
+                  <div class="recipient">{{ delivery.delivery_address.recipient_name || '—' }}</div>
+                  <div class="address">{{ delivery.delivery_address.city || '—' }}</div>
+                  <div class="phone" *ngIf="delivery.delivery_address.recipient_phone">
+                    ☎ {{ delivery.delivery_address.recipient_phone }}
                   </div>
                 </div>
               </td>
@@ -113,11 +113,11 @@ import { AuthService } from '../../../../../core/services/auth.service';
               <!-- Actions -->
               <td>
                 <div class="actions-cell">
-                  <button class="btn-icon" (click)="viewDetails(delivery)" title="Voir détails">👁️</button>
-                  <button class="btn-icon" (click)="updateStatus(delivery)" title="Mettre à jour statut"
-                          *ngIf="canUpdateStatus(delivery.status)">📝</button>
-                  <button class="btn-icon" (click)="syncTracking(delivery)" title="Synchroniser suivi"
-                          *ngIf="delivery.carrier?.external_tracking_id">🔄</button>
+                  <button class="btn-icon" (click)="viewDetails(delivery)" title="Voir détails">⊙</button>
+                  <button class="btn-icon" (click)="updateStatus(delivery)" title="Mettre à jour"
+                          *ngIf="canUpdateStatus(delivery.status)">✎</button>
+                  <button class="btn-icon" (click)="refreshTracking(delivery)" title="Actualiser suivi"
+                          *ngIf="delivery.carrier?.external_tracking_id">↻</button>
                   <button class="btn-icon cancel" (click)="cancelDelivery(delivery)" title="Annuler"
                           *ngIf="canCancel(delivery.status)">❌</button>
                 </div>
@@ -140,7 +140,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
 
       <!-- Empty State -->
       <div *ngIf="!loading && !error && filteredDeliveries.length === 0" class="empty-state">
-        <div class="empty-icon">📦</div>
+        <div class="empty-icon">▢</div>
         <p>Aucune livraison trouvée</p>
       </div>
 
@@ -210,7 +210,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
                   <div class="timeline-status">{{ getStatusLabel(history.status) }}</div>
                   <div class="timeline-date">{{ history.timestamp | date:'dd/MM/yy HH:mm' }}</div>
                   <div class="timeline-note" *ngIf="history.note">{{ history.note }}</div>
-                  <div class="timeline-location" *ngIf="history.location">📍 {{ history.location }}</div>
+                  <div class="timeline-location" *ngIf="history.location">⊛ {{ history.location }}</div>
                 </div>
               </div>
             </div>
@@ -220,12 +220,12 @@ import { AuthService } from '../../../../../core/services/auth.service';
           <div class="address-section">
             <h4>Adresse de livraison</h4>
             <div class="address-card">
-              <p><strong>{{ selectedDelivery.delivery_address?.recipient_name || '—' }}</strong></p>
-              <p>{{ selectedDelivery.delivery_address?.address_line1 || '—' }}</p>
-              <p *ngIf="selectedDelivery.delivery_address?.address_line2">{{ selectedDelivery.delivery_address?.address_line2 }}</p>
-              <p>{{ selectedDelivery.delivery_address?.postal_code || '—' }} {{ selectedDelivery.delivery_address?.city || '—' }}</p>
-              <p *ngIf="selectedDelivery.delivery_address?.recipient_phone">
-                📞 {{ selectedDelivery.delivery_address?.recipient_phone }}
+              <p><strong>{{ selectedDelivery.delivery_address.recipient_name || '—' }}</strong></p>
+              <p>{{ selectedDelivery.delivery_address.address_line1 || '—' }}</p>
+              <p *ngIf="selectedDelivery.delivery_address.address_line2">{{ selectedDelivery.delivery_address.address_line2 }}</p>
+              <p>{{ selectedDelivery.delivery_address.postal_code || '—' }} {{ selectedDelivery.delivery_address.city || '—' }}</p>
+              <p *ngIf="selectedDelivery.delivery_address.recipient_phone">
+                ☎ {{ selectedDelivery.delivery_address.recipient_phone }}
               </p>
             </div>
           </div>
@@ -246,7 +246,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
               <div *ngFor="let checkpoint of selectedDelivery.external_tracking_data?.checkpoints" class="checkpoint">
                 <div class="checkpoint-date">{{ checkpoint.date | date:'dd/MM/yy HH:mm' }}</div>
                 <div class="checkpoint-status">{{ checkpoint.status }}</div>
-                <div class="checkpoint-location" *ngIf="checkpoint.location">📍 {{ checkpoint.location }}</div>
+                <div class="checkpoint-location" *ngIf="checkpoint.location">⊛ {{ checkpoint.location }}</div>
                 <div class="checkpoint-message" *ngIf="checkpoint.message">{{ checkpoint.message }}</div>
               </div>
             </div>
@@ -706,6 +706,28 @@ import { AuthService } from '../../../../../core/services/auth.service';
       background: #fee2e2;
       border-radius: 8px;
     }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .deliveries-page { padding: 1rem; }
+      .filters-bar { gap: 0.75rem; }
+    }
+
+    @media (max-width: 768px) {
+      .deliveries-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .filters-bar { flex-direction: column; }
+      .deliveries-container { overflow-x: auto; }
+      .deliveries-table { min-width: 900px; }
+    }
+
+    @media (max-width: 480px) {
+      .deliveries-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .btn-primary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .deliveries-table th, .deliveries-table td { padding: 0.5rem; font-size: 0.75rem; }
+    }
   `]
 })
 export class DeliveryListComponent implements OnInit {
@@ -878,6 +900,10 @@ export class DeliveryListComponent implements OnInit {
       },
       error: () => alert('Erreur lors de la mise à jour')
     });
+  }
+
+  refreshTracking(delivery: Delivery): void {
+    this.syncTracking(delivery);
   }
 
   syncTracking(delivery: Delivery): void {

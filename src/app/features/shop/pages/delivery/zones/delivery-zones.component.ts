@@ -45,7 +45,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
             </div>
             <div class="zone-actions">
               <button class="btn-icon" (click)="editZone(zone)" title="Modifier">✏️</button>
-              <button class="btn-icon delete" (click)="deleteZone(zone._id!)" title="Supprimer">🗑️</button>
+              <button class="btn-icon delete" (click)="deleteZone(zone._id!)" title="Supprimer">×</button>
             </div>
           </div>
 
@@ -78,7 +78,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
 
       <!-- Empty State -->
       <div *ngIf="!loading && !error && zones.length === 0" class="empty-state">
-        <div class="empty-icon">🚚</div>
+        <div class="empty-icon">⇄</div>
         <p>Aucune zone de livraison configurée</p>
         <button class="btn-primary" (click)="showAddModal = true">Créer une zone</button>
       </div>
@@ -413,6 +413,24 @@ import { AuthService } from '../../../../../core/services/auth.service';
       color: #dc2626;
       background: #fee2e2;
       border-radius: 8px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .zones-page { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .zones-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .zones-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .zones-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .btn-primary { padding: 0.625rem 1rem; font-size: 0.875rem; }
     }
   `]
 })

@@ -32,94 +32,96 @@ interface MenuItem {
 export class ShopLayoutComponent {
   user$: Observable<User | null>;
   sidebarCollapsed = false;
+  mobileMenuOpen = false;
 
   // Full menu for managers/admins
   private fullMenuItems: MenuItem[] = [
-    { icon: '📊', label: 'Dashboard', route: '/shop/dashboard' },
+    { icon: '☰', label: 'Tableau de bord', route: '/shop/dashboard' },
     { 
-      icon: '📦', 
+      icon: '▣', 
       label: 'Produits', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/shop/products/list' },
-        { label: '➕ Ajouter', route: '/shop/products/add' }
+        { label: '▫ Liste', route: '/shop/products/list' },
+        { label: '⊕ Ajouter', route: '/shop/products/add' }
       ]
     },
     { 
-      icon: '🏭', 
+      icon: '▨', 
       label: 'Stock', 
       expanded: false,
       children: [
-        { label: '📋 Gestion stock', route: '/shop/stock/list' }
+        { label: '▫ Gestion stock', route: '/shop/stock/list' }
       ]
     },
     { 
-      icon: '🛒', 
+      icon: '◎', 
       label: 'Commandes', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/shop/orders/list' }
+        { label: '▫ Liste', route: '/shop/orders/list' }
       ]
     },
-    { icon: '📝', label: 'Demandes clients', route: '/shop/quote-requests' },
+    { icon: '✎', label: 'Demandes clients', route: '/shop/quote-requests' },
     {
-      icon: '🚚',
+      icon: '⇄',
       label: 'Livraisons',
       expanded: false,
       children: [
-        { label: '📋 Suivi', route: '/shop/deliveries/list' },
-        { label: '🗺️ Zones', route: '/shop/deliveries/zones' }
+        { label: '▫ Suivi', route: '/shop/deliveries/list' },
+        { label: '⊞ Zones', route: '/shop/deliveries/zones' }
       ]
     },
-    { icon: '💰', label: 'Ventes', route: '/shop/sales' },
-    { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
+    { icon: '◉', label: 'Ventes', route: '/shop/sales' },
+    { icon: '◈', label: 'Promotions', route: '/shop/promotions' },
     { 
-      icon: '👥', 
+      icon: '⚐', 
       label: 'Employés', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/shop/employees/list' },
-        { label: '➕ Ajouter', route: '/shop/employees/add' }
+        { label: '▫ Liste', route: '/shop/employees/list' },
+        { label: '⊕ Ajouter', route: '/shop/employees/add' }
       ]
     },
-    { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
+    { icon: '◆', label: 'Profil Boutique', route: '/shop/profile' }
   ];
 
   // Limited menu for STAFF (only what they have permission to see)
   private staffMenuItems: MenuItem[] = [
+    { icon: '☰', label: 'Tableau de bord', route: '/shop/dashboard' },
     { 
-      icon: '📦', 
+      icon: '▣', 
       label: 'Produits', 
       expanded: false,
       children: [
-        { label: '📋 Voir liste', route: '/shop/products/list' }
+        { label: '▫ Voir liste', route: '/shop/products/list' }
         // STAFF cannot add/edit products (edit_products: false)
       ]
     },
     { 
-      icon: '🏭', 
+      icon: '▨', 
       label: 'Stock', 
       expanded: false,
       children: [
-        { label: '📋 Gestion stock', route: '/shop/stock/list' }
+        { label: '▫ Gestion stock', route: '/shop/stock/list' }
       ]
     },
     { 
-      icon: '🛒', 
+      icon: '◎', 
       label: 'Commandes', 
       expanded: false,
       children: [
-        { label: '📋 Liste', route: '/shop/orders/list' },
-        { label: '➕ Ajouter', route: '/shop/orders/add' }
+        { label: '▫ Liste', route: '/shop/orders/list' },
+        { label: '⊕ Ajouter', route: '/shop/orders/add' }
       ]
     },
     { 
-      icon: '🚚', 
+      icon: '⇄', 
       label: 'Livraisons', 
       route: '/shop/deliveries/list'
     },
-    { icon: '🎁', label: 'Promotions', route: '/shop/promotions' },
-    { icon: '🏪', label: 'Profil Boutique', route: '/shop/profile' }
+    { icon: '◈', label: 'Promotions', route: '/shop/promotions' },
+    { icon: '◆', label: 'Profil Boutique', route: '/shop/profile' }
     // STAFF cannot see: Dashboard, Ventes, Employés, Demandes clients (management only)
   ];
 
@@ -158,6 +160,14 @@ export class ShopLayoutComponent {
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
   }
 
   toggleMenu(item: MenuItem): void {

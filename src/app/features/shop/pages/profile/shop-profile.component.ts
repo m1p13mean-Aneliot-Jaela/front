@@ -13,9 +13,9 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
   template: `
     <div class="page-container">
       <div class="header">
-        <h2>🏪 Profil Boutique</h2>
+        <h2>◆ Profil Boutique</h2>
         <button class="btn-primary" (click)="saveProfile()" [disabled]="saving">
-          {{ saving ? 'Sauvegarde...' : '💾 Enregistrer' }}
+          {{ saving ? 'Sauvegarde...' : '◉ Enregistrer' }}
         </button>
       </div>
 
@@ -44,7 +44,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
                      #fileInput
                      hidden>
               <button class="btn-upload" (click)="fileInput.click()">
-                📤 Uploader un logo
+                ↗ Uploader un logo
               </button>
               <p class="upload-hint">PNG, JPG jusqu'à 2MB</p>
             </div>
@@ -69,7 +69,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
 
         <!-- Location -->
         <div class="section">
-          <h3>📍 Localisation</h3>
+          <h3>⊛ Localisation</h3>
           <div class="form-row">
             <div class="form-group">
               <label>Adresse</label>
@@ -91,7 +91,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
           <!-- Map Display -->
           <div class="map-display" *ngIf="profile.location?.latitude && profile.location?.longitude; else noMap">
             <div class="selected-coords">
-              <span>📍 {{ profile.location?.latitude | number:'1.6-6' }}, {{ profile.location?.longitude | number:'1.6-6' }}</span>
+              <span>⊛ {{ profile.location?.latitude | number:'1.6-6' }}, {{ profile.location?.longitude | number:'1.6-6' }}</span>
               <button class="btn-change-location" (click)="openMapPicker()">
                 Modifier
               </button>
@@ -104,10 +104,10 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
           <ng-template #noMap>
             <div class="map-container">
               <div class="map-placeholder">
-                <span>🗺️ Aucune localisation sélectionnée</span>
+                <span>⊞ Aucune localisation sélectionnée</span>
                 <p>Cliquez ci-dessous pour choisir l'emplacement sur la carte</p>
                 <button class="btn-secondary" (click)="openMapPicker()">
-                  📍 Choisir sur la carte
+                  ⊛ Choisir sur la carte
                 </button>
               </div>
             </div>
@@ -116,7 +116,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
 
         <!-- Business Hours -->
         <div class="section">
-          <h3>🕐 Horaires d'ouverture</h3>
+          <h3>⌚ Horaires d'ouverture</h3>
           <div class="hours-list">
             <div class="hour-row" *ngFor="let day of weekDays; let i = index">
               <span class="day-name">{{ day.label || ('Jour ' + (i+1)) }}</span>
@@ -135,7 +135,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
 
         <!-- Contact -->
         <div class="section">
-          <h3>📞 Coordonnées</h3>
+          <h3>☎ Coordonnées</h3>
           <div class="form-row two-col">
             <div class="form-group">
               <label>Téléphone</label>
@@ -164,7 +164,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
 
         <!-- Social Media -->
         <div class="section">
-          <h3>📱 Réseaux sociaux</h3>
+          <h3>☎ Réseaux sociaux</h3>
           <div class="form-row two-col">
             <div class="form-group">
               <label>Facebook</label>
@@ -196,7 +196,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
       <div *ngIf="showMapPicker" class="modal-overlay" (click)="closeMapPicker()">
         <div class="modal modal-large" (click)="$event.stopPropagation()">
           <div class="modal-header">
-            <h3>📍 Choisir la localisation</h3>
+            <h3>⊛ Choisir la localisation</h3>
             <button class="btn-close" (click)="closeMapPicker()">×</button>
           </div>
           <app-map-picker
@@ -209,7 +209,7 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
 
       <!-- Success Message -->
       <div *ngIf="showSuccess" class="success-message">
-        ✅ Profil mis à jour avec succès!
+        ✓ Profil mis à jour avec succès!
       </div>
     </div>
   `,
@@ -525,6 +525,24 @@ import { MapPickerComponent } from '../../../../shared/components/map-picker/map
         transform: translateX(0);
         opacity: 1;
       }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .profile-page { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .profile-page { padding: 0.75rem; }
+      .profile-grid { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; }
+      .form-group { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .profile-page { padding: 0.5rem; }
+      h2 { font-size: 1.25rem; }
+      .btn-primary, .btn-secondary { padding: 0.625rem 1rem; font-size: 0.875rem; }
     }
   `]
 })
