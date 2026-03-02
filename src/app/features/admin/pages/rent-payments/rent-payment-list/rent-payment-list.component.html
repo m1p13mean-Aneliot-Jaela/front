@@ -1,27 +1,27 @@
 <div class="page-container">
   <div class="header">
-    <h2>Rent Payments Management</h2>
-    <button class="btn-primary" (click)="navigateToAdd()">+ Add Rent Payment</button>
+    <h2>Gestion des Paiements de Loyer</h2>
+    <button class="btn-primary" (click)="navigateToAdd()">+ Ajouter un Paiement</button>
   </div>
 
   <!-- Statistics Cards -->
   <div *ngIf="statistics" class="statistics-cards">
     <div class="stat-card">
-      <h3>Total Payments</h3>
+      <h3>Total des Paiements</h3>
       <p class="stat-number">{{ statistics.total }}</p>
     </div>
     <div class="stat-card stat-pending">
-      <h3>Pending</h3>
+      <h3>En Attente</h3>
       <p class="stat-number">{{ statistics.pending }}</p>
       <p class="stat-amount">{{ formatCurrency(statistics.amounts?.pending || 0) }}</p>
     </div>
     <div class="stat-card stat-successful">
-      <h3>Successful</h3>
+      <h3>Réussi</h3>
       <p class="stat-number">{{ statistics.successful }}</p>
       <p class="stat-amount">{{ formatCurrency(statistics.amounts?.successful || 0) }}</p>
     </div>
     <div class="stat-card stat-overdue">
-      <h3>Overdue</h3>
+      <h3>En Retard</h3>
       <p class="stat-number">{{ statistics.overdue }}</p>
     </div>
   </div>
@@ -31,29 +31,29 @@
     <div class="search-box">
       <input 
         type="text" 
-        placeholder="Search by transaction ref, shop name..." 
+        placeholder="Rechercher par réf. transaction, nom boutique..." 
         [(ngModel)]="searchTerm"
         (input)="onSearch()"
       />
     </div>
     <div class="filter-options">
       <select [(ngModel)]="filterStatus" (change)="applyFilters()">
-        <option value="">All Statuses</option>
-        <option value="PENDING">Pending</option>
-        <option value="SUCCESSFUL">Successful</option>
-        <option value="FAILED">Failed</option>
-        <option value="REFUNDED">Refunded</option>
+        <option value="">Tous les Statuts</option>
+        <option value="PENDING">En Attente</option>
+        <option value="SUCCESSFUL">Réussi</option>
+        <option value="FAILED">Échoué</option>
+        <option value="REFUNDED">Remboursé</option>
       </select>
       <select [(ngModel)]="filterMethod" (change)="applyFilters()">
-        <option value="">All Methods</option>
-        <option value="CARD">Card</option>
+        <option value="">Toutes les Méthodes</option>
+        <option value="CARD">Carte</option>
         <option value="PAYPAL">PayPal</option>
         <option value="MOBILE_MONEY">Mobile Money</option>
-        <option value="BANK">Bank Transfer</option>
-        <option value="CASH">Cash</option>
+        <option value="BANK">Virement Bancaire</option>
+        <option value="CASH">Espèces</option>
       </select>
       <select [(ngModel)]="filterContractId" (change)="applyFilters()">
-        <option value="">All Contracts</option>
+        <option value="">Tous les Contrats</option>
         <option *ngFor="let contract of contracts" [value]="contract._id">
           {{ contract.shop_name }} ({{ formatDate(contract.start_date) }})
         </option>
@@ -62,19 +62,19 @@
         type="date" 
         [(ngModel)]="filterDateFrom" 
         (change)="applyFilters()"
-        placeholder="From Date"
+        placeholder="Date Début"
       />
       <input 
         type="date" 
         [(ngModel)]="filterDateTo" 
         (change)="applyFilters()"
-        placeholder="To Date"
+        placeholder="Date Fin"
       />
     </div>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="loading" class="loading">Chargement...</div>
 
   <!-- Error State -->
   <div *ngIf="error" class="error">{{ error }}</div>
@@ -84,12 +84,12 @@
     <table>
       <thead>
         <tr>
-          <th>Contract / Shop</th>
-          <th>Due Date</th>
-          <th>Amount</th>
-          <th>Method</th>
-          <th>Transaction Ref</th>
-          <th>Status</th>
+          <th>Contrat / Boutique</th>
+          <th>Date d'Échéance</th>
+          <th>Montant</th>
+          <th>Méthode</th>
+          <th>Réf. Transaction</th>
+          <th>Statut</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -98,12 +98,12 @@
           <td>
             <div class="contract-info">
               <div class="shop-name">{{ payment.contract?.shop_name || payment.shop?.shop_name || 'N/A' }}</div>
-              <div class="contract-id">Contract: {{ payment.contract_id }}</div>
+              <div class="contract-id">Contrat: {{ payment.contract_id }}</div>
             </div>
           </td>
           <td>
             <div>{{ formatDate(payment.due_date) }}</div>
-            <div *ngIf="isOverdue(payment)" class="overdue-badge">⚠️ Overdue</div>
+            <div *ngIf="isOverdue(payment)" class="overdue-badge">⚠️ En Retard</div>
           </td>
           <td class="amount-cell">{{ formatCurrency(payment.amount) }}</td>
           <td>
@@ -123,50 +123,50 @@
                 *ngIf="payment.current_status?.status === 'PENDING'" 
                 class="btn-xs btn-success" 
                 (click)="updateStatus(payment, 'SUCCESSFUL')"
-                title="Mark as Successful">
-                ✓ Success
+                title="Marquer comme Réussi">
+                ✓ Réussi
               </button>
               <button 
                 *ngIf="payment.current_status?.status === 'PENDING'" 
                 class="btn-xs btn-danger" 
                 (click)="updateStatus(payment, 'FAILED')"
-                title="Mark as Failed">
-                ✗ Failed
+                title="Marquer comme Échoué">
+                ✗ Échoué
               </button>
               <button 
                 *ngIf="payment.current_status?.status === 'SUCCESSFUL'" 
                 class="btn-xs btn-warning" 
                 (click)="updateStatus(payment, 'REFUNDED')"
-                title="Refund">
-                ↩ Refund
+                title="Rembourser">
+                ↩ Rembourser
               </button>
             </div>
           </td>
           <td>
             <div class="action-buttons">
-              <button class="btn-view" (click)="viewPayment(payment)" title="View">👁️</button>
-              <button class="btn-edit" (click)="editPayment(payment)" title="Edit">✏️</button>
+              <button class="btn-view" (click)="viewPayment(payment)" title="Voir">◉</button>
+              <button class="btn-edit" (click)="editPayment(payment)" title="Modifier">✎</button>
               <button 
                 class="btn-delete" 
                 (click)="deletePayment(payment)" 
-                title="Delete"
+                title="Supprimer"
                 [disabled]="payment.current_status?.status !== 'PENDING'">
-                🗑️
+                ✕
               </button>
             </div>
           </td>
         </tr>
         <tr *ngIf="paginatedPayments.length === 0">
-          <td colspan="7" class="no-data">No rent payments found</td>
+          <td colspan="7" class="no-data">Aucun paiement de loyer trouvé</td>
         </tr>
       </tbody>
     </table>
 
     <!-- Pagination -->
     <div class="pagination" *ngIf="totalPages > 1">
-      <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+      <button (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
+      <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant</button>
     </div>
   </div>
 </div>

@@ -1,9 +1,12 @@
 <div class="admin-layout" [class.collapsed]="sidebarCollapsed">
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" [class.active]="sidebarCollapsed" (click)="toggleSidebar()"></div>
+  
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo">
-        <span class="icon">🛡️</span>
+        <span class="icon">⚙</span>
         <span class="text">Admin</span>
       </div>
       <button class="toggle-btn" (click)="toggleSidebar()">
@@ -49,7 +52,7 @@
 
     <div class="sidebar-footer">
       <button class="logout-btn" (click)="logout()">
-        <span class="icon">🚪</span>
+        <span class="icon">⎋</span>
         <span class="label">Déconnexion</span>
       </button>
     </div>
@@ -71,5 +74,16 @@
     <div class="content">
       <router-outlet></router-outlet>
     </div>
+    
+    <!-- Footer -->
+    <footer class="admin-footer">
+      <div class="footer-content">
+        <p class="footer-text">
+          Développé par: <strong>RAMAMONJISOA Aina Aneliot</strong> (ETU002533) & 
+          <strong>ANDRIANAHERISOA Jaela Matehotia</strong> (ETU002677)
+        </p>
+        <p class="footer-year">© 2026 - Centre Commercial Management System</p>
+      </div>
+    </footer>
   </main>
 </div>

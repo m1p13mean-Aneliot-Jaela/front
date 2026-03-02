@@ -88,9 +88,9 @@ import { Shop } from '../../../../../shared/models/shop.model';
                 </span>
               </td>
               <td>
-                <button class="btn-view" (click)="viewShop(shop)" title="Voir">👁️</button>
-                <button class="btn-edit" (click)="editShop(shop)" title="Modifier">✏️</button>
-                <button class="btn-delete" (click)="deleteShop(shop)" title="Supprimer">🗑️</button>
+                <button class="btn-view" (click)="viewShop(shop)" title="Voir">◉</button>
+                <button class="btn-edit" (click)="editShop(shop)" title="Modifier">✎</button>
+                <button class="btn-delete" (click)="deleteShop(shop)" title="Supprimer">✕</button>
               </td>
             </tr>
             <tr *ngIf="paginatedShops.length === 0">
@@ -355,6 +355,57 @@ import { Shop } from '../../../../../shared/models/shop.model';
       border-radius: 6px;
       background: white;
       cursor: pointer;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .filters-container {
+        flex-direction: column;
+      }
+      .filter-options {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 1rem;
+      }
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+      .btn-primary {
+        width: 100%;
+      }
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        min-width: 600px;
+      }
+      .pagination {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .pagination-controls {
+        order: 2;
+      }
+      .items-per-page {
+        order: 1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      th, td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+      }
+      .shop-logo {
+        width: 40px;
+        height: 40px;
+      }
     }
   `]
 })
