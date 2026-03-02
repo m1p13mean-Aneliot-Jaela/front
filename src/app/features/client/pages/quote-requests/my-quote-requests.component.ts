@@ -131,12 +131,6 @@ import { AuthService } from '../../../../core/services/auth.service';
             </button>
           </div>
 
-          <div class="quote-footer">
-            <span class="items-count">{{ quote.requested_items.length }} produit(s)</span>
-            <span class="view-detail" *ngIf="quote.status === 'QUOTE_SENT' || quote.status === 'ACCEPTED'">
-              Cliquez pour voir le détail →
-            </span>
-          </div>
         </div>
       </div>
     </div>

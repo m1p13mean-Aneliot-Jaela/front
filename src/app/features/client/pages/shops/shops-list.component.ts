@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
+import { FavoritesService } from '../../services/favorites.service';
 
 interface Shop {
   _id: string;
@@ -202,38 +203,35 @@ export class ShopsListComponent implements OnInit {
   searchQuery = '';
   selectedCategory = '';
   
-  // Favorites (stored in localStorage for now)
-  favoriteShops: string[] = [];
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private favoritesService: FavoritesService
+  ) {}
 
   ngOnInit(): void {
-    this.loadFavorites();
     this.loadCategories();
     this.loadShops();
+    // Subscribe to favorites changes to update the heart icons
+    this.favoritesService.favorites$.subscribe(() => {
+      // This triggers change detection to update heart colors
+    });
   }
-  
-  loadFavorites(): void {
-    const favs = localStorage.getItem('favoriteShops');
-    this.favoriteShops = favs ? JSON.parse(favs) : [];
-  }
-  
-  saveFavorites(): void {
-    localStorage.setItem('favoriteShops', JSON.stringify(this.favoriteShops));
-  }
-  
+
   isFavorite(shopId: string): boolean {
-    return this.favoriteShops.includes(shopId);
+    return this.favoritesService.isFavorite(shopId);
   }
   
   toggleFavorite(event: Event, shopId: string): void {
     event.stopPropagation();
-    if (this.isFavorite(shopId)) {
-      this.favoriteShops = this.favoriteShops.filter(id => id !== shopId);
-    } else {
-      this.favoriteShops.push(shopId);
-    }
-    this.saveFavorites();
+    const shop = this.shops.find(s => s._id === shopId);
+    if (!shop) return;
+
+    this.favoritesService.toggleFavorite({
+      shop_id: shop._id,
+      shop_name: shop.shop_name,
+      logo: shop.logo,
+      mall_location: shop.mall_location
+    });
   }
   
   loadCategories(): void {
@@ -241,7 +239,9 @@ export class ShopsListComponent implements OnInit {
       `${environment.apiUrl}/shop-categories`
     ).subscribe({
       next: (response) => {
-        this.categories = response.data || [];
+        // Ensure categories is always an array
+        const data = response.data;
+        this.categories = Array.isArray(data) ? data : (data ? [data] : []);
       },
       error: (err) => {
         console.error('Error loading categories:', err);
@@ -257,7 +257,9 @@ export class ShopsListComponent implements OnInit {
       `${environment.apiUrl}/shops/public`
     ).subscribe({
       next: (response) => {
-        this.shops = response.data || [];
+        // Ensure shops is always an array
+        const data = response.data;
+        this.shops = Array.isArray(data) ? data : (data ? [data] : []);
         this.filteredShops = [...this.shops];
         this.loading = false;
       },
