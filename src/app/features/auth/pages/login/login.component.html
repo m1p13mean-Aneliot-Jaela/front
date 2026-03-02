@@ -1,80 +1,94 @@
-<div class="login-container">
-  <div class="login-left">
-    <div class="brand">
-      <div class="logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-        </svg>
+<div class="auth-container">
+  <div class="auth-card">
+    <!-- Left Panel: Login Form -->
+    <div class="form-panel panel-left">
+      <div class="form-content">
+        <div class="form-header">
+          <h1>Connectez-vous</h1>
+          <p>Accédez à vos boutiques préférées en ligne</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="field" style="animation-delay: 0.1s">
+            <label>* ADRESSE EMAIL</label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="exemple@gestio.io"
+              [class.focused]="loginForm.get('email')?.dirty || loginForm.get('email')?.touched"
+            />
+          </div>
+
+          <div class="field" style="animation-delay: 0.2s">
+            <label>* MOT DE PASSE</label>
+            <div class="input-with-icon">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="••••••••"
+                [class.focused]="loginForm.get('password')?.dirty || loginForm.get('password')?.touched"
+              />
+              <span class="icon-right" (click)="togglePassword()">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="remember-me">
+              <input type="checkbox" [(ngModel)]="rememberMe" [ngModelOptions]="{standalone: true}" />
+              <span>Se souvenir de moi</span>
+            </label>
+            <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+          </div>
+
+          <div *ngIf="error" class="error-message">{{ error }}</div>
+
+          <button type="submit" class="btn-primary" [disabled]="loading || loginForm.invalid">
+            <span *ngIf="!loading">SE CONNECTER</span>
+            <div *ngIf="loading" class="spinner"></div>
+          </button>
+
+          <p class="alt-link">ou créez un nouveau compte</p>
+        </form>
       </div>
-      <h1>Centre Commercial</h1>
-      <p>Votre destination shopping unique</p>
     </div>
-    <div class="features">
-      <div class="feature">
-        <span class="icon">🛍️</span>
-        <span>Shopping moderne</span>
+
+    <!-- Right Panel: Blue Info Panel -->
+    <div class="info-panel panel-right">
+      <div class="decorative-circle circle-1"></div>
+      <div class="decorative-circle circle-2"></div>
+      <div class="decorative-circle circle-3"></div>
+
+      <div class="shield-logo">⚙</div>
+
+      <h2>Faites vos achats<br/>en toute simplicité</h2>
+      <p class="info-description">
+        Pour faire vos achats en ligne sans vous déplacer, rejoignez notre centre commercial virtuel.
+      </p>
+
+      <div class="feature-pills">
+        <div class="feature-pill">
+          <span class="pill-icon">⚐</span>
+          <span class="pill-text">Livraison rapide</span>
+        </div>
+        <div class="feature-pill">
+          <span class="pill-icon">⚋</span>
+          <span class="pill-text">Paiement sécurisé</span>
+        </div>
+        <div class="feature-pill">
+          <span class="pill-icon">≡</span>
+          <span class="pill-text">Large catalogue</span>
+        </div>
       </div>
-      <div class="feature">
-        <span class="icon">⚡</span>
-        <span>Expérience fluide</span>
-      </div>
-      <div class="feature">
-        <span class="icon">🔒</span>
-        <span>Sécurisé & fiable</span>
-      </div>
+
+      <button class="btn-switch" routerLink="/login/signup">S'INSCRIRE</button>
     </div>
   </div>
 
-  <div class="login-right">
-    <div class="login-box">
-      <h2>Connexion</h2>
-      <p class="subtitle">Connectez-vous pour continuer</p>
-
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input 
-            type="email" 
-            id="email" 
-            formControlName="email" 
-            placeholder="votre@email.com"
-            [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="password">Mot de passe</label>
-          <input 
-            type="password" 
-            id="password" 
-            formControlName="password" 
-            placeholder="••••••••"
-            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-          >
-        </div>
-
-        <div class="form-options">
-          <label class="remember">
-            <input type="checkbox">
-            <span>Se souvenir de moi</span>
-          </label>
-          <a href="#" class="forgot">Mot de passe oublié ?</a>
-        </div>
-
-        <div *ngIf="error" class="error-message">{{ error }}</div>
-
-        <button type="submit" class="btn-login" [disabled]="loading || loginForm.invalid">
-          <span *ngIf="!loading">Se connecter</span>
-          <span *ngIf="loading" class="spinner"></span>
-        </button>
-      </form>
-
-      <div class="demo-info">
-        <p>
-          <span>Pas encore de compte ?</span>
-          <a routerLink="/login/signup">Créer un compte</a>
-        </p>
-      </div>
-    </div>
-  </div>
+  <!-- Footer -->
+  <footer class="auth-footer">
+    <p>RAMAMONJISOA Aina Aneliot, ETU002533</p>
+    <p>ANDRIANAHERISOA Jaela Matehotia, ETU002677</p>
+  </footer>
 </div>
