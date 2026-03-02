@@ -35,7 +35,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
           <span class="stat-label">Total {{ stats.period }}j</span>
         </div>
         <div class="stat-card delivered">
-          <span class="stat-value">{{ stats.byStatus?.DELIVERED || 0 }}</span>
+          <span class="stat-value">{{ stats.byStatus.DELIVERED || 0 }}</span>
           <span class="stat-label">Livrés</span>
         </div>
         <div class="stat-card transit">
@@ -75,10 +75,10 @@ import { AuthService } from '../../../../../core/services/auth.service';
               <!-- Destination -->
               <td>
                 <div class="destination">
-                  <div class="recipient">{{ delivery.delivery_address?.recipient_name || '—' }}</div>
-                  <div class="address">{{ delivery.delivery_address?.city || '—' }}</div>
-                  <div class="phone" *ngIf="delivery.delivery_address?.recipient_phone">
-                    ☎ {{ delivery.delivery_address?.recipient_phone }}
+                  <div class="recipient">{{ delivery.delivery_address.recipient_name || '—' }}</div>
+                  <div class="address">{{ delivery.delivery_address.city || '—' }}</div>
+                  <div class="phone" *ngIf="delivery.delivery_address.recipient_phone">
+                    ☎ {{ delivery.delivery_address.recipient_phone }}
                   </div>
                 </div>
               </td>
@@ -220,12 +220,12 @@ import { AuthService } from '../../../../../core/services/auth.service';
           <div class="address-section">
             <h4>Adresse de livraison</h4>
             <div class="address-card">
-              <p><strong>{{ selectedDelivery.delivery_address?.recipient_name || '—' }}</strong></p>
-              <p>{{ selectedDelivery.delivery_address?.address_line1 || '—' }}</p>
-              <p *ngIf="selectedDelivery.delivery_address?.address_line2">{{ selectedDelivery.delivery_address?.address_line2 }}</p>
-              <p>{{ selectedDelivery.delivery_address?.postal_code || '—' }} {{ selectedDelivery.delivery_address?.city || '—' }}</p>
-              <p *ngIf="selectedDelivery.delivery_address?.recipient_phone">
-                ☎ {{ selectedDelivery.delivery_address?.recipient_phone }}
+              <p><strong>{{ selectedDelivery.delivery_address.recipient_name || '—' }}</strong></p>
+              <p>{{ selectedDelivery.delivery_address.address_line1 || '—' }}</p>
+              <p *ngIf="selectedDelivery.delivery_address.address_line2">{{ selectedDelivery.delivery_address.address_line2 }}</p>
+              <p>{{ selectedDelivery.delivery_address.postal_code || '—' }} {{ selectedDelivery.delivery_address.city || '—' }}</p>
+              <p *ngIf="selectedDelivery.delivery_address.recipient_phone">
+                ☎ {{ selectedDelivery.delivery_address.recipient_phone }}
               </p>
             </div>
           </div>
@@ -900,6 +900,10 @@ export class DeliveryListComponent implements OnInit {
       },
       error: () => alert('Erreur lors de la mise à jour')
     });
+  }
+
+  refreshTracking(delivery: Delivery): void {
+    this.syncTracking(delivery);
   }
 
   syncTracking(delivery: Delivery): void {
