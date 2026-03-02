@@ -11,9 +11,9 @@ import { OrderService, Order, OrdersListResponse } from '../../../services/order
   template: `
     <div class="orders-page">
       <div class="page-header">
-        <h2>🛒 Commandes</h2>
+        <h2>◎ Commandes</h2>
         <div class="header-actions">
-          <button class="btn-export" (click)="exportOrders()">📥 Export</button>
+          <button class="btn-export" (click)="exportOrders()">↓ Export</button>
           <button class="btn-primary" routerLink="/shop/orders/new">+ Nouvelle commande</button>
         </div>
       </div>
@@ -23,7 +23,7 @@ import { OrderService, Order, OrdersListResponse } from '../../../services/order
         <div class="filter-group">
           <input 
             type="text" 
-            placeholder="🔍 Rechercher (n°, client...)" 
+            placeholder="⌕ Rechercher (n°, client...)" 
             [(ngModel)]="searchQuery"
             (keyup.enter)="applyFilters()"
           >
@@ -115,7 +115,7 @@ import { OrderService, Order, OrdersListResponse } from '../../../services/order
                   (click)="advanceStatus(order)"
                   title="Avancer le statut"
                 >
-                  ▶️
+                  ►
                 </button>
                 <button 
                   class="btn-action cancel" 
@@ -151,7 +151,7 @@ import { OrderService, Order, OrdersListResponse } from '../../../services/order
 
       <!-- Empty State -->
       <div *ngIf="!loading && !orders.length" class="empty-state">
-        <span class="icon">📭</span>
+        <span class="icon">□</span>
         <p>Aucune commande trouvée</p>
         <button class="btn-secondary" (click)="resetFilters()">Réinitialiser les filtres</button>
       </div>
@@ -209,6 +209,38 @@ import { OrderService, Order, OrdersListResponse } from '../../../services/order
     .empty-state .icon { font-size: 3rem; }
     .empty-state p { margin: 1rem 0; }
     .btn-secondary { padding: 0.625rem 1.25rem; background: white; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .orders-page { padding: 1rem; }
+      .filters-bar { gap: 0.75rem; padding: 0.75rem; }
+      .status-summary { gap: 0.75rem; }
+    }
+
+    @media (max-width: 768px) {
+      .orders-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .header-actions { width: 100%; }
+      .btn-primary, .btn-export { width: 100%; }
+      .filters-bar { flex-direction: column; padding: 0.75rem; }
+      .filter-group input, .filter-group select { width: 100%; }
+      .status-summary { flex-direction: column; }
+      .status-chip { justify-content: space-between; }
+      .orders-container { overflow-x: auto; }
+      .orders-table { min-width: 800px; }
+      .orders-table th, .orders-table td { padding: 0.75rem; font-size: 0.75rem; }
+    }
+
+    @media (max-width: 480px) {
+      .orders-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .status-chip { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+      .btn-primary, .btn-export { padding: 0.5rem 1rem; font-size: 0.875rem; }
+      .orders-table th, .orders-table td { padding: 0.5rem; }
+      .pagination { flex-wrap: wrap; gap: 0.5rem; }
+      .pagination button { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+    }
   `]
 })
 export class ShopOrdersListComponent implements OnInit {

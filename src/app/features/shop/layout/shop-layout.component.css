@@ -11,10 +11,10 @@
   color: white;
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, left 0.3s ease;
   position: fixed;
   height: 100vh;
-  z-index: 100;
+  z-index: 1001;
 }
 
 .shop-layout.collapsed .sidebar {
@@ -143,6 +143,8 @@
   background: #f1f5f9;
   min-height: 100vh;
   transition: margin-left 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .shop-layout.collapsed .main-content {
@@ -213,6 +215,70 @@
 /* Content */
 .content {
   padding: 2rem;
+  flex: 1;
+}
+
+/* Mobile Menu Button (Hidden on Desktop) */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #1e293b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.mobile-menu-btn:hover {
+  background: #f1f5f9;
+}
+
+.mobile-menu-btn:active {
+  transform: scale(0.95);
+}
+
+/* Mobile Backdrop */
+.mobile-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+/* Footer Styles */
+.shop-footer {
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem 2rem;
+  margin-top: auto;
+}
+
+.footer-content {
+  text-align: center;
+  color: #64748b;
+}
+
+.footer-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.footer-text strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.footer-year {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
 }
 
 /* Expandable Menu Styles */
@@ -268,4 +334,191 @@
 .submenu-item.active {
   background: #8b5cf6;
   color: white;
+}
+
+/* Mobile & Tablet Responsive Styles */
+@media (max-width: 1024px) {
+  /* Tablet styles */
+  .sidebar {
+    width: 70px;
+  }
+  
+  .shop-layout.collapsed .sidebar {
+    width: 260px;
+  }
+  
+  .sidebar-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .logo .text {
+    display: none;
+  }
+  
+  .shop-layout.collapsed .logo .text {
+    display: block;
+  }
+  
+  .nav-item .label {
+    display: none;
+  }
+  
+  .shop-layout.collapsed .nav-item .label {
+    display: block;
+  }
+  
+  .logout-btn .label {
+    display: none;
+  }
+  
+  .shop-layout.collapsed .logout-btn .label {
+    display: block;
+  }
+  
+  .main-content {
+    margin-left: 70px;
+  }
+  
+  .shop-layout.collapsed .main-content {
+    margin-left: 260px;
+  }
+  
+  .header {
+    padding: 1rem;
+  }
+  
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile styles */
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    width: 260px;
+    transition: left 0.3s ease;
+    z-index: 1001;
+  }
+  
+  .shop-layout.mobile-menu-open .sidebar {
+    left: 0;
+  }
+  
+  .mobile-backdrop {
+    display: block;
+  }
+  
+  .logo .text {
+    display: block;
+  }
+  
+  .nav-item .label {
+    display: block;
+  }
+  
+  .logout-btn .label {
+    display: block;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .shop-layout.collapsed .main-content {
+    margin-left: 0;
+  }
+  
+  /* Mobile header */
+  .header {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .header h1 {
+    font-size: 1rem;
+    flex: 1;
+    margin: 0;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  /* Hide user info text on very small screens */
+  .user-info .name {
+    display: none;
+  }
+  
+  .user-info .badge {
+    display: none;
+  }
+  
+  /* Content padding */
+  .content {
+    padding: 0.75rem;
+  }
+  
+  /* Footer responsive */
+  .shop-footer {
+    padding: 1rem;
+  }
+  
+  .footer-text {
+    font-size: 0.75rem;
+  }
+  
+  .footer-year {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small mobile devices */
+  .header {
+    padding: 0.5rem;
+  }
+  
+  .header h1 {
+    font-size: 0.875rem;
+  }
+  
+  .mobile-menu-btn {
+    font-size: 1.25rem;
+    padding: 0.25rem;
+  }
+  
+  .content {
+    padding: 0.5rem;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .user-info {
+    gap: 0.5rem;
+  }
+  
+  .avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
 }

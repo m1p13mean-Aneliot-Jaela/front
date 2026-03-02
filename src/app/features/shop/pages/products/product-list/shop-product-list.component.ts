@@ -16,7 +16,7 @@ import { PermissionService } from '../../../../../core/services/permission.servi
     <!-- Alertes Stock Faible -->
     <div *ngIf="lowStockProducts.length > 0" class="stock-alerts-banner">
       <div class="alert-header">
-        <span class="alert-icon">⚠️</span>
+        <span class="alert-icon">⚠</span>
         <strong>Alertes Stock Faible</strong>
         <span class="alert-count">({{ lowStockProducts.length }})</span>
       </div>
@@ -34,7 +34,7 @@ import { PermissionService } from '../../../../../core/services/permission.servi
     <div class="filters-bar">
       <input type="text" 
              class="search-input" 
-             placeholder="🔍 Rechercher un produit..."
+             placeholder="⌕ Rechercher un produit..."
              [(ngModel)]="searchTerm"
              (input)="applyFilters()">
       
@@ -45,10 +45,10 @@ import { PermissionService } from '../../../../../core/services/permission.servi
       
       <select class="filter-select" [(ngModel)]="hasPromoFilter" (change)="applyFilters()">
         <option value="">Tous les produits</option>
-        <option value="true">🔥 En promotion</option>
+        <option value="true">◆ En promotion</option>
       </select>
       
-      <button class="btn-filter" (click)="resetFilters()">🔄 Réinitialiser</button>
+      <button class="btn-filter" (click)="resetFilters()">↻ Réinitialiser</button>
     </div>
 
     <div *ngIf="!loading && !error" class="products-table-container">
@@ -73,7 +73,7 @@ import { PermissionService } from '../../../../../core/services/permission.servi
           <img *ngIf="product.image_url || product.images?.[0]?.image_url"
                [src]="product.image_url || product.images?.[0]?.image_url"
                class="table-thumbnail">
-          <div *ngIf="!product.image_url && !product.images?.[0]?.image_url" class="table-no-image">📦</div>
+          <div *ngIf="!product.image_url && !product.images?.[0]?.image_url" class="table-no-image">▢</div>
         </td>
 
         <!-- Nom + Description -->
@@ -113,7 +113,7 @@ import { PermissionService } from '../../../../../core/services/permission.servi
 
           <span *ngIf="product.is_on_promo"
                 class="promo-badge">
-            🔥 Promo
+            ◆ Promo
           </span>
         </td>
 
@@ -124,7 +124,7 @@ import { PermissionService } from '../../../../../core/services/permission.servi
             <button class="btn-icon"
                     (click)="quickStockUpdate(product)"
                     title="Voir stock">
-              👁️
+              ⊙
             </button>
 
             <button class="btn-icon edit"
@@ -136,7 +136,7 @@ import { PermissionService } from '../../../../../core/services/permission.servi
             <button class="btn-icon delete"
                     (click)="deleteProduct(product._id!)"
                     title="Supprimer">
-              🗑️
+              ×
             </button>
 
           </div>
@@ -202,7 +202,7 @@ import { PermissionService } from '../../../../../core/services/permission.servi
 
         <!-- Movements History -->
         <div class="movements-section" *ngIf="!stockLoading && stockMovements.length > 0">
-          <h4>📋 Historique des mouvements</h4>
+          <h4>≡ Historique des mouvements</h4>
           <div class="movements-list">
             <div *ngFor="let movement of stockMovements.slice(0, 10)" class="movement-item">
               <span class="movement-type" [class.in]="movement.movement_type === 'IN'"
@@ -826,6 +826,43 @@ import { PermissionService } from '../../../../../core/services/permission.servi
       border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .page-container { padding: 1rem; }
+      .stats-cards { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; }
+      .stat-value { font-size: 1.5rem; }
+      .filters-bar { gap: 0.5rem; }
+      .search-input { width: 200px; }
+    }
+
+    @media (max-width: 768px) {
+      .page-container { padding: 0.75rem; }
+      .stats-cards { grid-template-columns: repeat(2, 1fr); }
+      .stat-card { padding: 0.75rem; }
+      .stat-value { font-size: 1.25rem; }
+      .stat-label { font-size: 0.625rem; }
+      .header-actions { flex-direction: column; align-items: stretch; }
+      .filters-bar { flex-direction: column; }
+      .search-input { width: 100%; }
+      .filter-select { width: 100%; }
+      .products-table-container { overflow-x: auto; }
+      .products-table { min-width: 800px; }
+      .actions-cell { flex-direction: column; }
+      .modal { width: 95%; padding: 1rem; }
+      .modal.stock-modal { width: 95%; }
+    }
+
+    @media (max-width: 480px) {
+      .page-container { padding: 0.5rem; }
+      .stats-cards { grid-template-columns: 1fr; }
+      .stat-card { padding: 0.625rem; }
+      h2 { font-size: 1.25rem; }
+      .btn-primary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .table-thumbnail, .table-no-image { width: 40px; height: 40px; }
+      .products-table th, .products-table td { padding: 0.5rem; font-size: 0.75rem; }
+      .alert-products { flex-direction: column; }
     }
   `]
 })

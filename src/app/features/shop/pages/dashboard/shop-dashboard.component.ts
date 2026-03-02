@@ -11,7 +11,7 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
   template: `
     <div class="dashboard">
       <div class="dashboard-header">
-        <h2>🏪 Tableau de bord</h2>
+        <h2>◆ Tableau de bord</h2>
         <div class="period-selector">
           <button [class.active]="period === 7" (click)="changePeriod(7)">7 jours</button>
           <button [class.active]="period === 30" (click)="changePeriod(30)">30 jours</button>
@@ -26,28 +26,28 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
         <!-- KPI Cards -->
         <div class="stats-grid">
           <div class="stat-card primary">
-            <span class="icon">💵</span>
+            <span class="icon">◎</span>
             <div class="stat-info">
               <span class="value">{{ stats.revenue | currency:'Ar ':'symbol':'1.0-0' }}</span>
               <span class="label">Chiffre d'affaires</span>
             </div>
           </div>
           <div class="stat-card">
-            <span class="icon">🛒</span>
+            <span class="icon">◎</span>
             <div class="stat-info">
               <span class="value">{{ stats.orders_count }}</span>
               <span class="label">Commandes</span>
             </div>
           </div>
           <div class="stat-card">
-            <span class="icon">📈</span>
+            <span class="icon">▲</span>
             <div class="stat-info">
               <span class="value">{{ stats.conversion_rate }}%</span>
               <span class="label">Conversion</span>
             </div>
           </div>
           <div class="stat-card">
-            <span class="icon">⏳</span>
+            <span class="icon">⌛</span>
             <div class="stat-info">
               <span class="value">{{ stats.orders_by_status.PENDING }}</span>
               <span class="label">En attente</span>
@@ -58,7 +58,7 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
         <!-- Revenue Charts -->
         <div class="dashboard-row">
           <div class="dashboard-card chart-card wide">
-            <h3>📊 Chiffre d'affaires</h3>
+            <h3>≣ Chiffre d'affaires</h3>
             <div class="chart-tabs">
               <button [class.active]="revenueView === 'monthly'" (click)="revenueView = 'monthly'">Mensuel</button>
               <button [class.active]="revenueView === 'yearly'" (click)="revenueView = 'yearly'">Annuel</button>
@@ -94,7 +94,7 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
           </div>
 
           <div class="dashboard-card">
-            <h3>🏆 Top Produits</h3>
+            <h3>◈ Top Produits</h3>
             <div class="product-item" *ngFor="let p of stats.top_products; let i = index">
               <span class="rank">{{ i + 1 }}</span>
               <div class="product-info">
@@ -113,7 +113,7 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
               <span class="badge" *ngIf="todoList.length">{{ todoList.length }}</span>
             </div>
             <div class="todo-sales-chart">
-              <h4>📈 Ventes des 7 derniers jours</h4>
+              <h4>▲ Ventes des 7 derniers jours</h4>
               <svg viewBox="0 0 300 100" class="mini-chart">
                 <polyline [attr.points]="getTodoSalesPoints()" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle *ngFor="let point of getTodoSalesData(); let i = index" [attr.cx]="point.x" [attr.cy]="point.y" r="3" fill="#22c55e"/>
@@ -130,7 +130,7 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
 
           <div class="dashboard-card">
             <div class="card-header">
-              <h3>🕐 Commandes récentes</h3>
+              <h3>⌚ Commandes récentes</h3>
               <a routerLink="/shop/orders">Voir tout</a>
             </div>
             <div class="order-item" *ngFor="let o of stats.recent_orders" [routerLink]="['/shop/orders', o._id]">
@@ -206,6 +206,42 @@ import { OrderService, DashboardStats, TodoItem } from '../../services/order.ser
     .order-num { font-weight: 600; font-size: 0.875rem; color: #1e293b; }
     .status-badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; color: white; }
     .amount { font-weight: 600; color: #1e293b; }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .dashboard { padding: 1rem; }
+      .stats-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+      .dashboard-row { grid-template-columns: 1fr; gap: 1rem; }
+      .dashboard-card.wide { grid-column: span 1; }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard { padding: 0.75rem; }
+      .dashboard-header { flex-direction: column; align-items: flex-start; }
+      .stats-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; }
+      .stat-card { padding: 1rem; flex-direction: column; text-align: center; }
+      .stat-card .icon { width: 48px; height: 48px; font-size: 1.5rem; }
+      .stat-info .value { font-size: 1.25rem; }
+      .stat-info .label { font-size: 0.75rem; }
+      .dashboard-row { gap: 0.75rem; }
+      .dashboard-card { padding: 1rem; }
+      .period-selector { width: 100%; justify-content: stretch; }
+      .period-selector button { flex: 1; padding: 0.5rem; font-size: 0.75rem; }
+      .chart-container { height: 180px; }
+      .yearly-stats { gap: 0.75rem; }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard { padding: 0.5rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-card { padding: 0.875rem; }
+      .stat-info .value { font-size: 1.125rem; }
+      .dashboard-card h3 { font-size: 0.875rem; }
+      .product-item, .todo-item, .order-item { padding: 0.625rem; font-size: 0.8rem; }
+      .order-item { flex-wrap: wrap; gap: 0.5rem; }
+      .order-num { width: 100%; }
+      .chart-tabs button { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+    }
   `]
 })
 export class ShopDashboardComponent implements OnInit, OnDestroy {

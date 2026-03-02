@@ -227,6 +227,20 @@ interface Permission {
     .btn-secondary:hover {
       background: #f8fafc;
     }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .form-page { padding: 0.75rem; }
+      .form-container { padding: 1rem; }
+      .form-row { flex-direction: column; }
+      .form-group { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .form-page { padding: 0.5rem; }
+      h2 { font-size: 1.25rem; }
+      .btn-primary, .btn-secondary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+    }
   `]
 })
 export class ShopEmployeeFormComponent implements OnInit {

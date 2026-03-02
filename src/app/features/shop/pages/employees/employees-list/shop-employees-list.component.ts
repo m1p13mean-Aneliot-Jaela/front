@@ -74,8 +74,8 @@ interface DisplayEmployee {
               <td>{{ employee.joinedDate }}</td>
               <td class="actions">
                 <button *ngIf="canEditEmployees" class="btn-edit" [routerLink]="['/shop/employees/edit', employee.id]">✏️</button>
-                <button *ngIf="canManagePermissions" class="btn-permissions" title="Gérer permissions">🔐</button>
-                <button *ngIf="canDeleteEmployees" class="btn-delete" (click)="deleteEmployee(employee.id)">🗑️</button>
+                <button *ngIf="canManagePermissions" class="btn-permissions" title="Gérer permissions">⚓</button>
+                <button *ngIf="canDeleteEmployees" class="btn-delete" (click)="deleteEmployee(employee.id)">×</button>
               </td>
             </tr>
           </tbody>
@@ -192,6 +192,26 @@ interface DisplayEmployee {
     .btn-edit:hover { background: #e0f2fe; }
     .btn-permissions:hover { background: #fef3c7; }
     .btn-delete:hover { background: #fee2e2; }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .employees-page { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .employees-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .employees-container { overflow-x: auto; }
+      .employees-table { min-width: 700px; }
+    }
+
+    @media (max-width: 480px) {
+      .employees-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .btn-primary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .employees-table th, .employees-table td { padding: 0.5rem; font-size: 0.75rem; }
+    }
   `]
 })
 export class ShopEmployeesListComponent implements OnInit {

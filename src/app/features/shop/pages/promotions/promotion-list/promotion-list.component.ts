@@ -93,7 +93,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
               <!-- Produits concernés -->
               <td>
                 <div class="products-list" *ngIf="promo.applicable_products === 'ALL' || !promo.applicable_products">
-                  <span class="badge all">🛍️ Tous les produits</span>
+                  <span class="badge all">◈ Tous les produits</span>
                 </div>
                 <div class="products-list" *ngIf="promo.applicable_products && promo.applicable_products !== 'ALL'">
                   <div class="product-names">{{ getProductNames(promo) }}</div>
@@ -159,9 +159,9 @@ import { AuthService } from '../../../../../core/services/auth.service';
                           (click)="toggleStatus(promo)" 
                           [class.active]="promo.is_active"
                           title="{{ promo.is_active ? 'Désactiver' : 'Activer' }}">
-                    {{ promo.is_active ? '⏸️' : '▶️' }}
+                    {{ promo.is_active ? '▮▮' : '►' }}
                   </button>
-                  <button class="btn-icon delete" (click)="deletePromotion(promo._id!)" title="Supprimer">🗑️</button>
+                  <button class="btn-icon delete" (click)="deletePromotion(promo._id!)" title="Supprimer">×</button>
                 </div>
               </td>
             </tr>
@@ -510,6 +510,26 @@ import { AuthService } from '../../../../../core/services/auth.service';
       background: #fee2e2;
       color: #dc2626;
       border-radius: 8px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .promotions-page { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .promotions-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .promotions-container { overflow-x: auto; }
+      .promotions-table { min-width: 800px; }
+    }
+
+    @media (max-width: 480px) {
+      .promotions-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .btn-primary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .promotions-table th, .promotions-table td { padding: 0.5rem; font-size: 0.75rem; }
     }
   `]
 })

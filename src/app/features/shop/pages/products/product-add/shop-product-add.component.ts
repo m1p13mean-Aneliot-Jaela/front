@@ -187,7 +187,7 @@ interface ProductStatusInfo {
                 (change)="onFileSelected($event)"
                 hidden
               >
-              <span class="upload-icon">📷</span>
+              <span class="upload-icon">◈</span>
               <span>Cliquez ou glissez des images ici</span>
               <small>JPG, PNG, WEBP (max 5MB)</small>
             </div>
@@ -425,6 +425,27 @@ interface ProductStatusInfo {
     }
     .btn-secondary:hover {
       background: #f8fafc;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .product-form { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .product-form { padding: 0.75rem; }
+      .form-container { padding: 1rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; }
+      .form-group { width: 100%; }
+      .images-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .product-form { padding: 0.5rem; }
+      h2 { font-size: 1.25rem; }
+      .btn-primary, .btn-secondary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .images-grid { grid-template-columns: 1fr; }
     }
   `]
 })

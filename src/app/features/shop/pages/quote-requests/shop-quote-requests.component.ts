@@ -17,7 +17,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
   template: `
     <div class="quote-requests-page">
       <div class="page-header">
-        <h2>📝 Demandes clients</h2>
+        <h2>✎ Demandes clients</h2>
         <p class="subtitle">Gérez les demandes de devis et convertissez-les en commandes</p>
       </div>
 
@@ -50,7 +50,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
         <input 
           type="text" 
           class="search-input"
-          placeholder="🔍 Rechercher par nom ou téléphone..."
+          placeholder="⌕ Rechercher par nom ou téléphone..."
           [(ngModel)]="searchQuery"
           (input)="applyFilters()">
         
@@ -64,7 +64,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
           <option value="CONVERTED">Convertie</option>
         </select>
 
-        <button class="btn-filter" (click)="resetFilters()">🔄 Réinitialiser</button>
+        <button class="btn-filter" (click)="resetFilters()">↻ Réinitialiser</button>
       </div>
 
       <!-- Loading -->
@@ -82,9 +82,9 @@ import { NotificationService } from '../../../../shared/services/notification.se
         <div class="quote-card" *ngFor="let quote of filteredQuotes" [class]="quote.status.toLowerCase()">
           <div class="quote-header">
             <div class="client-info">
-              <span class="client-name">👤 {{ quote.client_name }}</span>
-              <span class="client-phone">📞 {{ quote.client_phone }}</span>
-              <span class="quote-date">📅 {{ quote.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+              <span class="client-name">⚐ {{ quote.client_name }}</span>
+              <span class="client-phone">☎ {{ quote.client_phone }}</span>
+              <span class="quote-date">☷ {{ quote.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
             </div>
             <span class="status-badge" [class]="getStatusClass(quote.status)">
               {{ getStatusLabel(quote.status) }}
@@ -93,7 +93,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
 
           <!-- Client Address -->
           <div class="client-address" *ngIf="quote.client_address?.city">
-            📍 {{ quote.client_address?.city }}<span *ngIf="quote.client_address?.street">, {{ quote.client_address?.street }}</span>
+            ⊛ {{ quote.client_address?.city }}<span *ngIf="quote.client_address?.street">, {{ quote.client_address?.street }}</span>
           </div>
 
           <!-- Requested Items -->
@@ -111,21 +111,21 @@ import { NotificationService } from '../../../../shared/services/notification.se
           <!-- Actions for PENDING -->
           <div class="quote-actions" *ngIf="quote.status === 'PENDING'">
             <button class="btn-review" (click)="startReview(quote._id)">
-              📋 Prendre en charge
+              ≡ Prendre en charge
             </button>
           </div>
 
           <!-- Actions for REVIEWING -->
           <div class="quote-actions" *ngIf="quote.status === 'REVIEWING' && quote.handled_by === currentUserId">
             <button class="btn-respond" (click)="openResponseModal(quote)">
-              💰 Calculer le devis
+              ◎ Calculer le devis
             </button>
           </div>
 
           <!-- Manager Response Display -->
           <div class="manager-response" *ngIf="quote.manager_response">
             <div class="response-header">
-              <span>💼 Devis envoyé par {{ quote.handled_by_name }}</span>
+              <span>◈ Devis envoyé par {{ quote.handled_by_name }}</span>
               <span class="response-date">{{ quote.handled_at | date:'dd/MM/yyyy' }}</span>
             </div>
             <p class="response-message" *ngIf="quote.manager_response.message">
@@ -143,7 +143,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
           <!-- Client Response -->
           <div class="client-response" *ngIf="quote.client_response">
             <span [class]="quote.client_response.accepted ? 'accepted' : 'rejected'">
-              {{ quote.client_response.accepted ? '✅ Accepté' : '❌ Refusé' }}
+              {{ quote.client_response.accepted ? '✓ Accepté' : '✗ Refusé' }}
             </span>
             <span class="response-message" *ngIf="quote.client_response.message">
               - "{{ quote.client_response.message }}"
@@ -153,13 +153,13 @@ import { NotificationService } from '../../../../shared/services/notification.se
           <!-- Convert to Order Action -->
           <div class="quote-actions" *ngIf="quote.status === 'ACCEPTED'">
             <button class="btn-convert" (click)="convertToOrder(quote)">
-              🛒 Créer la commande
+              ◎ Créer la commande
             </button>
           </div>
 
           <!-- Converted Info -->
           <div class="converted-info" *ngIf="quote.status === 'CONVERTED' && quote.converted_order_id">
-            <span class="converted-badge">✅ Convertie en commande</span>
+            <span class="converted-badge">✓ Convertie en commande</span>
             <button class="btn-view-order" (click)="viewOrder(quote.converted_order_id)">
               Voir la commande →
             </button>
@@ -176,16 +176,16 @@ import { NotificationService } from '../../../../shared/services/notification.se
     <div class="modal-overlay" *ngIf="showResponseModal" (click)="closeResponseModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>💰 Répondre à la demande</h3>
+          <h3>◎ Répondre à la demande</h3>
           <button class="btn-close" (click)="closeResponseModal()">×</button>
         </div>
 
         <div class="modal-body" *ngIf="selectedQuote">
           <div class="client-info-modal">
             <h4>Client: {{ selectedQuote.client_name }}</h4>
-            <p>📞 {{ selectedQuote.client_phone }}</p>
+            <p>☎ {{ selectedQuote.client_phone }}</p>
             <p *ngIf="selectedQuote.client_address?.city">
-              📍 {{ selectedQuote.client_address?.city }}
+              ⊛ {{ selectedQuote.client_address?.city }}
             </p>
           </div>
 
@@ -300,7 +300,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
             class="btn-primary" 
             (click)="submitResponse()"
             [disabled]="confirmedItems.length === 0">
-            📤 Envoyer le devis
+            ↗ Envoyer le devis
           </button>
         </div>
       </div>
@@ -310,16 +310,16 @@ import { NotificationService } from '../../../../shared/services/notification.se
     <div class="modal-overlay" *ngIf="showStaffModal" (click)="closeStaffModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>👤 Assigner un staff</h3>
+          <h3>⚐ Assigner un staff</h3>
           <button class="btn-close" (click)="closeStaffModal()">×</button>
         </div>
 
         <div class="modal-body" *ngIf="quoteToConvert">
           <div class="client-info-modal">
             <h4>Commande pour: {{ quoteToConvert.client_name }}</h4>
-            <p>📞 {{ quoteToConvert.client_phone }}</p>
+            <p>☎ {{ quoteToConvert.client_phone }}</p>
             <p *ngIf="quoteToConvert.client_address?.city">
-              📍 {{ quoteToConvert.client_address?.city }}
+              ⊛ {{ quoteToConvert.client_address?.city }}
             </p>
           </div>
 
@@ -352,7 +352,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
             class="btn-primary" 
             (click)="confirmStaffSelection()"
             [disabled]="!selectedStaffId">
-            🛒 Créer la commande
+            ◎ Créer la commande
           </button>
         </div>
       </div>
@@ -1048,6 +1048,27 @@ import { NotificationService } from '../../../../shared/services/notification.se
       padding: 1rem;
       border-radius: 8px;
       margin-bottom: 1rem;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .quotes-page { padding: 1rem; }
+      .status-filters { gap: 0.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      .quotes-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .status-filters { flex-wrap: wrap; }
+      .quotes-grid { grid-template-columns: 1fr; }
+      .modal { width: 95%; padding: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .quotes-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .status-chip { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
     }
   `]
 })

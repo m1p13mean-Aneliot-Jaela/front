@@ -24,7 +24,7 @@ interface Order {
     <div class="modal-overlay" (click)="close()">
       <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>🚚 Créer la livraison</h3>
+          <h3>⇄ Créer la livraison</h3>
           <p class="order-info">Commande {{ order?._id?.slice(-6) }}</p>
         </div>
 
@@ -120,7 +120,7 @@ interface Order {
           <div class="modal-actions">
             <button type="button" class="btn-secondary" (click)="close()">Annuler</button>
             <button type="submit" class="btn-primary" [disabled]="!canSubmit() || saving">
-              {{ saving ? 'Création...' : '🚚 Créer la livraison' }}
+              {{ saving ? 'Création...' : '⇄ Créer la livraison' }}
             </button>
           </div>
         </form>

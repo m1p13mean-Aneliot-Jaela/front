@@ -49,7 +49,7 @@ interface FormOrder {
       <form (ngSubmit)="onSubmit()" class="order-form">
         <!-- Client Section -->
         <div class="form-section">
-          <h3>👤 Client</h3>
+          <h3>⚐ Client</h3>
           <div class="form-row two-col">
             <div class="form-group">
               <label>Nom *</label>
@@ -76,7 +76,7 @@ interface FormOrder {
 
         <!-- Products Section -->
         <div class="form-section">
-          <h3>🛍️ Articles</h3>
+          <h3>◈ Articles</h3>
           
           <!-- Product Search -->
           <div class="product-search">
@@ -85,7 +85,7 @@ interface FormOrder {
               [(ngModel)]="productSearchQuery"
               name="productSearch"
               class="form-control"
-              placeholder="🔍 Rechercher un produit..."
+              placeholder="⌕ Rechercher un produit..."
               (input)="searchProducts()"
               (focus)="showProductDropdown = true"
             >
@@ -128,7 +128,7 @@ interface FormOrder {
 
         <!-- Order Info -->
         <div class="form-section">
-          <h3>📋 Informations</h3>
+          <h3>≡ Informations</h3>
           <div class="form-row two-col">
             <div class="form-group">
               <label>Frais de livraison</label>
@@ -230,6 +230,26 @@ interface FormOrder {
     .shipping-info { display: flex; align-items: center; gap: 0.5rem; color: #64748b; font-size: 0.875rem; margin-top: 0.5rem; }
     .btn-link { background: none; border: none; color: #8b5cf6; cursor: pointer; text-decoration: underline; padding: 0; font-size: 0.875rem; }
     .btn-link:hover { color: #7c3aed; }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .order-form { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .order-form { padding: 0.75rem; }
+      .form-container { padding: 1rem; }
+      .form-row { flex-direction: column; }
+      .form-group { width: 100%; }
+      .items-table { overflow-x: auto; min-width: 600px; }
+    }
+
+    @media (max-width: 480px) {
+      .order-form { padding: 0.5rem; }
+      h2 { font-size: 1.25rem; }
+      .btn-primary, .btn-secondary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .items-table th, .items-table td { padding: 0.5rem; font-size: 0.75rem; }
+    }
   `]
 })
 export class ShopOrderFormComponent implements OnInit {

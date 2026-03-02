@@ -98,7 +98,7 @@ interface Client {
                   (click)="deleteClient(client.id)"
                   title="Supprimer"
                 >
-                  🗑️
+                  ×
                 </button>
               </td>
             </tr>
@@ -222,6 +222,26 @@ interface Client {
       text-align: center;
       color: #64748b;
       padding: 2rem;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .clients-page { padding: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      .clients-page { padding: 0.75rem; }
+      .page-header { flex-direction: column; align-items: stretch; }
+      h2 { font-size: 1.25rem; }
+      .clients-container { overflow-x: auto; }
+      .clients-table { min-width: 700px; }
+    }
+
+    @media (max-width: 480px) {
+      .clients-page { padding: 0.5rem; }
+      h2 { font-size: 1rem; }
+      .btn-primary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+      .clients-table th, .clients-table td { padding: 0.5rem; font-size: 0.75rem; }
     }
   `]
 })

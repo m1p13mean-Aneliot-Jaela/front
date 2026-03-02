@@ -214,6 +214,20 @@ import { PermissionService } from '../../../../../core/services/permission.servi
       border-radius: 8px;
       cursor: pointer;
     }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .client-form { padding: 0.75rem; }
+      .form-container { padding: 1rem; }
+      .form-row { flex-direction: column; }
+      .form-group { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .client-form { padding: 0.5rem; }
+      h2 { font-size: 1.25rem; }
+      .btn-primary, .btn-secondary { padding: 0.625rem 1rem; font-size: 0.875rem; }
+    }
   `]
 })
 export class ShopClientFormComponent implements OnInit {

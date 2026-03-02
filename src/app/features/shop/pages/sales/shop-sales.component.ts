@@ -28,7 +28,7 @@ import { CommonModule } from '@angular/common';
       </div>
       <div class="chart-placeholder">
         <h3>Graphique des ventes</h3>
-        <p>📊 Visualisation des ventes par semaine (statique)</p>
+        <p>≣ Visualisation des ventes par semaine (statique)</p>
       </div>
     </div>
   `,
@@ -79,6 +79,27 @@ import { CommonModule } from '@angular/common';
     h3 {
       margin-bottom: 1rem;
       color: #1e293b;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .page-container { padding: 1rem; }
+      .stats-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+      .stat-card { padding: 1.25rem; }
+      .value { font-size: 1.25rem; }
+      .chart-placeholder { padding: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .page-container { padding: 0.75rem; }
+      .stat-card { padding: 1rem; }
+      h2 { font-size: 1.25rem; }
+      .value { font-size: 1.125rem; }
+      .chart-placeholder { padding: 1rem; }
     }
   `]
 })

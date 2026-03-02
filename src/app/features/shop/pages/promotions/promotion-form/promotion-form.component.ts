@@ -159,7 +159,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
                          [checked]="isProductSelected(product._id!)"
                          (change)="toggleProduct(product._id!)">
                   <img *ngIf="product.image_url" [src]="product.image_url" class="product-thumb">
-                  <div *ngIf="!product.image_url" class="product-thumb placeholder">📦</div>
+                  <div *ngIf="!product.image_url" class="product-thumb placeholder">▢</div>
                   <div class="product-info">
                     <span class="product-name">{{ product.name }}</span>
                     <span class="product-price">{{ product.unit_price | number }} Ar</span>
@@ -377,6 +377,20 @@ import { AuthService } from '../../../../../core/services/auth.service';
       background: #fee2e2;
       color: #dc2626;
       border-radius: 8px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .form-page { padding: 0.75rem; }
+      .form-container { padding: 1rem; }
+      .form-row { flex-direction: column; }
+      .form-group { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .form-page { padding: 0.5rem; }
+      h2 { font-size: 1.25rem; }
+      .btn-primary, .btn-secondary { padding: 0.625rem 1rem; font-size: 0.875rem; }
     }
   `]
 })
