@@ -23,6 +23,15 @@ interface ShopProduct {
   unit_price: number;
 }
 
+interface DeliveryZone {
+  _id: string;
+  name: string;
+  base_fee: number;
+  free_delivery_threshold?: number;
+  estimated_days?: number;
+  estimated_hours?: number;
+}
+
 interface ProductsResponse {
   success: boolean;
   data: {
@@ -85,9 +94,22 @@ interface ProductsResponse {
             <input [(ngModel)]="client_email" placeholder="exemple@mail.com" />
           </div>
 
-          <div class="form-row">
+          <!-- <div class="form-row">
             <label>Ville (optionnel)</label>
             <input [(ngModel)]="client_city" placeholder="Ville" />
+          </div> -->
+
+          <div class="form-row" style="grid-column: 1 / -1;">
+            <label>Zone de livraison</label>
+            <select [(ngModel)]="selectedZoneId" [disabled]="deliveryZones.length === 0">
+              <option value="">-- Choisir une zone de livraison --</option>
+              <option *ngFor="let zone of deliveryZones" [value]="zone._id">
+                {{ zone.name }} 
+                <ng-container *ngIf="zone.base_fee > 0">(+ {{ zone.base_fee | number }} Ar)</ng-container>
+                <ng-container *ngIf="zone.base_fee === 0">(Livraison gratuite)</ng-container>
+              </option>
+            </select>
+            <small *ngIf="deliveryZones.length === 0" class="hint">Aucune zone de livraison disponible pour cette boutique</small>
           </div>
 
           <div class="form-row" style="grid-column: 1 / -1;">
@@ -251,6 +273,8 @@ export class CreateQuoteRequestComponent implements OnInit {
   shops: ShopPublic[] = [];
   selectedShop: ShopPublic | null = null;
   shopProducts: ShopProduct[] = [];
+  deliveryZones: DeliveryZone[] = [];
+  selectedZoneId = '';
   cart: Cart = { items: [], shop_id: null, shop_name: null };
   fromCart = false;
 
@@ -309,9 +333,10 @@ export class CreateQuoteRequestComponent implements OnInit {
           notes: item.notes || ''
         }));
         
-        // Load shop name
+        // Load shop name AND delivery zones
         if (this.shopId) {
           this.loadShopName();
+          this.loadDeliveryZones();
         }
       } else {
         this.loadShops();
@@ -332,6 +357,21 @@ export class CreateQuoteRequestComponent implements OnInit {
       },
       error: () => {
         this.selectedShop = null;
+      }
+    });
+  }
+
+  loadDeliveryZones(): void {
+    if (!this.shopId) return;
+    
+    this.http.get<{ success: boolean; data: DeliveryZone[] }>(
+      `${environment.apiUrl}/shops/${this.shopId}/delivery-zones`
+    ).subscribe({
+      next: (res) => {
+        this.deliveryZones = res?.data || [];
+      },
+      error: () => {
+        this.deliveryZones = [];
       }
     });
   }
@@ -362,6 +402,16 @@ export class CreateQuoteRequestComponent implements OnInit {
       },
       error: () => {
         this.shopProducts = [];
+      }
+    });
+
+    // Load delivery zones
+    this.http.get<{ success: boolean; data: DeliveryZone[] }>(`${environment.apiUrl}/shops/${this.shopId}/delivery-zones`).subscribe({
+      next: (res) => {
+        this.deliveryZones = res?.data || [];
+      },
+      error: () => {
+        this.deliveryZones = [];
       }
     });
 
@@ -440,6 +490,7 @@ export class CreateQuoteRequestComponent implements OnInit {
       },
       shop_id: this.shopId,
       shop_name: shopName,
+      delivery_zone_id: this.selectedZoneId || undefined,
       requested_items: this.requested_items
     }).subscribe({
       next: () => {

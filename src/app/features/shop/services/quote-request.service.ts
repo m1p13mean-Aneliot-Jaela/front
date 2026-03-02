@@ -16,6 +16,7 @@ export interface ManagerResponseItem {
   product_name: string;
   quantity: number;
   unit_price: number;
+  original_price?: number;
   total: number;
 }
 
@@ -48,6 +49,7 @@ export interface QuoteRequest {
   client_email?: string;
   client_address?: ClientAddress;
   client_id?: string | null;
+  delivery_zone_id?: string;
   shop_id: string;
   shop_name: string;
   requested_items: QuoteRequestItem[];

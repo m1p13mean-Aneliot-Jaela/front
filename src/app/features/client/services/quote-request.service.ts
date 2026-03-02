@@ -43,7 +43,7 @@ export interface QuoteRequest {
   client_phone: string;
   client_email?: string;
   client_address?: ClientAddress;
-  client_id?: string | null;
+  delivery_zone_id?: string;
   shop_id: string;
   shop_name: string;
   requested_items: QuoteRequestItem[];
@@ -79,6 +79,7 @@ export class QuoteRequestService {
     client_address?: ClientAddress;
     shop_id: string;
     shop_name: string;
+    delivery_zone_id?: string;
     requested_items: QuoteRequestItem[];
   }): Observable<{ success: boolean; data: { quote: QuoteRequest } }> {
     return this.http.post<{ success: boolean; data: { quote: QuoteRequest } }>(

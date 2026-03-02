@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 import { ShopQuoteRequestService, QuoteRequest, QuoteStats, ManagerResponseItem } from '../../services/quote-request.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ProductService, Product } from '../../services/product.service';
@@ -243,17 +245,22 @@ import { NotificationService } from '../../../../shared/services/notification.se
                   (change)="updateTotals()"
                   min="0">
               </div>
-              <div class="form-group">
-                <label>Remise fixe (Ar):</label>
-                <input 
-                  type="number" 
-                  [(ngModel)]="discountAmount" 
-                  (change)="updateTotals()"
-                  min="0">
+              <div class="form-group" *ngIf="autoDiscountAmount > 0">
+                <label>Remise promotion (auto):</label>
+                <div class="auto-discount-display">{{ autoDiscountAmount | number }} Ar</div>
               </div>
             </div>
 
             <div class="form-row">
+              <div class="form-group">
+                <label>Remise additionnelle (Ar):</label>
+                <input 
+                  type="number" 
+                  [(ngModel)]="discountAmount" 
+                  (change)="updateTotals()"
+                  min="0"
+                  placeholder="Remise manuelle...">
+              </div>
               <div class="form-group">
                 <label>Remise % :</label>
                 <input 
@@ -261,6 +268,13 @@ import { NotificationService } from '../../../../shared/services/notification.se
                   [(ngModel)]="discountPercent" 
                   (change)="updateTotals()"
                   min="0" max="100">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" *ngIf="autoDiscountAmount > 0">
+                <label>Remise promotion (auto):</label>
+                <div class="auto-discount-display">{{ autoDiscountAmount | number }} Ar</div>
               </div>
               <div class="form-group">
                 <label>Code promo:</label>
@@ -905,6 +919,15 @@ import { NotificationService } from '../../../../shared/services/notification.se
       text-align: center;
     }
 
+    .auto-discount-display {
+      padding: 0.75rem;
+      background: #dbeafe;
+      border-radius: 8px;
+      color: #1d4ed8;
+      font-weight: 600;
+      text-align: center;
+    }
+
     .modal-footer {
       display: flex;
       justify-content: flex-end;
@@ -1049,7 +1072,8 @@ export class ShopQuoteRequestsComponent implements OnInit {
   confirmedItems: ManagerResponseItem[] = [];
   responseMessage = '';
   shippingFee = 0;
-  discountAmount = 0;
+  discountAmount = 0;  // Manual additional discount
+  autoDiscountAmount = 0;  // Auto-calculated from promotions
   discountPercent = 0;
   promotionCode = '';
   calculatedTotal = 0;
@@ -1060,7 +1084,11 @@ export class ShopQuoteRequestsComponent implements OnInit {
   selectedStaffId: string = '';
   quoteToConvert: QuoteRequest | null = null;
 
+  // Delivery zones
+  deliveryZones: Array<{ _id: string; name: string; base_fee: number }> = [];
+
   constructor(
+    private http: HttpClient,
     private quoteService: ShopQuoteRequestService,
     private productService: ProductService,
     private employeeService: EmployeeService,
@@ -1128,6 +1156,71 @@ export class ShopQuoteRequestsComponent implements OnInit {
     this.filteredQuotes = [...this.quotes];
   }
 
+  // Helper to parse dates from various formats (backend returns objects sometimes)
+  private parseDate(value: any): Date | null {
+    if (!value) return null;
+    if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+    if (typeof value === 'string') {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    if (typeof value === 'number') {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    if (typeof value === 'object') {
+      const anyVal: any = value;
+      if (typeof anyVal.$date === 'string' || typeof anyVal.$date === 'number') {
+        return this.parseDate(anyVal.$date);
+      }
+      if (typeof anyVal.toString === 'function') {
+        const str = anyVal.toString();
+        if (str !== '[object Object]') {
+          const d = new Date(str);
+          return isNaN(d.getTime()) ? null : d;
+        }
+      }
+    }
+    return null;
+  }
+
+  // Helper to check if product has active promo
+  private hasActivePromo(product: Product): boolean {
+    if (!product.current_promo || !product.current_promo.promo_price) return false;
+    const start = this.parseDate(product.current_promo.start_date);
+    const end = this.parseDate(product.current_promo.end_date);
+    if (!start || !end) return false;
+    const now = new Date();
+    return now >= start && now <= end;
+  }
+
+  // Load delivery zones and auto-set shipping fee if client selected a zone
+  private loadDeliveryZonesAndSetShippingFee(quote: QuoteRequest): void {
+    if (!this.shopId) return;
+    
+    // Load zones from shop
+    this.http.get<{ success: boolean; data: Array<{ _id: string; name: string; base_fee: number }> }>(
+      `${environment.apiUrl}/shops/${this.shopId}/delivery-zones`
+    ).subscribe({
+      next: (res) => {
+        this.deliveryZones = res?.data || [];
+        
+        // If client selected a zone, auto-populate shipping fee
+        if (quote.delivery_zone_id) {
+          const selectedZone = this.deliveryZones.find(z => z._id === quote.delivery_zone_id);
+          if (selectedZone && selectedZone.base_fee !== undefined) {
+            this.shippingFee = selectedZone.base_fee;
+            console.log('DEBUG: Auto-set shipping fee from zone:', selectedZone.name, selectedZone.base_fee);
+            this.updateTotals();
+          }
+        }
+      },
+      error: () => {
+        this.deliveryZones = [];
+      }
+    });
+  }
+
   getStatusLabel(status: string): string {
     return this.quoteService.getStatusLabel(status);
   }
@@ -1157,30 +1250,73 @@ export class ShopQuoteRequestsComponent implements OnInit {
       product_id: item.product_id || '',
       product_name: item.product_name,
       quantity: item.quantity,
-      unit_price: 0,  // Manager must set this
+      unit_price: 0,  // Will be set from product price or promo price
+      original_price: 0, // Track original price for discount calculation
       total: 0
     }));
     
-    // Try to load prices from shop products
+    // Load delivery zones and auto-populate shipping fee if client selected one
+    this.loadDeliveryZonesAndSetShippingFee(quote);
+    
+    // Try to load prices from shop products (with auto-promo detection)
     if (this.shopId) {
       this.productService.getProductsByShop(this.shopId, { limit: 100 }).subscribe({
         next: (response: { data: { products: Product[] } }) => {
           const products = response.data.products;
+          console.log('DEBUG: Loaded products:', products.length);
+          console.log('DEBUG: First product:', products[0]);
+          console.log('DEBUG: Confirmed items:', this.confirmedItems);
+          
+          let totalAutoDiscount = 0;
+          
           // Match requested items with shop products to auto-fill prices
           this.confirmedItems.forEach(item => {
             const matchingProduct = products.find(p => 
               p._id === item.product_id || 
               p.name.toLowerCase() === item.product_name.toLowerCase()
             );
+            console.log('DEBUG: Matching for', item.product_name, ':', matchingProduct);
+            
             if (matchingProduct) {
               item.product_id = matchingProduct._id!;
-              item.unit_price = matchingProduct.unit_price;
+              
+              // Check for active promotion
+              const now = new Date();
+              console.log('DEBUG: Product current_promo:', matchingProduct.current_promo);
+              console.log('DEBUG: Now:', now);
+              
+              const hasActivePromo = this.hasActivePromo(matchingProduct);
+              
+              console.log('DEBUG: Has active promo:', hasActivePromo);
+              
+              if (hasActivePromo) {
+                // Use promotional price
+                item.original_price = matchingProduct.unit_price;
+                item.unit_price = matchingProduct.current_promo!.promo_price!;
+                // Calculate auto-discount for this item
+                const discountPerItem = item.original_price - item.unit_price;
+                totalAutoDiscount += discountPerItem * item.quantity;
+                console.log('DEBUG: Added discount:', discountPerItem, 'Total now:', totalAutoDiscount);
+              } else {
+                // Use regular price
+                item.original_price = matchingProduct.unit_price;
+                item.unit_price = matchingProduct.unit_price;
+              }
+              
               item.total = item.quantity * item.unit_price;
+            } else {
+              console.log('DEBUG: No matching product found for:', item.product_name);
             }
           });
+          
+          // Auto-fill the discount amount from promotions
+          this.autoDiscountAmount = totalAutoDiscount;
+          console.log('DEBUG: Final autoDiscountAmount:', this.autoDiscountAmount);
+          
           this.updateTotals();
         },
-        error: () => {
+        error: (err) => {
+          console.error('DEBUG: Error loading products:', err);
           this.updateTotals();
         }
       });
@@ -1196,6 +1332,7 @@ export class ShopQuoteRequestsComponent implements OnInit {
     this.responseMessage = '';
     this.shippingFee = 0;
     this.discountAmount = 0;
+    this.autoDiscountAmount = 0;
     this.discountPercent = 0;
     this.promotionCode = '';
     this.productSearch = '';
@@ -1228,12 +1365,25 @@ export class ShopQuoteRequestsComponent implements OnInit {
       existing.total = existing.quantity * existing.unit_price;
       this.updateTotals();
     } else {
+      // Check for active promotion using helper
+      const hasActivePromo = this.hasActivePromo(product);
+      
+      let unitPrice = product.unit_price;
+      let originalPrice = product.unit_price;
+      
+      if (hasActivePromo) {
+        unitPrice = product.current_promo!.promo_price!;
+        // Add the discount to auto-calculated discount (not manual)
+        this.autoDiscountAmount += (originalPrice - unitPrice);
+      }
+      
       this.confirmedItems.push({
         product_id: product._id!,
         product_name: product.name,
         quantity: 1,
-        unit_price: product.unit_price,  // Prix auto-prérempli depuis la BDD
-        total: product.unit_price         // Total initial = 1 × prix unitaire
+        unit_price: unitPrice,
+        original_price: originalPrice,
+        total: unitPrice
       });
       this.updateTotals();
     }
@@ -1252,8 +1402,9 @@ export class ShopQuoteRequestsComponent implements OnInit {
     });
     const itemsTotal = this.confirmedItems.reduce((sum, item) => sum + item.total, 0);
     
-    // Calculate discount
-    let discount = this.discountAmount || 0;
+    // Calculate discount: auto (promotions) + manual + percent
+    let discount = this.autoDiscountAmount || 0;
+    discount += this.discountAmount || 0;
     if (this.discountPercent > 0) {
       discount += (itemsTotal * this.discountPercent / 100);
     }
@@ -1271,7 +1422,7 @@ export class ShopQuoteRequestsComponent implements OnInit {
       calculated_total: this.calculatedTotal,
       items_confirmed: this.confirmedItems,
       shipping_fee: this.shippingFee,
-      discount_amount: this.discountAmount,
+      discount_amount: (this.autoDiscountAmount || 0) + (this.discountAmount || 0),
       discount_percent: this.discountPercent,
       promotion_code: this.promotionCode
     }).subscribe({
