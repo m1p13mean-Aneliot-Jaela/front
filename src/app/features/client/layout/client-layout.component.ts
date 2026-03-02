@@ -23,7 +23,6 @@ export class ClientLayoutComponent implements OnInit {
     { icon: '🏠', label: 'Accueil', route: '/client/home' },
     { icon: '🏪', label: 'Boutiques', route: '/client/shops' },
     { icon: '🛒', label: 'Panier', route: '/client/cart' },
-    { icon: '🔍', label: 'Rechercher', route: '/client/search' },
     { icon: '❤️', label: 'Favoris', route: '/client/favorites' },
     { icon: '📋', label: 'Commandes', route: '/client/orders' },
     { icon: '📝', label: 'Mes demandes', route: '/client/quote-requests' }
