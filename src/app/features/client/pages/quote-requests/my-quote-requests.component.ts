@@ -591,9 +591,13 @@ export class MyQuoteRequestsComponent implements OnInit {
     }
   }
 
-  viewOrder(orderId: string, event: Event): void {
+  viewOrder(orderId: string | any, event: Event): void {
     event.stopPropagation();
-    this.router.navigate(['/orders', orderId]);
+    // Handle case where orderId might be an object with _id property
+    const id = typeof orderId === 'string' ? orderId : orderId?._id;
+    if (id) {
+      this.router.navigate(['/client/orders', id]);
+    }
   }
 
   getStatusLabel(status: string): string {
