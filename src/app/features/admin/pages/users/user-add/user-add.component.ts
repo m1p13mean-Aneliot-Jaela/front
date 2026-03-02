@@ -400,7 +400,7 @@ export class UserAddComponent implements OnInit {
   selectedShop: Shop | null = null;
   shopSearchQuery = '';
   showShopDropdown = false;
-  shopRole: 'MANAGER_SHOP' | 'STAFF' = 'STAFF';
+  shopRole: 'MANAGER_SHOP' | 'STAFF' = 'MANAGER_SHOP';
 
   submitting = false;
   errorMessage = '';
