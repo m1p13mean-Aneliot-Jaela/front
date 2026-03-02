@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
       <h2>Mes Favoris</h2>
       <div class="favorites-grid" *ngIf="favorites.length > 0; else empty">
         <div class="favorite-card" *ngFor="let item of favorites">
-          <button class="remove-btn" (click)="remove(item.id)">❌</button>
+          <button class="remove-btn" (click)="remove(item.id)">×</button>
           <div class="item-image">{{ item.image }}</div>
           <div class="item-info">
             <h4>{{ item.name }}</h4>
@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
       </div>
       <ng-template #empty>
         <div class="empty-state">
-          <span class="icon">❤️</span>
+          <span class="icon">★</span>
           <p>Vous n'avez pas encore de favoris</p>
           <button class="btn-primary">Découvrir des produits</button>
         </div>
@@ -114,8 +114,8 @@ import { CommonModule } from '@angular/common';
 })
 export class FavoritesComponent {
   favorites = [
-    { id: 1, name: 'iPhone 15 Pro', shop: 'Tech Store', price: '4,500,000 Ar', image: '📱' },
-    { id: 2, name: 'Sac à main cuir', shop: 'Fashion Plus', price: '180,000 Ar', image: '👜' }
+    { id: 1, name: 'iPhone 15 Pro', shop: 'Tech Store', price: '4,500,000 Ar', image: '▭' },
+    { id: 2, name: 'Sac à main cuir', shop: 'Fashion Plus', price: '180,000 Ar', image: '◇' }
   ];
 
   remove(id: number) {

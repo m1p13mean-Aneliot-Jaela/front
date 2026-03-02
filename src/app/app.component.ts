@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   title = 'm1p13mean-frontend';
   isBackendReady = false;
   backendError = false;
-  initializationMessage = 'Initializing backend services...';
+  initializationMessage = 'Initialisation des services backend...';
 
   constructor(private http: HttpClient) {}
 
@@ -37,14 +37,14 @@ export class AppComponent implements OnInit {
     }).subscribe({
       next: () => {
         const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
-        this.initializationMessage = `Backend ready! (${elapsedTime}s)`;
+        this.initializationMessage = `Backend prêt ! (${elapsedTime}s)`;
         setTimeout(() => {
           this.isBackendReady = true;
         }, 500);
       },
       error: (error) => {
         console.error('Backend initialization failed:', error);
-        this.initializationMessage = 'Backend unavailable. Retrying...';
+        this.initializationMessage = 'Backend indisponible. Nouvelle tentative...';
         this.backendError = true;
         // Retry after 3 seconds
         setTimeout(() => {
