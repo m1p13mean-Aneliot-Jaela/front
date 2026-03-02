@@ -210,20 +210,20 @@ export class RentPaymentListComponent implements OnInit {
   }
 
   deletePayment(payment: RentPayment): void {
-    if (!confirm('Are you sure you want to delete this payment? Only pending payments can be deleted.')) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce paiement? Seuls les paiements en attente peuvent être supprimés.')) {
       return;
     }
 
     this.rentPaymentService.deleteRentPayment(payment._id!).subscribe({
       next: (response) => {
         if (response.success) {
-          alert('Payment deleted successfully');
+          alert('Paiement supprimé avec succès');
           this.loadPayments();
           this.loadStatistics();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to delete payment');
+        alert(err.error?.message || 'Échec de la suppression du paiement');
       }
     });
   }
@@ -235,20 +235,20 @@ export class RentPaymentListComponent implements OnInit {
     this.rentPaymentService.updatePaymentStatus(payment._id!, newStatus, reason).subscribe({
       next: (response) => {
         if (response.success) {
-          alert('Payment status updated successfully');
+          alert('Statut du paiement mis à jour avec succès');
           this.loadPayments();
           this.loadStatistics();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to update payment status');
+        alert(err.error?.message || 'Échec de la mise à jour du statut du paiement');
       }
     });
   }
 
   formatDate(date: any): string {
     if (!date) return 'N/A';
-    return new Date(date).toLocaleDateString('en-US', { 
+    return new Date(date).toLocaleDateString('fr-FR', { 
       year: 'numeric', 
       month: 'short', 
       day: 'numeric' 
@@ -257,9 +257,11 @@ export class RentPaymentListComponent implements OnInit {
 
   formatCurrency(amount: number): string {
     if (amount === undefined || amount === null) return 'N/A';
-    return new Intl.NumberFormat('en-US', { 
+    return new Intl.NumberFormat('fr-FR', { 
       style: 'currency', 
-      currency: 'USD' 
+      currency: 'MGA',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   }
 
@@ -274,7 +276,13 @@ export class RentPaymentListComponent implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    return status?.charAt(0) + status?.slice(1).toLowerCase() || 'N/A';
+    const statusLabels: { [key: string]: string } = {
+      'PENDING': 'En Attente',
+      'SUCCESSFUL': 'Réussi',
+      'FAILED': 'Échoué',
+      'REFUNDED': 'Remboursé'
+    };
+    return statusLabels[status] || status;
   }
 
   getMethodBadgeClass(method: string): string {

@@ -1,10 +1,10 @@
 <div class="form-container">
   <div class="form-header">
-    <h2>{{ isEditMode ? 'Edit Rent Payment' : 'Add Rent Payment' }}</h2>
+    <h2>{{ isEditMode ? 'Modifier le Paiement de Loyer' : 'Ajouter un Paiement de Loyer' }}</h2>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading">Loading payment details...</div>
+  <div *ngIf="loading" class="loading">Chargement des détails du paiement...</div>
 
   <!-- Error State -->
   <div *ngIf="error" class="error">{{ error }}</div>
@@ -15,7 +15,7 @@
     <!-- Contract Selection -->
     <div class="form-group">
       <label for="contract_id">
-        Lease Contract <span class="required">*</span>
+        Contrat de Bail <span class="required">*</span>
       </label>
       <select 
         id="contract_id" 
@@ -24,27 +24,27 @@
         (change)="onContractChange()"
         [disabled]="isEditMode"
         required>
-        <option value="">-- Select a Contract --</option>
+        <option value="">-- Sélectionner un Contrat --</option>
         <option *ngFor="let contract of contracts" [value]="contract._id">
           {{ getContractLabel(contract) }}
         </option>
       </select>
-      <small class="form-text">Select the lease contract this payment is for</small>
+      <small class="form-text">Sélectionnez le contrat de bail pour ce paiement</small>
     </div>
 
     <!-- Shop Selection -->
     <div class="form-group">
-      <label for="shop_id">Shop</label>
+      <label for="shop_id">Boutique</label>
       <div class="readonly-field">
         <span class="shop-display">{{ getSelectedShopName() }}</span>
       </div>
-      <small class="form-text">Automatically filled from the selected contract</small>
+      <small class="form-text">Rempli automatiquement depuis le contrat sélectionné</small>
     </div>
 
     <!-- Amount -->
     <div class="form-group">
       <label for="amount">
-        Amount <span class="required">*</span>
+        Montant <span class="required">*</span>
       </label>
       <input 
         type="number" 
@@ -52,17 +52,17 @@
         [(ngModel)]="payment.amount" 
         name="amount"
         min="0"
-        step="0.01"
-        placeholder="Enter payment amount"
+        step="1"
+        placeholder="Entrez le montant du paiement"
         required
       />
-      <small class="form-text">Payment amount in USD</small>
+      <small class="form-text">Montant du paiement en Ariary</small>
     </div>
 
     <!-- Due Date -->
     <div class="form-group">
       <label for="due_date">
-        Due Date <span class="required">*</span>
+        Date d'Échéance <span class="required">*</span>
       </label>
       <input 
         type="date" 
@@ -71,13 +71,13 @@
         name="due_date"
         required
       />
-      <small class="form-text">When the payment is due</small>
+      <small class="form-text">Date à laquelle le paiement est dû</small>
     </div>
 
     <!-- Payment Method -->
     <div class="form-group">
       <label for="method">
-        Payment Method <span class="required">*</span>
+        Méthode de Paiement <span class="required">*</span>
       </label>
       <select 
         id="method" 
@@ -88,25 +88,25 @@
           {{ method.replace('_', ' ') }}
         </option>
       </select>
-      <small class="form-text">How the payment will be/was made</small>
+      <small class="form-text">Comment le paiement sera/a été effectué</small>
     </div>
 
     <!-- Transaction Reference -->
     <div class="form-group">
-      <label for="transaction_reference">Transaction Reference</label>
+      <label for="transaction_reference">Référence de Transaction</label>
       <input 
         type="text" 
         id="transaction_reference" 
         [(ngModel)]="payment.transaction_reference" 
         name="transaction_reference"
-        placeholder="Enter transaction reference"
+        placeholder="Entrez la référence de transaction"
       />
-      <small class="form-text">Optional reference number for the transaction</small>
+      <small class="form-text">Numéro de référence optionnel pour la transaction</small>
     </div>
 
     <!-- Payment Status (for edit mode) -->
     <div class="form-group" *ngIf="isEditMode">
-      <label for="status">Payment Status</label>
+      <label for="status">Statut du Paiement</label>
       <select 
         id="status" 
         [(ngModel)]="payment.current_status!.status" 
@@ -115,31 +115,31 @@
           {{ status }}
         </option>
       </select>
-      <small class="form-text">Current status of the payment</small>
+      <small class="form-text">Statut actuel du paiement</small>
     </div>
 
     <!-- Status Reason -->
     <div class="form-group">
       <label for="status_reason">
-        {{ isEditMode ? 'Status Change Reason' : 'Notes' }}
+        {{ isEditMode ? 'Raison du Changement de Statut' : 'Notes' }}
       </label>
       <textarea 
         id="status_reason" 
         [(ngModel)]="statusReason" 
         name="status_reason"
         rows="3"
-        placeholder="Enter reason or notes...">
+        placeholder="Entrez la raison ou des notes...">
       </textarea>
-      <small class="form-text">Optional notes about this payment</small>
+      <small class="form-text">Notes optionnelles concernant ce paiement</small>
     </div>
 
     <!-- Form Actions -->
     <div class="form-actions">
       <button type="button" class="btn-secondary" (click)="onCancel()" [disabled]="submitting">
-        Cancel
+        Annuler
       </button>
       <button type="submit" class="btn-primary" [disabled]="submitting">
-        {{ submitting ? 'Saving...' : (isEditMode ? 'Update Payment' : 'Create Payment') }}
+        {{ submitting ? 'Enregistrement...' : (isEditMode ? 'Modifier le Paiement' : 'Créer le Paiement') }}
       </button>
     </div>
   </form>

@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="header">
-    <h2>Lease Contracts Management</h2>
-    <button class="btn-primary" (click)="navigateToAdd()">+ Add Lease Contract</button>
+    <h2>Gestion des Contrats de Bail</h2>
+    <button class="btn-primary" (click)="navigateToAdd()">+ Ajouter un Contrat</button>
   </div>
 
   <!-- Search and Filters -->
@@ -9,33 +9,33 @@
     <div class="search-box">
       <input 
         type="text" 
-        placeholder="Search by shop name, conditions..." 
+        placeholder="Rechercher par nom de boutique, conditions..." 
         [(ngModel)]="searchTerm"
         (input)="onSearch()"
       />
     </div>
     <div class="filter-options">
       <select [(ngModel)]="filterStatus" (change)="applyFilters()">
-        <option value="">All Statuses</option>
-        <option value="signed">Signed</option>
-        <option value="active">Active</option>
-        <option value="expired">Expired</option>
-        <option value="terminated">Terminated</option>
+        <option value="">Tous les Statuts</option>
+        <option value="signed">Signé</option>
+        <option value="active">Actif</option>
+        <option value="expired">Expiré</option>
+        <option value="terminated">Résilié</option>
       </select>
       <select [(ngModel)]="filterPaymentFrequency" (change)="applyFilters()">
-        <option value="">All Payment Frequencies</option>
-        <option value="monthly">Monthly</option>
-        <option value="quarterly">Quarterly</option>
+        <option value="">Toutes les Fréquences</option>
+        <option value="monthly">Mensuel</option>
+        <option value="quarterly">Trimestriel</option>
       </select>
       <select [(ngModel)]="filterShopId" (change)="applyFilters()">
-        <option value="">All Shops</option>
+        <option value="">Toutes les Boutiques</option>
         <option *ngFor="let shop of shops" [value]="shop._id">{{ shop.shop_name }}</option>
       </select>
     </div>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="loading" class="loading">Chargement...</div>
 
   <!-- Error State -->
   <div *ngIf="error" class="error">{{ error }}</div>
@@ -45,12 +45,12 @@
     <table>
       <thead>
         <tr>
-          <th>Shop Name</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Rent Amount</th>
-          <th>Payment Frequency</th>
-          <th>Status</th>
+          <th>Nom de la Boutique</th>
+          <th>Date Début</th>
+          <th>Date Fin</th>
+          <th>Montant du Loyer</th>
+          <th>Fréquence de Paiement</th>
+          <th>Statut</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -62,7 +62,7 @@
           <td>{{ formatDate(contract.start_date) }}</td>
           <td>
             <div>{{ formatDate(contract.end_date) }}</div>
-            <div *ngIf="isExpiringSoon(contract)" class="expiring-badge">⚠️ Expiring Soon</div>
+            <div *ngIf="isExpiringSoon(contract)" class="expiring-badge">⚠️ Expire Bientôt</div>
           </td>
           <td>{{ formatCurrency(contract.rent_amount) }}</td>
           <td>
@@ -77,37 +77,37 @@
                 *ngIf="contract.current_status?.status === 'signed'" 
                 class="btn-xs btn-activate" 
                 (click)="updateStatus(contract, 'active')"
-                title="Activate">
-                Activate
+                title="Activer">
+                Activer
               </button>
               <button 
                 *ngIf="contract.current_status?.status === 'active'" 
                 class="btn-xs btn-terminate" 
                 (click)="updateStatus(contract, 'terminated')"
-                title="Terminate">
-                Terminate
+                title="Résilier">
+                Résilier
               </button>
             </div>
           </td>
           <td>
             <div class="action-buttons">
-              <button class="btn-view" (click)="viewContract(contract)" title="View">👁️</button>
-              <button class="btn-edit" (click)="editContract(contract)" title="Edit">✏️</button>
-              <button class="btn-delete" (click)="deleteContract(contract)" title="Delete">🗑️</button>
+              <button class="btn-view" (click)="viewContract(contract)" title="Voir">👁️</button>
+              <button class="btn-edit" (click)="editContract(contract)" title="Modifier">✏️</button>
+              <button class="btn-delete" (click)="deleteContract(contract)" title="Supprimer">🗑️</button>
             </div>
           </td>
         </tr>
         <tr *ngIf="paginatedContracts.length === 0">
-          <td colspan="7" class="no-data">No lease contracts found</td>
+          <td colspan="7" class="no-data">Aucun contrat de bail trouvé</td>
         </tr>
       </tbody>
     </table>
 
     <!-- Pagination -->
     <div class="pagination" *ngIf="totalPages > 1">
-      <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+      <button (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
+      <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant</button>
     </div>
   </div>
 </div>

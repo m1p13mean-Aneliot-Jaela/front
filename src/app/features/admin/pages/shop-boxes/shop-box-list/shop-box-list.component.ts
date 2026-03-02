@@ -532,6 +532,57 @@ import { Shop } from '../../../../../shared/models/shop.model';
     .btn-danger:hover {
       background: #b91c1c;
     }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .filters-container {
+        flex-direction: column;
+      }
+      .filter-options {
+        flex-direction: column;
+      }
+      .filter-options select {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 1rem;
+      }
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+      .btn-primary {
+        width: 100%;
+      }
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        min-width: 700px;
+      }
+      .pagination {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      th, td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+      }
+      .modal-actions {
+        flex-direction: column;
+      }
+    }
   `]
 })
 export class ShopBoxListComponent implements OnInit {

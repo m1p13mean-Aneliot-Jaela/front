@@ -177,6 +177,34 @@ import { ShopCategory } from '../../../../../shared/models/shop.model';
       color: #64748b;
       padding: 2rem !important;
     }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 1rem;
+      }
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+      .btn-primary {
+        width: 100%;
+      }
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        min-width: 600px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      th, td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+      }
+    }
   `]
 })
 export class ShopCategoryListComponent implements OnInit {

@@ -382,11 +382,88 @@
     align-items: flex-start;
   }
 
+  .dashboard-header h2 {
+    font-size: 20px;
+  }
+
+  .btn-refresh {
+    width: 100%;
+  }
+
   .main-stats-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+  }
+
+  .stat-details {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .secondary-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .activity-tabs {
     grid-template-columns: 1fr;
   }
+
+  .payment-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .activity-item {
+    flex-wrap: wrap;
+  }
+
+  .activity-time {
+    width: 100%;
+    text-align: left;
+    margin-top: 4px;
+  }
 }
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  .dashboard-header h2 {
+    font-size: 18px;
+  }
+
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stat-icon {
+    margin: 0 auto;
+  }
+
+  .stat-details {
+    align-items: center;
+  }
+
+  .chart-section {
+    padding: 16px;
+  }
+
+  .payment-stat {
+    padding: 16px;

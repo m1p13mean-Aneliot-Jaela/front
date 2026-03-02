@@ -1,4 +1,7 @@
 <div class="admin-layout" [class.collapsed]="sidebarCollapsed">
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" [class.active]="sidebarCollapsed" (click)="toggleSidebar()"></div>
+  
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">

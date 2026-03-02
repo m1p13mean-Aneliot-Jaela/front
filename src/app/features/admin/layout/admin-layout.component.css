@@ -263,3 +263,148 @@
   background: #ef4444;
   color: white;
 }
+/* Mobile Menu Overlay */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.mobile-overlay.active {
+  display: block;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+  }
+
+  .main-content {
+    margin-left: 220px;
+  }
+
+  .admin-layout.collapsed .sidebar {
+    width: 70px;
+  }
+
+  .admin-layout.collapsed .main-content {
+    margin-left: 70px;
+  }
+
+  .header {
+    padding: 1rem 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.25rem;
+  }
+
+  .content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile sidebar - hidden by default */
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    width: 260px;
+    transition: left 0.3s ease;
+    z-index: 100;
+  }
+
+  .admin-layout.collapsed .sidebar {
+    left: 0;
+    width: 260px;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .admin-layout.collapsed .main-content {
+    margin-left: 0;
+  }
+
+  /* Show collapsed items on mobile when sidebar is open */
+  .admin-layout.collapsed .logo .text,
+  .admin-layout.collapsed .nav-item .label,
+  .admin-layout.collapsed .logout-btn .label {
+    display: flex;
+  }
+
+  .header {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.125rem;
+    flex: 1;
+  }
+
+  .user-info {
+    gap: 0.5rem;
+  }
+
+  .user-info .name {
+    display: none;
+  }
+
+  .badge {
+    font-size: 0.625rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  /* Mobile toggle button */
+  .toggle-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 101;
+    background: #1e293b;
+    color: white;
+  }
+
+  .admin-layout.collapsed .toggle-btn {
+    background: #ef4444;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-info {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+
+  .admin-layout.collapsed .sidebar {
+    left: 0;
+    width: 100%;
+  }
+
+  .content {
+    padding: 0.75rem;
+  }
+}

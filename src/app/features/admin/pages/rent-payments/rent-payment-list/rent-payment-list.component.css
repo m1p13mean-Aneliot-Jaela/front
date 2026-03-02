@@ -322,3 +322,94 @@ tr.overdue {
   color: #666;
   font-style: italic;
 }
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 16px;
+  }
+
+  .statistics-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .filter-options {
+    flex-direction: column;
+  }
+
+  .filter-options select,
+  .filter-options input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 12px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .header h2 {
+    font-size: 20px;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+
+  .statistics-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 800px;
+  }
+
+  .status-actions,
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .btn-xs {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 8px;
+  }
+
+  .header h2 {
+    font-size: 18px;
+  }
+
+  .stat-card .stat-number {
+    font-size: 24px;
+  }
+
+  th, td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pagination button {
+    width: 100%;
+  }
+}
