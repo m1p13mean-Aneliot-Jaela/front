@@ -169,16 +169,24 @@ export class ShopService {
     );
   }
 
-  // Upload logo (multipart/form-data)
+  // Upload logo (base64)
   uploadLogo(shopId: string, file: File): Observable<{ success: boolean; message: string; data: { logo_url: string; profile: ShopProfile } }> {
-    const formData = new FormData();
-    formData.append('logo', file);
-
-    return this.api.post<{ success: boolean; message: string; data: any }>(
-      `/shops/${shopId}/profile/logo/upload`,
-      formData,
-      { withCredentials: true }
-    );
+    return new Observable(observer => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        
+        this.api.post<{ success: boolean; message: string; data: any }>(
+          `/shops/${shopId}/profile/logo/upload`,
+          { logo_base64: base64String },
+          { withCredentials: true }
+        ).subscribe(observer);
+      };
+      reader.onerror = (error) => {
+        observer.error(error);
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   // Get nearby shops (public endpoint)
