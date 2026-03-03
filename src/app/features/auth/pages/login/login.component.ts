@@ -24,8 +24,8 @@ export class LoginComponent {
     private authService: AuthService
   ) {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      email: ['admin@example.com', [Validators.required, Validators.email]],
+      password: ['administrateur', Validators.required]
     });
   }
 
